@@ -17,6 +17,8 @@ namespace Tomorrow.Quantum
 
         public override void Update(Frame f, ref Filter filter)
         {
+            if (filter.Character->IsDead) return;
+
             // Only for “real” local players (optional—remove if you want all players shooting automatically)
             if (filter.Link->Player == PlayerRef.None) return;
 

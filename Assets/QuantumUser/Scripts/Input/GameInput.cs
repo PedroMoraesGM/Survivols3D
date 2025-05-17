@@ -29,8 +29,7 @@ public class GameInput : MonoBehaviour
         Vector2 move = _map.FindAction("Move").ReadValue<Vector2>();
         qInput.MoveAxis = move.ToFPVector2();
 
-        // Always move forward
-        qInput.Forward = true;
+        qInput.Reset = _map.FindAction("Reset").WasPressedThisFrame(); // if we press button "Reset"
 
         // Submit with repeatable flag
         callback.SetInput(qInput, DeterministicInputFlags.Repeatable);

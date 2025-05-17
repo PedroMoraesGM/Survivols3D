@@ -3,6 +3,8 @@ component Character {
 	FP MaxHealth;
 	FP CurrentHealth;
 
+	QBoolean IsDead;
+
 	// Move 
 	FP MoveSpeed;
 	FP HorizontalTurnSpeedDegrees;

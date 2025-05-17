@@ -26,3 +26,4 @@ signal OnGameOver();
 synced event OnGameStateChanged { GameState state; }
 synced event OnScoreChanged { int playerIndex; int score; }
 event OnGameTerminated { }
+event OnGameOver { }

@@ -1,4 +1,5 @@
 using Quantum;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,8 +14,10 @@ namespace QuantumUser.View.Controllers
 
 
         [SerializeField] private GameObject firstPersonView;
+        [SerializeField] private GameObject DeadFirstPersonView;
         [SerializeField] private Transform cameraPivot;
         [SerializeField] private GameObject thirdPersonView;
+        [SerializeField] private GameObject DeadThirdPersonView;
 
         float yaw;
         float pitch;
@@ -26,6 +29,40 @@ namespace QuantumUser.View.Controllers
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private Image healthBar;
 
+        private void Awake()
+        {
+            QuantumEvent.Subscribe(this, (EventOnPlayerDefeated e) => OnPlayerDefeated(e));
+            QuantumEvent.Subscribe(this, (EventOnPlayerHit e) => OnPlayerHit(e));
+        }
+
+        private void OnPlayerHit(EventOnPlayerHit e)
+        {
+            var f = e.Game.Frames.Verified;
+            if (!f.TryGet(e.Target, out PlayerLink playerLink)) return;
+            if (e.Game.PlayerIsLocal(playerLink.Player)) return;
+
+            f.TryGet(e.Target, out Character character);
+            healthBar.transform.localScale = new Vector3((character.CurrentHealth / character.MaxHealth).AsFloat, 1);
+        }
+
+        private void OnPlayerDefeated(EventOnPlayerDefeated e)
+        {
+            var f = e.Game.Frames.Verified;
+            if (!f.TryGet(e.Target, out PlayerLink playerLink)) return;
+
+            if (e.Game.PlayerIsLocal(playerLink.Player))
+            {
+                firstPersonView.SetActive(false);
+                DeadFirstPersonView.SetActive(true);
+            }
+            else
+            {
+                thirdPersonView.SetActive(false);
+                DeadThirdPersonView.SetActive(true); 
+            }
+            
+        }
+
         public override void OnActivate(Frame frame)
         {
             var index = 0;
@@ -33,6 +70,9 @@ namespace QuantumUser.View.Controllers
             {
                 isPlayerLocal = Game.PlayerIsLocal(playerLink.Player);
                 PlayerRef = playerLink.Player;
+
+                RuntimePlayer data = frame.GetPlayerData(playerLink.Player);
+                nameText.text = data.PlayerNickname;
             }
 
             firstPersonView.gameObject.SetActive(isPlayerLocal);

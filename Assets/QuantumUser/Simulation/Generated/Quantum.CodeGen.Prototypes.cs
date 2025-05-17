@@ -75,6 +75,7 @@ namespace Quantum.Prototypes {
   public unsafe partial class CharacterPrototype : ComponentPrototype<Quantum.Character> {
     public FP MaxHealth;
     public FP CurrentHealth;
+    public QBoolean IsDead;
     public FP MoveSpeed;
     public FP HorizontalTurnSpeedDegrees;
     public FP VerticalTurnSpeedDegrees;
@@ -94,6 +95,7 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.Character result, in PrototypeMaterializationContext context = default) {
         result.MaxHealth = this.MaxHealth;
         result.CurrentHealth = this.CurrentHealth;
+        result.IsDead = this.IsDead;
         result.MoveSpeed = this.MoveSpeed;
         result.HorizontalTurnSpeedDegrees = this.HorizontalTurnSpeedDegrees;
         result.VerticalTurnSpeedDegrees = this.VerticalTurnSpeedDegrees;
@@ -240,11 +242,13 @@ namespace Quantum.Prototypes {
     public FPVector2 MoveAxis;
     public FPVector2 LookDelta;
     public Button Forward;
+    public Button Reset;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.MoveAxis = this.MoveAxis;
         result.LookDelta = this.LookDelta;
         result.Forward = this.Forward;
+        result.Reset = this.Reset;
         MaterializeUser(frame, ref result, in context);
     }
   }

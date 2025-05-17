@@ -60,6 +60,7 @@ namespace Quantum {
   [System.FlagsAttribute()]
   public enum InputButtons : int {
     Forward = 1 << 0,
+    Reset = 1 << 1,
   }
   public static unsafe partial class FlagsExtensions {
     public static Boolean IsFlagSet(this InputButtons self, InputButtons flag) {
@@ -568,20 +569,23 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
-    public const Int32 SIZE = 48;
+    public const Int32 SIZE = 56;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(32)]
+    [FieldOffset(40)]
     public FPVector2 MoveAxis;
-    [FieldOffset(16)]
+    [FieldOffset(24)]
     public FPVector2 LookDelta;
     [FieldOffset(0)]
     public Button Forward;
+    [FieldOffset(12)]
+    public Button Reset;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
         hash = hash * 31 + MoveAxis.GetHashCode();
         hash = hash * 31 + LookDelta.GetHashCode();
         hash = hash * 31 + Forward.GetHashCode();
+        hash = hash * 31 + Reset.GetHashCode();
         return hash;
       }
     }
@@ -591,18 +595,21 @@ namespace Quantum {
     public Boolean IsDown(InputButtons button) {
       switch (button) {
         case InputButtons.Forward: return Forward.IsDown;
+        case InputButtons.Reset: return Reset.IsDown;
         default: return false;
       }
     }
     public Boolean WasPressed(InputButtons button) {
       switch (button) {
         case InputButtons.Forward: return Forward.WasPressed;
+        case InputButtons.Reset: return Reset.WasPressed;
         default: return false;
       }
     }
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (Input*)ptr;
         Button.Serialize(&p->Forward, serializer);
+        Button.Serialize(&p->Reset, serializer);
         FPVector2.Serialize(&p->LookDelta, serializer);
         FPVector2.Serialize(&p->MoveAxis, serializer);
     }
@@ -687,7 +694,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct _globals_ {
-    public const Int32 SIZE = 904;
+    public const Int32 SIZE = 952;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public AssetRef<Map> Map;
@@ -711,12 +718,12 @@ namespace Quantum {
     public Int32 PlayerConnectedCount;
     [FieldOffset(608)]
     [FramePrinter.FixedArrayAttribute(typeof(Input), 6)]
-    private fixed Byte _input_[288];
-    [FieldOffset(896)]
+    private fixed Byte _input_[336];
+    [FieldOffset(944)]
     public BitSet6 PlayerLastConnectionState;
     public FixedArray<Input> input {
       get {
-        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 48, 6); }
+        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 56, 6); }
       }
     }
     public override Int32 GetHashCode() {
@@ -777,36 +784,38 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Character : Quantum.IComponent {
-    public const Int32 SIZE = 112;
+    public const Int32 SIZE = 120;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(32)]
+    [FieldOffset(40)]
     public FP MaxHealth;
-    [FieldOffset(16)]
-    public FP CurrentHealth;
-    [FieldOffset(64)]
-    public FP MoveSpeed;
     [FieldOffset(24)]
+    public FP CurrentHealth;
+    [FieldOffset(8)]
+    public QBoolean IsDead;
+    [FieldOffset(72)]
+    public FP MoveSpeed;
+    [FieldOffset(32)]
     public FP HorizontalTurnSpeedDegrees;
-    [FieldOffset(88)]
+    [FieldOffset(96)]
     public FP VerticalTurnSpeedDegrees;
-    [FieldOffset(80)]
+    [FieldOffset(88)]
     [ExcludeFromPrototype()]
     public FP VerticalLookPitch;
-    [FieldOffset(40)]
-    public FP MaxVerticalLook;
-    [FieldOffset(56)]
-    public FP MinVerticalLook;
     [FieldOffset(48)]
+    public FP MaxVerticalLook;
+    [FieldOffset(64)]
+    public FP MinVerticalLook;
+    [FieldOffset(56)]
     public FP MinHeightLimit;
-    [FieldOffset(8)]
+    [FieldOffset(16)]
     public AssetRef<EntityPrototype> ProjectilePrefab;
     [FieldOffset(0)]
     public Int32 FireCdTicks;
     [FieldOffset(4)]
     public Int32 FireCooldown;
-    [FieldOffset(72)]
+    [FieldOffset(80)]
     public FP MuzzleOffset;
-    [FieldOffset(96)]
+    [FieldOffset(104)]
     [ExcludeFromPrototype()]
     public FPVector2 LookDelta;
     public override Int32 GetHashCode() {
@@ -814,6 +823,7 @@ namespace Quantum {
         var hash = 13711;
         hash = hash * 31 + MaxHealth.GetHashCode();
         hash = hash * 31 + CurrentHealth.GetHashCode();
+        hash = hash * 31 + IsDead.GetHashCode();
         hash = hash * 31 + MoveSpeed.GetHashCode();
         hash = hash * 31 + HorizontalTurnSpeedDegrees.GetHashCode();
         hash = hash * 31 + VerticalTurnSpeedDegrees.GetHashCode();
@@ -833,6 +843,7 @@ namespace Quantum {
         var p = (Character*)ptr;
         serializer.Stream.Serialize(&p->FireCdTicks);
         serializer.Stream.Serialize(&p->FireCooldown);
+        QBoolean.Serialize(&p->IsDead, serializer);
         AssetRef.Serialize(&p->ProjectilePrefab, serializer);
         FP.Serialize(&p->CurrentHealth, serializer);
         FP.Serialize(&p->HorizontalTurnSpeedDegrees, serializer);
@@ -1366,6 +1377,7 @@ namespace Quantum {
       i->MoveAxis = input.MoveAxis;
       i->LookDelta = input.LookDelta;
       i->Forward = i->Forward.Update(this.Number, input.Forward);
+      i->Reset = i->Reset.Update(this.Number, input.Reset);
     }
     public Input* GetPlayerInput(PlayerRef player) {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }

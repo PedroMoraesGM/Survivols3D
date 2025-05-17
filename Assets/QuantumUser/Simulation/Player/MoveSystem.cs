@@ -60,6 +60,8 @@ namespace Tomorrow.Quantum
                 filter.Character->VerticalLookPitch = vPitch;
             }
 
+            if (filter.Character->IsDead) return; // If is dead he can only move camera
+
             FPVector2 moveAxis = input.MoveAxis;  // X = strafe, Y = forward/back
 
             FPVector3 dir =

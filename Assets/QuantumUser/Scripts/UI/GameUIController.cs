@@ -33,16 +33,15 @@ public unsafe class GameUIController : QuantumCallbacks
     private Dictionary<UIState, GameObject> _stateObjectDictionary = new();
 
     [Header("Waiting")]
-    [SerializeField] private TextMeshProUGUI _readyCtaText;
-    
+    [SerializeField] private TextMeshProUGUI _readyCtaText;    
     [Header("Countdown")]
     [SerializeField] private TextMeshProUGUI _countdownTimer;
-
     [Header("Playing")]
     [SerializeField] private TextMeshProUGUI _timeLeftText;
     [SerializeField] private TextMeshProUGUI[] _scoreTexts;
     [Header("Gameover")]
     [SerializeField] private CanvasGroup gameoverScreen;
+    [SerializeField] private GameObject resetGameTooltip;
     [Header("Health UI")]
     [SerializeField] private float healthBlinkDuration = 1;
     [SerializeField] private Image healthVignette;
@@ -71,11 +70,17 @@ public unsafe class GameUIController : QuantumCallbacks
         QuantumEvent.Subscribe(this, (EventOnGameTerminated e) => OnGameTerminated(e));
         QuantumEvent.Subscribe(this, (EventOnPlayerHit e) => OnPlayerHit(e));
         QuantumEvent.Subscribe(this, (EventOnPlayerDefeated e) => OnPlayerDefeated(e));
+        QuantumEvent.Subscribe(this, (EventOnGameOver e) => OnGameOver(e));
         foreach (var pair in _stateObjectPairs)
         {
             _stateObjectDictionary.Add(pair.State, pair.Object);
         }
         SetUIState(UIState.Waiting);
+    }
+
+    private void OnGameOver(EventOnGameOver e)
+    {
+        resetGameTooltip.SetActive(true);
     }
 
     private void OnPlayerDefeated(EventOnPlayerDefeated e)
@@ -137,10 +142,8 @@ public unsafe class GameUIController : QuantumCallbacks
         {
             case GameState.Waiting:
                 SetUIState(UIState.Waiting);
-                foreach(TextMeshProUGUI t in _scoreTexts)
-                {
-                    t.text = "0";
-                }
+                foreach(TextMeshProUGUI t in _scoreTexts)                
+                    t.text = "0";                
                 break;
             case GameState.Countdown:
                 SetUIState(UIState.Countdown);

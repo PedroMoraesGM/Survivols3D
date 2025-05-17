@@ -1,6 +1,7 @@
 using Photon.Deterministic;
 using Tomorrow.Quantum;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Scripting;
 
 namespace Quantum
@@ -20,15 +21,12 @@ namespace Quantum
         {
             if (f.Unsafe.TryGetPointer(target, out Character* character))
             {
-                Debug.Log("[CharacterSystem] Player will be hit:"+ character->CurrentHealth);
                 if (f.Unsafe.TryGetPointer(dealer, out EnemyAI* enemy))
                 {
                     character->CurrentHealth -= enemy->Damage;
-                    Debug.Log("[CharacterSystem] Player was hit:" + character->CurrentHealth);
 
                     if (character->CurrentHealth < 0)
                     {
-                        Debug.Log("[CharacterSystem] Gameover");
                         f.Signals.OnPlayerDefeated(target, dealer);
                         f.Events.OnPlayerDefeated(target, dealer);
                     }
@@ -38,12 +36,24 @@ namespace Quantum
 
         public void OnPlayerDefeated(Frame f, EntityRef target, EntityRef dealer)
         {
-            
+            if (f.Unsafe.TryGetPointer(target, out Character* character))
+            {
+                character->IsDead = true;
+            }
         }
 
         public override void Update(Frame f, ref Filter filter)
         {
-            
+            Input input = default;
+            if (f.Unsafe.TryGetPointer(filter.Entity, out PlayerLink* link))
+            {
+                input = *f.GetPlayerInput(link->Player);
+            }
+
+            if (input.Reset && f.Unsafe.GetPointerSingleton<Game>()->CurrentGameState == GameState.GameOver)
+            {
+                SceneManager.LoadScene(0);
+            }
         }
     }
 }
