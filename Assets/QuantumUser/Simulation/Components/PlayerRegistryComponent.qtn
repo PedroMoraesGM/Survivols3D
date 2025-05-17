@@ -1,0 +1,9 @@
+struct PlayerInfo {
+  EntityRef Entity;
+  FPVector3 Position;
+}
+
+// Then your registry component:
+singleton component PlayerRegistryComponent {
+  list<PlayerInfo> ActivePlayers;
+}

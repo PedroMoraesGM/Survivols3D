@@ -1,0 +1,38 @@
+struct SpawnSettings {
+  // Base parameters
+  AssetRef<EntityPrototype> EnemyPrefab;
+  FP     BaseInterval;      // seconds between spawn attempts
+  int    BaseBatchSize;     // how many to spawn per attempt
+  FP     BaseHP;            // base health for new enemies
+  FP     BaseDamage;        // base damage for new enemies
+}
+
+singleton component SpawnerComponent {
+  // Current timers & counts
+  FP     TimeSinceLastSpawn;
+  FP     CurrentInterval;   // evolves from BaseInterval
+  int    CurrentBatchSize;
+  FP     HPMultiplier;      // multiplies BaseHP
+  FP     DamageMultiplier;  // multiplies BaseDamage
+  FP     SpawnRadius;
+  SpawnSettings Settings;    // embed base settings
+}
+
+singleton component ProgressionComponent {
+  int    Cycle;             // how many cycles completed
+  FP     TimeElapsed;       // total time since start
+  FP     CycleDuration;     // time per cycle (e.g., 30s)
+}
+
+
+// Describes a single enemy type and when it becomes available
+struct EnemySpawnEntry {
+  AssetRef<EntityPrototype> Prefab;         // Quantum prefab for this enemy type
+  int              MinWave;        // wave number (minute) when it unlocks
+  FP               Weight;         // relative spawn weight in its wave
+}
+
+// Singleton storing all wave definitions
+singleton component EnemyWaveComponent {
+  list<EnemySpawnEntry> Entries;    // fill in Editor: e.g. Goblin at MinWave=1, Bat at 2, Troll at 5, etc.
+}

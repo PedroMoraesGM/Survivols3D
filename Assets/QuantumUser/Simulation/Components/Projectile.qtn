@@ -1,0 +1,8 @@
+component Projectile {
+	EntityRef Owner;
+	FP Damage;
+	int HitsToDestroy;
+	FP Velocity;
+	FP Elapsed;
+	FP TimeToLive;
+}

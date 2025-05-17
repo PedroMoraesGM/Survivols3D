@@ -1,0 +1,408 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &728730217810199848
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7207393148808095406}
+  - component: {fileID: 754762862132343408}
+  - component: {fileID: 3832144046871412136}
+  - component: {fileID: 4682554637992653183}
+  - component: {fileID: 1086186911056547274}
+  - component: {fileID: 4603876843233098770}
+  - component: {fileID: 3372475939401507569}
+  - component: {fileID: 3522200128369236728}
+  m_Layer: 0
+  m_Name: Game
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7207393148808095406
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728730217810199848}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &754762862132343408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728730217810199848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 836dcb7e0f6259748b850a10912ce727, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransformMode: 2
+  Transform2DVertical:
+    IsEnabled: 0
+    Height:
+      RawValue: 0
+    PositionOffset:
+      RawValue: 0
+  PhysicsCollider:
+    IsEnabled: 0
+    IsTrigger: 0
+    Material:
+      Id:
+        Value: 0
+    SourceCollider: {fileID: 0}
+    Shape2D:
+      ShapeType: 0
+      PolygonCollider:
+        Id:
+          Value: 0
+      CircleRadius:
+        RawValue: 32768
+      CapsuleSize:
+        X:
+          RawValue: 65536
+        Y:
+          RawValue: 131072
+      EdgeExtent:
+        RawValue: 32768
+      BoxExtents:
+        X:
+          RawValue: 32768
+        Y:
+          RawValue: 32768
+      PositionOffset:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+      RotationOffset:
+        RawValue: 0
+      UserTag: 0
+      IsPersistent: 1
+      CompoundShapes: []
+    Shape3D:
+      ShapeType: 0
+      SphereRadius:
+        RawValue: 32768
+      CapsuleRadius:
+        RawValue: 32768
+      CapsuleHeight:
+        RawValue: 131072
+      PositionOffset:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      BoxExtents:
+        X:
+          RawValue: 32768
+        Y:
+          RawValue: 32768
+        Z:
+          RawValue: 32768
+      RotationOffset:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      UserTag: 0
+      IsPersistent: 1
+      CompoundShapes: []
+    LayerSource: 0
+    Layer: 0
+    CallbackFlags:
+      Value: 0
+  PhysicsBody:
+    IsEnabled: 0
+    Config2D: 116
+    Config3D: 58
+    RotationFreeze: 0
+    InertiaMode: 0
+    Mass:
+      RawValue: 65536
+    Drag:
+      RawValue: 32768
+    AngularDrag:
+      RawValue: 32768
+    ExplicitInertia2D:
+      RawValue: 65536
+    ExplicitInertia3D:
+      X:
+        RawValue: 65536
+      Y:
+        RawValue: 65536
+      Z:
+        RawValue: 65536
+    CenterOfMass2D:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+    CenterOfMass3D:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+      Z:
+        RawValue: 0
+    ParametricInertiaShape2D:
+      ShapeType: 0
+      PolygonCollider:
+        Id:
+          Value: 0
+      CircleRadius:
+        RawValue: 32768
+      CapsuleSize:
+        X:
+          RawValue: 65536
+        Y:
+          RawValue: 131072
+      EdgeExtent:
+        RawValue: 32768
+      BoxExtents:
+        X:
+          RawValue: 32768
+        Y:
+          RawValue: 32768
+      PositionOffset:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+      RotationOffset:
+        RawValue: 0
+      UserTag: 0
+      IsPersistent: 1
+      CompoundShapes: []
+    ParametricInertiaShape3D:
+      ShapeType: 0
+      SphereRadius:
+        RawValue: 32768
+      CapsuleRadius:
+        RawValue: 32768
+      CapsuleHeight:
+        RawValue: 131072
+      PositionOffset:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      BoxExtents:
+        X:
+          RawValue: 32768
+        Y:
+          RawValue: 32768
+        Z:
+          RawValue: 32768
+      RotationOffset:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      UserTag: 0
+      IsPersistent: 1
+      CompoundShapes: []
+    InertiaScale:
+      _hasValue: 0
+      _value:
+        RawValue: 65536
+    GravityScale:
+      _hasValue: 0
+      _value:
+        RawValue: 65536
+  NavMeshPathfinder:
+    IsEnabled: 0
+    NavMeshAgentConfig:
+      Id:
+        Value: 0
+    InitialTarget:
+      IsEnabled: 0
+      Target: {fileID: 0}
+      Position:
+        X:
+          RawValue: 0
+        Y:
+          RawValue: 0
+        Z:
+          RawValue: 0
+      NavMesh:
+        Reference: {fileID: 0}
+        Asset:
+          Id:
+            Value: 0
+        Name: 
+  NavMeshSteeringAgent:
+    IsEnabled: 0
+    MaxSpeed:
+      IsEnabled: 0
+      Value:
+        RawValue: 0
+    Acceleration:
+      IsEnabled: 0
+      Value:
+        RawValue: 0
+  NavMeshAvoidanceAgent:
+    IsEnabled: 0
+  View:
+    Id:
+      Value: 0
+--- !u!114 &3832144046871412136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728730217810199848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee60dcd1dfaa0466fb1e5a458c9eea95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    _empty_prototype_dummy_field_: 0
+--- !u!114 &4682554637992653183
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728730217810199848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 395354f833ac90e4da04dca5e032ebda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    ActivePlayers: []
+--- !u!114 &1086186911056547274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728730217810199848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bfadfa48a0510a44ae4670014d82f0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    ActiveEnemies: []
+--- !u!114 &4603876843233098770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728730217810199848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2921d25690c2c641b5daffd8eb81ee8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    TimeSinceLastSpawn:
+      RawValue: 0
+    CurrentInterval:
+      RawValue: 65536
+    CurrentBatchSize: 5
+    HPMultiplier:
+      RawValue: 65536
+    DamageMultiplier:
+      RawValue: 65536
+    SpawnRadius:
+      RawValue: 1966080
+    Settings:
+      EnemyPrefab:
+        Id:
+          Value: 1450041578110963961
+      BaseInterval:
+        RawValue: 65536
+      BaseBatchSize: 1
+      BaseHP:
+        RawValue: 655360
+      BaseDamage:
+        RawValue: 65536
+--- !u!114 &3372475939401507569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728730217810199848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b6e9435e16e74f4da12df33b157ccb8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Cycle: 0
+    TimeElapsed:
+      RawValue: 0
+    CycleDuration:
+      RawValue: 3932160
+--- !u!114 &3522200128369236728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728730217810199848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0c5978fb548e2b4cabe65888d43bd44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    Entries:
+    - Prefab:
+        Id:
+          Value: 1450041578110963961
+      MinWave: 0
+      Weight:
+        RawValue: 65536
+    - Prefab:
+        Id:
+          Value: 1368644212753541733
+      MinWave: 1
+      Weight:
+        RawValue: 65536
+    - Prefab:
+        Id:
+          Value: 1296241623356491307
+      MinWave: 2
+      Weight:
+        RawValue: 81920
+    - Prefab:
+        Id:
+          Value: 1346333854077795796
+      MinWave: 3
+      Weight:
+        RawValue: 131072
+    - Prefab:
+        Id:
+          Value: 1505494659213548563
+      MinWave: 4
+      Weight:
+        RawValue: 196608

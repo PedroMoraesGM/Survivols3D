@@ -1,0 +1,27 @@
+component Character {
+
+	FP MaxHealth;
+	FP CurrentHealth;
+
+	// Move 
+	FP MoveSpeed;
+	FP HorizontalTurnSpeedDegrees;
+	FP VerticalTurnSpeedDegrees;
+	[ExcludeFromPrototype] FP VerticalLookPitch;
+	FP MaxVerticalLook;
+	FP MinVerticalLook;
+	FP MinHeightLimit;
+
+	// Shoot
+	AssetRef<EntityPrototype> ProjectilePrefab; 
+	int  FireCdTicks;   
+	int  FireCooldown;
+	FP MuzzleOffset;
+
+	[ExcludeFromPrototype] FPVector2 LookDelta;
+}
+
+signal OnPlayerHit(EntityRef target, EntityRef dealer,  FP damage);
+signal OnPlayerDefeated(EntityRef target, EntityRef dealer );
+event OnPlayerHit { EntityRef Target; EntityRef Dealer; FP Damage;  }
+event OnPlayerDefeated { EntityRef Target; EntityRef Dealer; }

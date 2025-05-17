@@ -1,0 +1,5 @@
+component PlayerLink
+{
+    PlayerRef Player;
+    [ExcludeFromPrototype] bool Ready;
+}

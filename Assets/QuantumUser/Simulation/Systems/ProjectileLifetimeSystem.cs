@@ -1,0 +1,22 @@
+using Quantum;
+using UnityEngine.Scripting;
+
+[Preserve]
+public unsafe class ProjectileLifetimeSystem : SystemMainThreadFilter<ProjectileLifetimeSystem.Filter>
+{
+    public struct Filter
+    {
+        public EntityRef Entity;
+        public Projectile* Projectile;
+    }
+
+    public override void Update(Frame f, ref Filter filter)
+    {
+        ref var p = ref *filter.Projectile;
+        p.Elapsed += f.DeltaTime;
+        if (p.Elapsed >= p.TimeToLive)
+        {
+            f.Destroy(filter.Entity);
+        }
+    }
+}

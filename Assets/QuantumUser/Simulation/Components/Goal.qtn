@@ -1,0 +1,3 @@
+component Goal{
+    Int32 Index;
+}

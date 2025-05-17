@@ -1,0 +1,398 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1722638350, guid: b156eeaae3f741b40af66649a4748430, type: 3}
+  m_Name: NewQuantumMap
+  m_EditorClassIdentifier: 
+  Identifier:
+    Path: QuantumUser/Resources/NewQuantumMap
+    Guid:
+      Value: 422504127304766401
+  UserAsset:
+    Id:
+      Value: 0
+  Scene: Level
+  ScenePath: Assets/QuantumUser/Scenes/Level.unity
+  SceneGuid: 7a4e7c09ed6ef4d41b83ce496b653424
+  WorldSize: 256
+  BucketsCount: 16
+  BucketsSubdivisions: 8
+  BucketingAxis: 0
+  SortingAxis: 1
+  SceneMeshCellSize:
+    RawValue: 262144
+  TriangleMeshCellSize: -1
+  StaticColliders3DTrianglesData:
+    Id:
+      Value: 384224815629423581
+  SerializeTrianglesMetadata: 0
+  GridSizeX: 64
+  GridSizeY: 64
+  GridNodeSize: 4
+  NavMeshLinks: []
+  Regions: []
+  StaticColliders2D: []
+  StaticColliders3D:
+  - Rotation:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+      Z:
+        RawValue: 0
+      W:
+        RawValue: 65536
+    Position:
+      X:
+        RawValue: -16705126
+      Y:
+        RawValue: 16842752
+      Z:
+        RawValue: 0
+    PhysicsMaterial:
+      Id:
+        Value: 0
+    ShapeType: 2
+    SphereRadius:
+      RawValue: 0
+    CapsuleRadius:
+      RawValue: 0
+    CapsuleHeight:
+      RawValue: 0
+    BoxExtents:
+      X:
+        RawValue: 491520
+      Y:
+        RawValue: 18022400
+      Z:
+        RawValue: 18022400
+    SmoothSphereMeshCollisions: 0
+    StaticData:
+      Name: Wall (0)
+      Tag: Untagged
+      Layer: 0
+      Asset:
+        Id:
+          Value: 0
+      IsTrigger: 0
+      ColliderIndex: 0
+      MutableMode: 0
+  - Rotation:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+      Z:
+        RawValue: 0
+      W:
+        RawValue: 65536
+    Position:
+      X:
+        RawValue: 16754280
+      Y:
+        RawValue: 16842752
+      Z:
+        RawValue: 0
+    PhysicsMaterial:
+      Id:
+        Value: 0
+    ShapeType: 2
+    SphereRadius:
+      RawValue: 0
+    CapsuleRadius:
+      RawValue: 0
+    CapsuleHeight:
+      RawValue: 0
+    BoxExtents:
+      X:
+        RawValue: 491520
+      Y:
+        RawValue: 18022400
+      Z:
+        RawValue: 18022400
+    SmoothSphereMeshCollisions: 0
+    StaticData:
+      Name: Wall (1)
+      Tag: Untagged
+      Layer: 0
+      Asset:
+        Id:
+          Value: 0
+      IsTrigger: 0
+      ColliderIndex: 1
+      MutableMode: 0
+  - Rotation:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: -46340
+      Z:
+        RawValue: 0
+      W:
+        RawValue: 46340
+    Position:
+      X:
+        RawValue: -360448
+      Y:
+        RawValue: 16842752
+      Z:
+        RawValue: 16705126
+    PhysicsMaterial:
+      Id:
+        Value: 0
+    ShapeType: 2
+    SphereRadius:
+      RawValue: 0
+    CapsuleRadius:
+      RawValue: 0
+    CapsuleHeight:
+      RawValue: 0
+    BoxExtents:
+      X:
+        RawValue: 491520
+      Y:
+        RawValue: 18022400
+      Z:
+        RawValue: 18022400
+    SmoothSphereMeshCollisions: 0
+    StaticData:
+      Name: Wall (2)
+      Tag: Untagged
+      Layer: 0
+      Asset:
+        Id:
+          Value: 0
+      IsTrigger: 0
+      ColliderIndex: 2
+      MutableMode: 0
+  - Rotation:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: -46340
+      Z:
+        RawValue: 0
+      W:
+        RawValue: 46340
+    Position:
+      X:
+        RawValue: -367001
+      Y:
+        RawValue: 16842752
+      Z:
+        RawValue: -16718234
+    PhysicsMaterial:
+      Id:
+        Value: 0
+    ShapeType: 2
+    SphereRadius:
+      RawValue: 0
+    CapsuleRadius:
+      RawValue: 0
+    CapsuleHeight:
+      RawValue: 0
+    BoxExtents:
+      X:
+        RawValue: 491520
+      Y:
+        RawValue: 18022400
+      Z:
+        RawValue: 18022400
+    SmoothSphereMeshCollisions: 0
+    StaticData:
+      Name: Wall (3)
+      Tag: Untagged
+      Layer: 0
+      Asset:
+        Id:
+          Value: 0
+      IsTrigger: 0
+      ColliderIndex: 3
+      MutableMode: 0
+  - Rotation:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+      Z:
+        RawValue: 0
+      W:
+        RawValue: 65536
+    Position:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: -419430
+      Z:
+        RawValue: 0
+    PhysicsMaterial:
+      Id:
+        Value: 0
+    ShapeType: 4
+    SphereRadius:
+      RawValue: 0
+    CapsuleRadius:
+      RawValue: 0
+    CapsuleHeight:
+      RawValue: 0
+    BoxExtents:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+      Z:
+        RawValue: 0
+    SmoothSphereMeshCollisions: 1
+    StaticData:
+      Name: Plane
+      Tag: Untagged
+      Layer: 0
+      Asset:
+        Id:
+          Value: 0
+      IsTrigger: 0
+      ColliderIndex: 4
+      MutableMode: 0
+  - Rotation:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+      Z:
+        RawValue: 65536
+      W:
+        RawValue: 0
+    Position:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 34124596
+      Z:
+        RawValue: 0
+    PhysicsMaterial:
+      Id:
+        Value: 0
+    ShapeType: 4
+    SphereRadius:
+      RawValue: 0
+    CapsuleRadius:
+      RawValue: 0
+    CapsuleHeight:
+      RawValue: 0
+    BoxExtents:
+      X:
+        RawValue: 0
+      Y:
+        RawValue: 0
+      Z:
+        RawValue: 0
+    SmoothSphereMeshCollisions: 0
+    StaticData:
+      Name: Ceilling
+      Tag: Untagged
+      Layer: 0
+      Asset:
+        Id:
+          Value: 0
+      IsTrigger: 0
+      ColliderIndex: 5
+      MutableMode: 0
+  MapEntities:
+  - Components:
+    - rid: 7244867297225998336
+    - rid: 7244867297225998337
+    - rid: 7244867297225998338
+    - rid: 7244867297225998339
+    - rid: 7244867297225998340
+    - rid: 7244867297225998341
+  SerializedTriangleDataUncompressedSize: 7736
+  references:
+    version: 2
+    RefIds:
+    - rid: 7244867297225998336
+      type: {class: EnemyRegistryComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        ActiveEnemies: []
+    - rid: 7244867297225998337
+      type: {class: EnemyWaveComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        Entries:
+        - Prefab:
+            Id:
+              Value: 1450041578110963961
+          MinWave: 0
+          Weight:
+            RawValue: 65536
+        - Prefab:
+            Id:
+              Value: 1368644212753541733
+          MinWave: 1
+          Weight:
+            RawValue: 65536
+        - Prefab:
+            Id:
+              Value: 1296241623356491307
+          MinWave: 2
+          Weight:
+            RawValue: 81920
+        - Prefab:
+            Id:
+              Value: 1346333854077795796
+          MinWave: 3
+          Weight:
+            RawValue: 131072
+        - Prefab:
+            Id:
+              Value: 1505494659213548563
+          MinWave: 4
+          Weight:
+            RawValue: 196608
+    - rid: 7244867297225998338
+      type: {class: GamePrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        _empty_prototype_dummy_field_: 0
+    - rid: 7244867297225998339
+      type: {class: PlayerRegistryComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        ActivePlayers: []
+    - rid: 7244867297225998340
+      type: {class: ProgressionComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        Cycle: 0
+        TimeElapsed:
+          RawValue: 0
+        CycleDuration:
+          RawValue: 1310720
+    - rid: 7244867297225998341
+      type: {class: SpawnerComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        TimeSinceLastSpawn:
+          RawValue: 0
+        CurrentInterval:
+          RawValue: 65536
+        CurrentBatchSize: 5
+        HPMultiplier:
+          RawValue: 65536
+        DamageMultiplier:
+          RawValue: 65536
+        SpawnRadius:
+          RawValue: 1966080
+        Settings:
+          EnemyPrefab:
+            Id:
+              Value: 1450041578110963961
+          BaseInterval:
+            RawValue: 65536
+          BaseBatchSize: 1
+          BaseHP:
+            RawValue: 655360
+          BaseDamage:
+            RawValue: 65536

@@ -1,0 +1,21 @@
+// Holds the player’s XP state and growth modifiers
+component XPComponent {
+  AssetRef<EntityPrototype> XpPrefab;
+  FP  TotalXP;        // accumulated XP so far
+  FP  CurrentXP;      // XP toward the next level
+  int Level;          // current level
+  FP  Growth;         // XP multiplier (1.0 = 100%)
+}
+
+// Describes the XP pickup (gem)
+component XPPickup {
+  FP Value;           // base XP granted
+}
+
+
+signal OnXpAdquired ( EntityRef target, FP xpAmount);
+event OnXpAdquired { EntityRef Target; FP XpAmount; }
+
+
+signal OnLevelUp ( EntityRef target, int newLevel);
+event OnLevelUp { EntityRef Target; int NewLevel; }

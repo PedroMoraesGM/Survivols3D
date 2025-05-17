@@ -1,0 +1,28 @@
+singleton component Game {
+    [ExcludeFromPrototype]
+    GameState CurrentGameState;   
+    [ExcludeFromPrototype]
+    Timer StateTimer;
+    [ExcludeFromPrototype]
+    Timer CountdownTimer;
+
+    [ExcludeFromPrototype,AllocateOnComponentAdded,FreeOnComponentRemoved] dictionary<EntityRef, FP> Scores;
+}
+
+enum GameState {
+    None, Waiting, Countdown, Goal, Playing, GameOver
+}
+
+struct Timer {
+    FP TotalTime;
+    FP TimeLeft;
+}
+
+signal OnGameStateChanged(GameState state);
+signal OnGameStarted();
+signal OnScoreChanged(entity_ref ball, entity_ref goal);
+signal OnGameOver();
+
+synced event OnGameStateChanged { GameState state; }
+synced event OnScoreChanged { int playerIndex; int score; }
+event OnGameTerminated { }

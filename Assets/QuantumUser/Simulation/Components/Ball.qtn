@@ -1,0 +1,4 @@
+component Ball {
+    FPVector3 Velocity;
+    entity_ref Paddle;   // the last paddle that touched the ball
+}

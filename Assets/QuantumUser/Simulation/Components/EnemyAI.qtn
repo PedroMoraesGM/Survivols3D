@@ -1,0 +1,25 @@
+component EnemyAI {
+
+	FP Health;
+	FP XpDrop;
+
+	FP Damage;
+	FP CloseDamageRange;
+
+	//Move
+	FP Speed;
+	FP MinHeightLimit;
+}
+
+struct EnemyInfo {
+  EntityRef Entity;
+  FPVector3 Position;
+}
+singleton component EnemyRegistryComponent {
+  list<EnemyInfo> ActiveEnemies;
+}
+
+signal OnEnemyHit(EntityRef target, EntityRef dealer,  FP damage);
+signal OnEnemyDefeated(EntityRef target, EntityRef dealer );
+event OnEnemyHit { EntityRef Target; EntityRef Dealer; FP Damage;  }
+event OnEnemyDefeated { EntityRef Target; EntityRef Dealer; }
