@@ -56,7 +56,7 @@ public unsafe class XPPickupSystem : SystemSignalsOnly, ISignalOnEnemyDefeated, 
         }
     }
 
-    FP XPForNextLevel(int nextLevel)
+    public static FP XPForNextLevel(int nextLevel)
     {
         if (nextLevel < 20)
         {

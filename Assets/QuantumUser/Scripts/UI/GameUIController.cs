@@ -48,6 +48,9 @@ public unsafe class GameUIController : QuantumCallbacks
     [SerializeField] private CanvasGroup healthBarCanvasGroup;
     [SerializeField] private float disableBarDelay = 3;
     [SerializeField] private Image healthBarImage;
+    [Header("XP")]
+    [SerializeField] private Image xpBarFill;
+    [SerializeField] private TextMeshProUGUI xpLevelText;
 
     private UIState _currentUIState = UIState.Waiting;
 
@@ -71,11 +74,40 @@ public unsafe class GameUIController : QuantumCallbacks
         QuantumEvent.Subscribe(this, (EventOnPlayerHit e) => OnPlayerHit(e));
         QuantumEvent.Subscribe(this, (EventOnPlayerDefeated e) => OnPlayerDefeated(e));
         QuantumEvent.Subscribe(this, (EventOnGameOver e) => OnGameOver(e));
+        QuantumEvent.Subscribe(this, (EventOnXpAdquired e) => OnXpAdqured(e));
+        QuantumEvent.Subscribe(this, (EventOnLevelUp e) => OnLevelUp(e));
+
         foreach (var pair in _stateObjectPairs)
         {
             _stateObjectDictionary.Add(pair.State, pair.Object);
         }
         SetUIState(UIState.Waiting);
+    }
+
+    private void OnLevelUp(EventOnLevelUp e)
+    {
+        var f = e.Game.Frames.Verified;
+        if (!f.TryGet(e.Target, out PlayerLink playerLink)) return;
+        if (!e.Game.PlayerIsLocal(playerLink.Player)) return;
+
+        UpdateXp(f, e.Target);
+    }
+
+    private void OnXpAdqured(EventOnXpAdquired e)
+    {
+        var f = e.Game.Frames.Verified;
+        if (!f.TryGet(e.Target, out PlayerLink playerLink)) return;
+        if (!e.Game.PlayerIsLocal(playerLink.Player)) return;
+
+        UpdateXp(f, e.Target);
+    }
+
+    private void UpdateXp(Frame f, EntityRef entity)
+    {
+        f.TryGet(entity, out XPComponent xPComponent);
+        FP nextLevelXp = XPPickupSystem.XPForNextLevel(xPComponent.Level + 1);
+        xpBarFill.transform.localScale = new Vector3((xPComponent.CurrentXP / nextLevelXp).AsFloat, 1, 1);
+        xpLevelText.text = "Level " + xPComponent.Level;
     }
 
     private void OnGameOver(EventOnGameOver e)
