@@ -31,8 +31,13 @@ public class GameInput : MonoBehaviour
 
         qInput.Reset = _map.FindAction("Reset").WasPressedThisFrame(); // if we press button "Reset"
 
+        qInput.ChoiceFirst = _map.FindAction("ChoiceFirst").WasPressedThisFrame();
+        qInput.ChoiceSecond = _map.FindAction("ChoiceSecond").WasPressedThisFrame();
+        qInput.ChoiceThird = _map.FindAction("ChoiceThird").WasPressedThisFrame();
+        
         // Submit with repeatable flag
         callback.SetInput(qInput, DeterministicInputFlags.Repeatable);
+
     }
 
 }

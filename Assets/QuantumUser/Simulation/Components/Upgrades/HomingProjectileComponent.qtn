@@ -1,0 +1,8 @@
+component HomingProjectileComponent {
+  int     RemainingBounces;
+  FP      Speed;
+  FP      HomingStrength;
+  bool    HasTarget;
+  EntityRef CurrentTarget;
+  EntityRef PreviousTarget;
+}

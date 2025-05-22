@@ -10,19 +10,21 @@ namespace Tomorrow.Quantum
         public struct Filter
         {
             public EntityRef Entity;
-            public Transform3D* Transform;
-            public Character* Character;
-            public PlayerLink* Link;          // so we only run for real players
+            //public Transform3D* Transform;
+            //public Character* Character; 
+            public ShootingWeaponComponent* WeaponComponent;
+            //public PlayerLink* Link;          // so we only run for real players
        }
 
         public override void Update(Frame f, ref Filter filter)
         {
-            if (filter.Character->IsDead) return;
+            if (!filter.WeaponComponent->OwnerEntity.IsValid) return;
 
-            // Only for “real” local players (optional—remove if you want all players shooting automatically)
-            if (filter.Link->Player == PlayerRef.None) return;
+            if (f.Get<Character>(filter.WeaponComponent->OwnerEntity).IsDead) return;
 
-            ref var ply = ref *filter.Character;
+            if (f.Get<PlayerLink>(filter.WeaponComponent->OwnerEntity).Player == PlayerRef.None) return;
+
+            ref var ply = ref *filter.WeaponComponent;
 
             // 1) Decrement cooldown if needed
             if (ply.FireCooldown > 0)
@@ -33,18 +35,20 @@ namespace Tomorrow.Quantum
 
             // 2) Cooldown expired ? fire!
             // 2.a Compute spawn point & forward dir
-            FPVector3 forward = filter.Transform->Forward;
-            FPVector3 spawnPos = filter.Transform->Position + forward * filter.Character->MuzzleOffset;
+            var ownerTrasnform = f.Get<Transform3D>(filter.WeaponComponent->OwnerEntity);
+
+            FPVector3 forward = ownerTrasnform.Forward;
+            FPVector3 spawnPos = ownerTrasnform.Position + forward * filter.WeaponComponent->MuzzleOffset;
 
             // 2.b Instantiate projectile (must match your ProjectilePrefab’s Archetype)
-            var proj = f.Create(filter.Character->ProjectilePrefab);
+            var proj = f.Create(filter.WeaponComponent->ProjectilePrefab);
             var projComp = f.Unsafe.GetPointer<Projectile>(proj);
             projComp->Owner = filter.Entity;
 
             // 2.c Initialize its Transform
             var projTransform = f.Unsafe.GetPointer<Transform3D>(proj);
             projTransform->Position = spawnPos;
-            projTransform->Rotation = filter.Transform->Rotation;
+            projTransform->Rotation = ownerTrasnform.Rotation;
 
             // 2.d Initialize its PhysicsBody3D velocity
             var body = f.Unsafe.GetPointer<PhysicsBody3D>(proj);

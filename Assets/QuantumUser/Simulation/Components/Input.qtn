@@ -4,4 +4,9 @@ input
 	FPVector2 LookDelta;  // Mouse look delta (X = yaw, Y = pitch)
 	button   Forward;     // Always true for constant forward
 	button Reset;
+
+	// Upgrade shortcut
+	button ChoiceFirst;
+	button ChoiceSecond;
+	button ChoiceThird;
 }

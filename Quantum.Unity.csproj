@@ -72,10 +72,12 @@
     <Compile Include="Assets\Photon\Quantum\Runtime\QPrototypeTransform2DVertical.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumGraphProfilerGC.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumStaticCircleCollider2D.cs" />
+    <Compile Include="Assets\QuantumUser\View\Generated\QPrototypeHomingProjectileComponent.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumMapLoader.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumGraphProfilerUserScripts.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumGraphProfilerMarkers.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumMultiClientRunner.cs" />
+    <Compile Include="Assets\QuantumUser\View\Generated\QPrototypePlayerUpgradeComponent.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumSimpleConnectionGUI.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumEntityViewPool.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumMultiClientPlayer.cs" />
@@ -92,6 +94,7 @@
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumMultiClientPlayerView.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumUnityDB.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumGraphProfilerFrameTime.cs" />
+    <Compile Include="Assets\QuantumUser\View\Generated\QPrototypeShootingWeaponComponent.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumStaticMeshCollider3D.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QPrototypePhysicsJoints3D.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumStaticCapsuleCollider3D.cs" />
@@ -155,6 +158,7 @@
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumGraphProfilerSimulationTime.cs" />
     <Compile Include="Assets\QuantumUser\View\Generated\QPrototypeProgressionComponent.cs" />
     <Compile Include="Assets\QuantumUser\View\Generated\QPrototypeGoal.cs" />
+    <Compile Include="Assets\QuantumUser\View\Generated\QPrototypeUpgradeDataComponent.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumStaticEdgeCollider2D.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumDebugInput.cs" />
   </ItemGroup>

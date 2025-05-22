@@ -62,16 +62,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\QuantumUser\Simulation\Frame.User.cs" />
+    <Compile Include="Assets\QuantumUser\Simulation\Systems\ApplyUpgradeSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Game\GameSettings.cs" />
     <Compile Include="Assets\Photon\Quantum\Simulation\SystemsConfig.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Systems\CollisionSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Game\Game.cs" />
+    <Compile Include="Assets\QuantumUser\Simulation\Systems\UpgradeS\HomingProjectileSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\CommandSetup.User.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Systems\PlayerRegistryResetSystem.cs" />
     <Compile Include="Assets\Photon\Quantum\Simulation\QuantumSimulationCore.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Generated\Quantum.CodeGen.Events.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Systems\Waves\EnemySpawnSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Systems\PlayerRegistryLifecycle.cs" />
+    <Compile Include="Assets\QuantumUser\Simulation\Systems\UpgradeSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Systems\BallSystem.cs" />
     <Compile Include="Assets\Photon\Quantum\Simulation\SimulationConfig.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Player\MoveSystem.cs" />
@@ -97,16 +100,19 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\QuantumUser\Simulation\Components\Character.qtn" />
+    <None Include="Assets\QuantumUser\Simulation\Components\Upgrade.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\PlayerRegistryComponent.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\Wall.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\SpawnWaves.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\Ball.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\XP.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Quantum.Simulation.asmref" />
+    <None Include="Assets\QuantumUser\Simulation\Components\WeaponComponent.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\Projectile.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\Input.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\Game.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\EnemyAI.qtn" />
+    <None Include="Assets\QuantumUser\Simulation\Components\Upgrades\HomingProjectileComponent.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\Goal.qtn" />
     <None Include="Assets\Photon\Quantum\Simulation\Quantum.Simulation.asmdef" />
     <None Include="Assets\QuantumUser\Simulation\Components\Player.qtn" />

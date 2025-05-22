@@ -2,7 +2,6 @@ component Character {
 
 	FP MaxHealth;
 	FP CurrentHealth;
-
 	QBoolean IsDead;
 
 	// Move 
@@ -13,12 +12,6 @@ component Character {
 	FP MaxVerticalLook;
 	FP MinVerticalLook;
 	FP MinHeightLimit;
-
-	// Shoot
-	AssetRef<EntityPrototype> ProjectilePrefab; 
-	int  FireCdTicks;   
-	int  FireCooldown;
-	FP MuzzleOffset;
 
 	[ExcludeFromPrototype] FPVector2 LookDelta;
 }

@@ -57,10 +57,17 @@ namespace Quantum {
     Playing,
     GameOver,
   }
+  public enum UpgradeCategory : int {
+    WeaponUnlock,
+    WeaponUpgrade,
+  }
   [System.FlagsAttribute()]
   public enum InputButtons : int {
     Forward = 1 << 0,
     Reset = 1 << 1,
+    ChoiceFirst = 1 << 2,
+    ChoiceSecond = 1 << 3,
+    ChoiceThird = 1 << 4,
   }
   public static unsafe partial class FlagsExtensions {
     public static Boolean IsFlagSet(this InputButtons self, InputButtons flag) {
@@ -569,16 +576,22 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Input {
-    public const Int32 SIZE = 56;
+    public const Int32 SIZE = 96;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(40)]
+    [FieldOffset(80)]
     public FPVector2 MoveAxis;
-    [FieldOffset(24)]
+    [FieldOffset(64)]
     public FPVector2 LookDelta;
-    [FieldOffset(0)]
+    [FieldOffset(36)]
     public Button Forward;
-    [FieldOffset(12)]
+    [FieldOffset(48)]
     public Button Reset;
+    [FieldOffset(0)]
+    public Button ChoiceFirst;
+    [FieldOffset(12)]
+    public Button ChoiceSecond;
+    [FieldOffset(24)]
+    public Button ChoiceThird;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 19249;
@@ -586,6 +599,9 @@ namespace Quantum {
         hash = hash * 31 + LookDelta.GetHashCode();
         hash = hash * 31 + Forward.GetHashCode();
         hash = hash * 31 + Reset.GetHashCode();
+        hash = hash * 31 + ChoiceFirst.GetHashCode();
+        hash = hash * 31 + ChoiceSecond.GetHashCode();
+        hash = hash * 31 + ChoiceThird.GetHashCode();
         return hash;
       }
     }
@@ -596,6 +612,9 @@ namespace Quantum {
       switch (button) {
         case InputButtons.Forward: return Forward.IsDown;
         case InputButtons.Reset: return Reset.IsDown;
+        case InputButtons.ChoiceFirst: return ChoiceFirst.IsDown;
+        case InputButtons.ChoiceSecond: return ChoiceSecond.IsDown;
+        case InputButtons.ChoiceThird: return ChoiceThird.IsDown;
         default: return false;
       }
     }
@@ -603,11 +622,17 @@ namespace Quantum {
       switch (button) {
         case InputButtons.Forward: return Forward.WasPressed;
         case InputButtons.Reset: return Reset.WasPressed;
+        case InputButtons.ChoiceFirst: return ChoiceFirst.WasPressed;
+        case InputButtons.ChoiceSecond: return ChoiceSecond.WasPressed;
+        case InputButtons.ChoiceThird: return ChoiceThird.WasPressed;
         default: return false;
       }
     }
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (Input*)ptr;
+        Button.Serialize(&p->ChoiceFirst, serializer);
+        Button.Serialize(&p->ChoiceSecond, serializer);
+        Button.Serialize(&p->ChoiceThird, serializer);
         Button.Serialize(&p->Forward, serializer);
         Button.Serialize(&p->Reset, serializer);
         FPVector2.Serialize(&p->LookDelta, serializer);
@@ -693,8 +718,58 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct UpgradeEntry {
+    public const Int32 SIZE = 48;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(32)]
+    public AssetRef<EntityPrototype> Prefab;
+    [FieldOffset(8)]
+    public Int32 Id;
+    [FieldOffset(12)]
+    public Int32 MinLevel;
+    [FieldOffset(16)]
+    public Int32 Weight;
+    [FieldOffset(20)]
+    public QBoolean CanBeRepeated;
+    [FieldOffset(4)]
+    public Int32 FireCooldown;
+    [FieldOffset(0)]
+    public Int32 FireCdTicks;
+    [FieldOffset(40)]
+    public FP MuzzleOffset;
+    [FieldOffset(24)]
+    public UpgradeCategory Category;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 8101;
+        hash = hash * 31 + Prefab.GetHashCode();
+        hash = hash * 31 + Id.GetHashCode();
+        hash = hash * 31 + MinLevel.GetHashCode();
+        hash = hash * 31 + Weight.GetHashCode();
+        hash = hash * 31 + CanBeRepeated.GetHashCode();
+        hash = hash * 31 + FireCooldown.GetHashCode();
+        hash = hash * 31 + FireCdTicks.GetHashCode();
+        hash = hash * 31 + MuzzleOffset.GetHashCode();
+        hash = hash * 31 + (Int32)Category;
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (UpgradeEntry*)ptr;
+        serializer.Stream.Serialize(&p->FireCdTicks);
+        serializer.Stream.Serialize(&p->FireCooldown);
+        serializer.Stream.Serialize(&p->Id);
+        serializer.Stream.Serialize(&p->MinLevel);
+        serializer.Stream.Serialize(&p->Weight);
+        QBoolean.Serialize(&p->CanBeRepeated, serializer);
+        serializer.Stream.Serialize((Int32*)&p->Category);
+        AssetRef.Serialize(&p->Prefab, serializer);
+        FP.Serialize(&p->MuzzleOffset, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct _globals_ {
-    public const Int32 SIZE = 952;
+    public const Int32 SIZE = 1192;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public AssetRef<Map> Map;
@@ -718,12 +793,12 @@ namespace Quantum {
     public Int32 PlayerConnectedCount;
     [FieldOffset(608)]
     [FramePrinter.FixedArrayAttribute(typeof(Input), 6)]
-    private fixed Byte _input_[336];
-    [FieldOffset(944)]
+    private fixed Byte _input_[576];
+    [FieldOffset(1184)]
     public BitSet6 PlayerLastConnectionState;
     public FixedArray<Input> input {
       get {
-        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 56, 6); }
+        fixed (byte* p = _input_) { return new FixedArray<Input>(p, 96, 6); }
       }
     }
     public override Int32 GetHashCode() {
@@ -784,38 +859,30 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Character : Quantum.IComponent {
-    public const Int32 SIZE = 120;
+    public const Int32 SIZE = 96;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(40)]
-    public FP MaxHealth;
     [FieldOffset(24)]
-    public FP CurrentHealth;
+    public FP MaxHealth;
     [FieldOffset(8)]
+    public FP CurrentHealth;
+    [FieldOffset(0)]
     public QBoolean IsDead;
-    [FieldOffset(72)]
+    [FieldOffset(56)]
     public FP MoveSpeed;
-    [FieldOffset(32)]
+    [FieldOffset(16)]
     public FP HorizontalTurnSpeedDegrees;
-    [FieldOffset(96)]
+    [FieldOffset(72)]
     public FP VerticalTurnSpeedDegrees;
-    [FieldOffset(88)]
+    [FieldOffset(64)]
     [ExcludeFromPrototype()]
     public FP VerticalLookPitch;
-    [FieldOffset(48)]
+    [FieldOffset(32)]
     public FP MaxVerticalLook;
-    [FieldOffset(64)]
+    [FieldOffset(48)]
     public FP MinVerticalLook;
-    [FieldOffset(56)]
+    [FieldOffset(40)]
     public FP MinHeightLimit;
-    [FieldOffset(16)]
-    public AssetRef<EntityPrototype> ProjectilePrefab;
-    [FieldOffset(0)]
-    public Int32 FireCdTicks;
-    [FieldOffset(4)]
-    public Int32 FireCooldown;
     [FieldOffset(80)]
-    public FP MuzzleOffset;
-    [FieldOffset(104)]
     [ExcludeFromPrototype()]
     public FPVector2 LookDelta;
     public override Int32 GetHashCode() {
@@ -831,20 +898,13 @@ namespace Quantum {
         hash = hash * 31 + MaxVerticalLook.GetHashCode();
         hash = hash * 31 + MinVerticalLook.GetHashCode();
         hash = hash * 31 + MinHeightLimit.GetHashCode();
-        hash = hash * 31 + ProjectilePrefab.GetHashCode();
-        hash = hash * 31 + FireCdTicks.GetHashCode();
-        hash = hash * 31 + FireCooldown.GetHashCode();
-        hash = hash * 31 + MuzzleOffset.GetHashCode();
         hash = hash * 31 + LookDelta.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (Character*)ptr;
-        serializer.Stream.Serialize(&p->FireCdTicks);
-        serializer.Stream.Serialize(&p->FireCooldown);
         QBoolean.Serialize(&p->IsDead, serializer);
-        AssetRef.Serialize(&p->ProjectilePrefab, serializer);
         FP.Serialize(&p->CurrentHealth, serializer);
         FP.Serialize(&p->HorizontalTurnSpeedDegrees, serializer);
         FP.Serialize(&p->MaxHealth, serializer);
@@ -852,7 +912,6 @@ namespace Quantum {
         FP.Serialize(&p->MinHeightLimit, serializer);
         FP.Serialize(&p->MinVerticalLook, serializer);
         FP.Serialize(&p->MoveSpeed, serializer);
-        FP.Serialize(&p->MuzzleOffset, serializer);
         FP.Serialize(&p->VerticalLookPitch, serializer);
         FP.Serialize(&p->VerticalTurnSpeedDegrees, serializer);
         FPVector2.Serialize(&p->LookDelta, serializer);
@@ -1015,6 +1074,44 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct HomingProjectileComponent : Quantum.IComponent {
+    public const Int32 SIZE = 40;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(0)]
+    public Int32 RemainingBounces;
+    [FieldOffset(32)]
+    public FP Speed;
+    [FieldOffset(24)]
+    public FP HomingStrength;
+    [FieldOffset(4)]
+    public QBoolean HasTarget;
+    [FieldOffset(8)]
+    public EntityRef CurrentTarget;
+    [FieldOffset(16)]
+    public EntityRef PreviousTarget;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 17041;
+        hash = hash * 31 + RemainingBounces.GetHashCode();
+        hash = hash * 31 + Speed.GetHashCode();
+        hash = hash * 31 + HomingStrength.GetHashCode();
+        hash = hash * 31 + HasTarget.GetHashCode();
+        hash = hash * 31 + CurrentTarget.GetHashCode();
+        hash = hash * 31 + PreviousTarget.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (HomingProjectileComponent*)ptr;
+        serializer.Stream.Serialize(&p->RemainingBounces);
+        QBoolean.Serialize(&p->HasTarget, serializer);
+        EntityRef.Serialize(&p->CurrentTarget, serializer);
+        EntityRef.Serialize(&p->PreviousTarget, serializer);
+        FP.Serialize(&p->HomingStrength, serializer);
+        FP.Serialize(&p->Speed, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerLink : Quantum.IComponent {
     public const Int32 SIZE = 8;
     public const Int32 ALIGNMENT = 4;
@@ -1060,6 +1157,52 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerRegistryComponent*)ptr;
         QList.Serialize(&p->ActivePlayers, serializer, Statics.SerializePlayerInfo);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct PlayerUpgradeComponent : Quantum.IComponent {
+    public const Int32 SIZE = 16;
+    public const Int32 ALIGNMENT = 4;
+    [FieldOffset(8)]
+    public QListPtr<Int32> AcquiredUpgrades;
+    [FieldOffset(4)]
+    public QBoolean WaitingForChoice;
+    [FieldOffset(12)]
+    [AllocateOnComponentAdded()]
+    public QListPtr<Int32> PendingChoices;
+    [FieldOffset(0)]
+    public Int32 ChosenUpgradeId;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 21481;
+        hash = hash * 31 + AcquiredUpgrades.GetHashCode();
+        hash = hash * 31 + WaitingForChoice.GetHashCode();
+        hash = hash * 31 + PendingChoices.GetHashCode();
+        hash = hash * 31 + ChosenUpgradeId.GetHashCode();
+        return hash;
+      }
+    }
+    public void ClearPointers(FrameBase f, EntityRef entity) {
+      AcquiredUpgrades = default;
+      PendingChoices = default;
+    }
+    public static void OnRemoved(FrameBase frame, EntityRef entity, void* ptr) {
+      var p = (Quantum.PlayerUpgradeComponent*)ptr;
+      p->ClearPointers((Frame)frame, entity);
+    }
+    public void AllocatePointers(FrameBase f, EntityRef entity) {
+      f.TryAllocateList(ref PendingChoices);
+    }
+    public static void OnAdded(FrameBase frame, EntityRef entity, void* ptr) {
+      var p = (Quantum.PlayerUpgradeComponent*)ptr;
+      p->AllocatePointers((Frame)frame, entity);
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (PlayerUpgradeComponent*)ptr;
+        serializer.Stream.Serialize(&p->ChosenUpgradeId);
+        QBoolean.Serialize(&p->WaitingForChoice, serializer);
+        QList.Serialize(&p->AcquiredUpgrades, serializer, Statics.SerializeInt32);
+        QList.Serialize(&p->PendingChoices, serializer, Statics.SerializeInt32);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -1127,6 +1270,40 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct ShootingWeaponComponent : Quantum.IComponent {
+    public const Int32 SIZE = 32;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(16)]
+    public EntityRef OwnerEntity;
+    [FieldOffset(8)]
+    public AssetRef<EntityPrototype> ProjectilePrefab;
+    [FieldOffset(4)]
+    public Int32 FireCooldown;
+    [FieldOffset(0)]
+    public Int32 FireCdTicks;
+    [FieldOffset(24)]
+    public FP MuzzleOffset;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 5647;
+        hash = hash * 31 + OwnerEntity.GetHashCode();
+        hash = hash * 31 + ProjectilePrefab.GetHashCode();
+        hash = hash * 31 + FireCooldown.GetHashCode();
+        hash = hash * 31 + FireCdTicks.GetHashCode();
+        hash = hash * 31 + MuzzleOffset.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (ShootingWeaponComponent*)ptr;
+        serializer.Stream.Serialize(&p->FireCdTicks);
+        serializer.Stream.Serialize(&p->FireCooldown);
+        AssetRef.Serialize(&p->ProjectilePrefab, serializer);
+        EntityRef.Serialize(&p->OwnerEntity, serializer);
+        FP.Serialize(&p->MuzzleOffset, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct SpawnerComponent : Quantum.IComponentSingleton {
     public const Int32 SIZE = 88;
     public const Int32 ALIGNMENT = 8;
@@ -1166,6 +1343,35 @@ namespace Quantum {
         FP.Serialize(&p->SpawnRadius, serializer);
         FP.Serialize(&p->TimeSinceLastSpawn, serializer);
         Quantum.SpawnSettings.Serialize(&p->Settings, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct UpgradeDataComponent : Quantum.IComponentSingleton {
+    public const Int32 SIZE = 8;
+    public const Int32 ALIGNMENT = 4;
+    [FieldOffset(4)]
+    public QListPtr<UpgradeEntry> Entries;
+    [FieldOffset(0)]
+    public Int32 ChoicesPerLevel;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 683;
+        hash = hash * 31 + Entries.GetHashCode();
+        hash = hash * 31 + ChoicesPerLevel.GetHashCode();
+        return hash;
+      }
+    }
+    public void ClearPointers(FrameBase f, EntityRef entity) {
+      Entries = default;
+    }
+    public static void OnRemoved(FrameBase frame, EntityRef entity, void* ptr) {
+      var p = (Quantum.UpgradeDataComponent*)ptr;
+      p->ClearPointers((Frame)frame, entity);
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (UpgradeDataComponent*)ptr;
+        serializer.Stream.Serialize(&p->ChoicesPerLevel);
+        QList.Serialize(&p->Entries, serializer, Statics.SerializeUpgradeEntry);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -1260,6 +1466,9 @@ namespace Quantum {
   public unsafe partial interface ISignalOnGameOver : ISignal {
     void OnGameOver(Frame f);
   }
+  public unsafe partial interface ISignalOnHasChoosenUpgrades : ISignal {
+    void OnHasChoosenUpgrades(Frame f, EntityRef target, Int32 choosenId);
+  }
   public unsafe partial interface ISignalOnXpAdquired : ISignal {
     void OnXpAdquired(Frame f, EntityRef target, FP xpAmount);
   }
@@ -1277,6 +1486,7 @@ namespace Quantum {
     private ISignalOnGameStarted[] _ISignalOnGameStartedSystems;
     private ISignalOnScoreChanged[] _ISignalOnScoreChangedSystems;
     private ISignalOnGameOver[] _ISignalOnGameOverSystems;
+    private ISignalOnHasChoosenUpgrades[] _ISignalOnHasChoosenUpgradesSystems;
     private ISignalOnXpAdquired[] _ISignalOnXpAdquiredSystems;
     private ISignalOnLevelUp[] _ISignalOnLevelUpSystems;
     partial void AllocGen() {
@@ -1298,6 +1508,7 @@ namespace Quantum {
       _ISignalOnGameStartedSystems = BuildSignalsArray<ISignalOnGameStarted>();
       _ISignalOnScoreChangedSystems = BuildSignalsArray<ISignalOnScoreChanged>();
       _ISignalOnGameOverSystems = BuildSignalsArray<ISignalOnGameOver>();
+      _ISignalOnHasChoosenUpgradesSystems = BuildSignalsArray<ISignalOnHasChoosenUpgrades>();
       _ISignalOnXpAdquiredSystems = BuildSignalsArray<ISignalOnXpAdquired>();
       _ISignalOnLevelUpSystems = BuildSignalsArray<ISignalOnLevelUp>();
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
@@ -1320,6 +1531,8 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<Quantum.Game>();
       BuildSignalsArrayOnComponentAdded<Quantum.Goal>();
       BuildSignalsArrayOnComponentRemoved<Quantum.Goal>();
+      BuildSignalsArrayOnComponentAdded<Quantum.HomingProjectileComponent>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.HomingProjectileComponent>();
       BuildSignalsArrayOnComponentAdded<MapEntityLink>();
       BuildSignalsArrayOnComponentRemoved<MapEntityLink>();
       BuildSignalsArrayOnComponentAdded<NavMeshAvoidanceAgent>();
@@ -1350,10 +1563,14 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<Quantum.PlayerLink>();
       BuildSignalsArrayOnComponentAdded<Quantum.PlayerRegistryComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.PlayerRegistryComponent>();
+      BuildSignalsArrayOnComponentAdded<Quantum.PlayerUpgradeComponent>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.PlayerUpgradeComponent>();
       BuildSignalsArrayOnComponentAdded<Quantum.ProgressionComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.ProgressionComponent>();
       BuildSignalsArrayOnComponentAdded<Quantum.Projectile>();
       BuildSignalsArrayOnComponentRemoved<Quantum.Projectile>();
+      BuildSignalsArrayOnComponentAdded<Quantum.ShootingWeaponComponent>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.ShootingWeaponComponent>();
       BuildSignalsArrayOnComponentAdded<Quantum.SpawnerComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.SpawnerComponent>();
       BuildSignalsArrayOnComponentAdded<Transform2D>();
@@ -1362,6 +1579,8 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<Transform2DVertical>();
       BuildSignalsArrayOnComponentAdded<Transform3D>();
       BuildSignalsArrayOnComponentRemoved<Transform3D>();
+      BuildSignalsArrayOnComponentAdded<Quantum.UpgradeDataComponent>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.UpgradeDataComponent>();
       BuildSignalsArrayOnComponentAdded<View>();
       BuildSignalsArrayOnComponentRemoved<View>();
       BuildSignalsArrayOnComponentAdded<Quantum.Wall>();
@@ -1378,6 +1597,9 @@ namespace Quantum {
       i->LookDelta = input.LookDelta;
       i->Forward = i->Forward.Update(this.Number, input.Forward);
       i->Reset = i->Reset.Update(this.Number, input.Reset);
+      i->ChoiceFirst = i->ChoiceFirst.Update(this.Number, input.ChoiceFirst);
+      i->ChoiceSecond = i->ChoiceSecond.Update(this.Number, input.ChoiceSecond);
+      i->ChoiceThird = i->ChoiceThird.Update(this.Number, input.ChoiceThird);
     }
     public Input* GetPlayerInput(PlayerRef player) {
       if ((int)player >= (int)_globals->input.Length) { throw new System.ArgumentOutOfRangeException("player"); }
@@ -1465,6 +1687,15 @@ namespace Quantum {
           }
         }
       }
+      public void OnHasChoosenUpgrades(EntityRef target, Int32 choosenId) {
+        var array = _f._ISignalOnHasChoosenUpgradesSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.OnHasChoosenUpgrades(_f, target, choosenId);
+          }
+        }
+      }
       public void OnXpAdquired(EntityRef target, FP xpAmount) {
         var array = _f._ISignalOnXpAdquiredSystems;
         for (Int32 i = 0; i < array.Length; ++i) {
@@ -1491,6 +1722,8 @@ namespace Quantum {
     public static FrameSerializer.Delegate SerializeEntityRef;
     public static FrameSerializer.Delegate SerializeFP;
     public static FrameSerializer.Delegate SerializePlayerInfo;
+    public static FrameSerializer.Delegate SerializeInt32;
+    public static FrameSerializer.Delegate SerializeUpgradeEntry;
     public static FrameSerializer.Delegate SerializeInput;
     static partial void InitStaticDelegatesGen() {
       SerializeEnemyInfo = Quantum.EnemyInfo.Serialize;
@@ -1498,6 +1731,8 @@ namespace Quantum {
       SerializeEntityRef = EntityRef.Serialize;
       SerializeFP = FP.Serialize;
       SerializePlayerInfo = Quantum.PlayerInfo.Serialize;
+      SerializeInt32 = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
+      SerializeUpgradeEntry = Quantum.UpgradeEntry.Serialize;
       SerializeInput = Quantum.Input.Serialize;
     }
     static partial void RegisterSimulationTypesGen(TypeRegistry typeRegistry) {
@@ -1546,6 +1781,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(HingeJoint3D), HingeJoint3D.SIZE);
       typeRegistry.Register(typeof(Hit), Hit.SIZE);
       typeRegistry.Register(typeof(Hit3D), Hit3D.SIZE);
+      typeRegistry.Register(typeof(Quantum.HomingProjectileComponent), Quantum.HomingProjectileComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.Input), Quantum.Input.SIZE);
       typeRegistry.Register(typeof(Quantum.InputButtons), 4);
       typeRegistry.Register(typeof(InputDirection), InputDirection.SIZE);
@@ -1582,6 +1818,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.PlayerLink), Quantum.PlayerLink.SIZE);
       typeRegistry.Register(typeof(PlayerRef), PlayerRef.SIZE);
       typeRegistry.Register(typeof(Quantum.PlayerRegistryComponent), Quantum.PlayerRegistryComponent.SIZE);
+      typeRegistry.Register(typeof(Quantum.PlayerUpgradeComponent), Quantum.PlayerUpgradeComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.ProgressionComponent), Quantum.ProgressionComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.Projectile), Quantum.Projectile.SIZE);
       typeRegistry.Register(typeof(Ptr), Ptr.SIZE);
@@ -1591,6 +1828,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(RNGSession), RNGSession.SIZE);
       typeRegistry.Register(typeof(Shape2D), Shape2D.SIZE);
       typeRegistry.Register(typeof(Shape3D), Shape3D.SIZE);
+      typeRegistry.Register(typeof(Quantum.ShootingWeaponComponent), Quantum.ShootingWeaponComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.SpawnSettings), Quantum.SpawnSettings.SIZE);
       typeRegistry.Register(typeof(Quantum.SpawnerComponent), Quantum.SpawnerComponent.SIZE);
       typeRegistry.Register(typeof(SpringJoint), SpringJoint.SIZE);
@@ -1599,6 +1837,9 @@ namespace Quantum {
       typeRegistry.Register(typeof(Transform2D), Transform2D.SIZE);
       typeRegistry.Register(typeof(Transform2DVertical), Transform2DVertical.SIZE);
       typeRegistry.Register(typeof(Transform3D), Transform3D.SIZE);
+      typeRegistry.Register(typeof(Quantum.UpgradeCategory), 4);
+      typeRegistry.Register(typeof(Quantum.UpgradeDataComponent), Quantum.UpgradeDataComponent.SIZE);
+      typeRegistry.Register(typeof(Quantum.UpgradeEntry), Quantum.UpgradeEntry.SIZE);
       typeRegistry.Register(typeof(View), View.SIZE);
       typeRegistry.Register(typeof(Quantum.Wall), Quantum.Wall.SIZE);
       typeRegistry.Register(typeof(Quantum.XPComponent), Quantum.XPComponent.SIZE);
@@ -1606,7 +1847,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum._globals_), Quantum._globals_.SIZE);
     }
     static partial void InitComponentTypeIdGen() {
-      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 15)
+      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 19)
         .AddBuiltInComponents()
         .Add<Quantum.Ball>(Quantum.Ball.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.Character>(Quantum.Character.Serialize, null, null, ComponentFlags.None)
@@ -1615,11 +1856,15 @@ namespace Quantum {
         .Add<Quantum.EnemyWaveComponent>(Quantum.EnemyWaveComponent.Serialize, null, Quantum.EnemyWaveComponent.OnRemoved, ComponentFlags.Singleton)
         .Add<Quantum.Game>(Quantum.Game.Serialize, Quantum.Game.OnAdded, Quantum.Game.OnRemoved, ComponentFlags.Singleton)
         .Add<Quantum.Goal>(Quantum.Goal.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.HomingProjectileComponent>(Quantum.HomingProjectileComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.PlayerLink>(Quantum.PlayerLink.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.PlayerRegistryComponent>(Quantum.PlayerRegistryComponent.Serialize, null, Quantum.PlayerRegistryComponent.OnRemoved, ComponentFlags.Singleton)
+        .Add<Quantum.PlayerUpgradeComponent>(Quantum.PlayerUpgradeComponent.Serialize, Quantum.PlayerUpgradeComponent.OnAdded, Quantum.PlayerUpgradeComponent.OnRemoved, ComponentFlags.None)
         .Add<Quantum.ProgressionComponent>(Quantum.ProgressionComponent.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.Projectile>(Quantum.Projectile.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.ShootingWeaponComponent>(Quantum.ShootingWeaponComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.SpawnerComponent>(Quantum.SpawnerComponent.Serialize, null, null, ComponentFlags.Singleton)
+        .Add<Quantum.UpgradeDataComponent>(Quantum.UpgradeDataComponent.Serialize, null, Quantum.UpgradeDataComponent.OnRemoved, ComponentFlags.Singleton)
         .Add<Quantum.Wall>(Quantum.Wall.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.XPComponent>(Quantum.XPComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.XPPickup>(Quantum.XPPickup.Serialize, null, null, ComponentFlags.None)
@@ -1632,6 +1877,7 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.GameState>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.InputButtons>();
       FramePrinter.EnsurePrimitiveNotStripped<QueryOptions>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.UpgradeCategory>();
     }
   }
 }

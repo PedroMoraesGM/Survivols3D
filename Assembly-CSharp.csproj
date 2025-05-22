@@ -61,8 +61,11 @@
     <Analyzer Include="P:\Program Files\Unity\6000.0.32f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\QuantumUser\Scripts\UI\UpgradeUIController.cs" />
     <Compile Include="Assets\QuantumUser\View\PlayerViewController.cs" />
+    <Compile Include="Assets\QuantumUser\Scripts\UpgradeCatalog.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\QuantumUser\Scripts\UI\UpgradeCardItem.cs" />
     <Compile Include="Assets\Scripts\RotateToCameraView.cs" />
     <Compile Include="Assets\QuantumUser\Scripts\UI\GameUIController.cs" />
     <Compile Include="Assets\QuantumUser\View\EnemyViewController.cs" />

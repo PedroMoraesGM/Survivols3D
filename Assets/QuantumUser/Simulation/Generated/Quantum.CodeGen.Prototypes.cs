@@ -82,10 +82,6 @@ namespace Quantum.Prototypes {
     public FP MaxVerticalLook;
     public FP MinVerticalLook;
     public FP MinHeightLimit;
-    public AssetRef<EntityPrototype> ProjectilePrefab;
-    public Int32 FireCdTicks;
-    public Int32 FireCooldown;
-    public FP MuzzleOffset;
     partial void MaterializeUser(Frame frame, ref Quantum.Character result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.Character component = default;
@@ -102,10 +98,6 @@ namespace Quantum.Prototypes {
         result.MaxVerticalLook = this.MaxVerticalLook;
         result.MinVerticalLook = this.MinVerticalLook;
         result.MinHeightLimit = this.MinHeightLimit;
-        result.ProjectilePrefab = this.ProjectilePrefab;
-        result.FireCdTicks = this.FireCdTicks;
-        result.FireCooldown = this.FireCooldown;
-        result.MuzzleOffset = this.MuzzleOffset;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -237,18 +229,47 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.HomingProjectileComponent))]
+  public unsafe class HomingProjectileComponentPrototype : ComponentPrototype<Quantum.HomingProjectileComponent> {
+    public Int32 RemainingBounces;
+    public FP Speed;
+    public FP HomingStrength;
+    public QBoolean HasTarget;
+    public MapEntityId CurrentTarget;
+    public MapEntityId PreviousTarget;
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.HomingProjectileComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.HomingProjectileComponent result, in PrototypeMaterializationContext context = default) {
+        result.RemainingBounces = this.RemainingBounces;
+        result.Speed = this.Speed;
+        result.HomingStrength = this.HomingStrength;
+        result.HasTarget = this.HasTarget;
+        PrototypeValidator.FindMapEntity(this.CurrentTarget, in context, out result.CurrentTarget);
+        PrototypeValidator.FindMapEntity(this.PreviousTarget, in context, out result.PreviousTarget);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Input))]
   public unsafe partial class InputPrototype : StructPrototype {
     public FPVector2 MoveAxis;
     public FPVector2 LookDelta;
     public Button Forward;
     public Button Reset;
+    public Button ChoiceFirst;
+    public Button ChoiceSecond;
+    public Button ChoiceThird;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
         result.MoveAxis = this.MoveAxis;
         result.LookDelta = this.LookDelta;
         result.Forward = this.Forward;
         result.Reset = this.Reset;
+        result.ChoiceFirst = this.ChoiceFirst;
+        result.ChoiceSecond = this.ChoiceSecond;
+        result.ChoiceThird = this.ChoiceThird;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -301,6 +322,48 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerUpgradeComponent))]
+  public unsafe partial class PlayerUpgradeComponentPrototype : ComponentPrototype<Quantum.PlayerUpgradeComponent> {
+    [DynamicCollectionAttribute()]
+    public Int32[] AcquiredUpgrades = {};
+    public QBoolean WaitingForChoice;
+    [AllocateOnComponentAdded()]
+    [DynamicCollectionAttribute()]
+    public Int32[] PendingChoices = {};
+    public Int32 ChosenUpgradeId;
+    partial void MaterializeUser(Frame frame, ref Quantum.PlayerUpgradeComponent result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.PlayerUpgradeComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.PlayerUpgradeComponent result, in PrototypeMaterializationContext context = default) {
+        if (this.AcquiredUpgrades.Length == 0) {
+          result.AcquiredUpgrades = default;
+        } else {
+          var list = frame.AllocateList(out result.AcquiredUpgrades, this.AcquiredUpgrades.Length);
+          for (int i = 0; i < this.AcquiredUpgrades.Length; ++i) {
+            Int32 tmp = default;
+            tmp = this.AcquiredUpgrades[i];
+            list.Add(tmp);
+          }
+        }
+        result.WaitingForChoice = this.WaitingForChoice;
+        if (this.PendingChoices.Length == 0) {
+          result.PendingChoices = default;
+        } else {
+          var list = frame.AllocateList(out result.PendingChoices, this.PendingChoices.Length);
+          for (int i = 0; i < this.PendingChoices.Length; ++i) {
+            Int32 tmp = default;
+            tmp = this.PendingChoices[i];
+            list.Add(tmp);
+          }
+        }
+        result.ChosenUpgradeId = this.ChosenUpgradeId;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.ProgressionComponent))]
   public unsafe partial class ProgressionComponentPrototype : ComponentPrototype<Quantum.ProgressionComponent> {
     public Int32 Cycle;
@@ -340,6 +403,27 @@ namespace Quantum.Prototypes {
         result.Velocity = this.Velocity;
         result.Elapsed = this.Elapsed;
         result.TimeToLive = this.TimeToLive;
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.ShootingWeaponComponent))]
+  public unsafe class ShootingWeaponComponentPrototype : ComponentPrototype<Quantum.ShootingWeaponComponent> {
+    public MapEntityId OwnerEntity;
+    public AssetRef<EntityPrototype> ProjectilePrefab;
+    public Int32 FireCooldown;
+    public Int32 FireCdTicks;
+    public FP MuzzleOffset;
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.ShootingWeaponComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.ShootingWeaponComponent result, in PrototypeMaterializationContext context = default) {
+        PrototypeValidator.FindMapEntity(this.OwnerEntity, in context, out result.OwnerEntity);
+        result.ProjectilePrefab = this.ProjectilePrefab;
+        result.FireCooldown = this.FireCooldown;
+        result.FireCdTicks = this.FireCdTicks;
+        result.MuzzleOffset = this.MuzzleOffset;
     }
   }
   [System.SerializableAttribute()]
@@ -396,6 +480,59 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.Timer result, in PrototypeMaterializationContext context = default) {
         result.TotalTime = this.TotalTime;
         result.TimeLeft = this.TimeLeft;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.UpgradeDataComponent))]
+  public unsafe partial class UpgradeDataComponentPrototype : ComponentPrototype<Quantum.UpgradeDataComponent> {
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.UpgradeEntryPrototype[] Entries = {};
+    public Int32 ChoicesPerLevel;
+    partial void MaterializeUser(Frame frame, ref Quantum.UpgradeDataComponent result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.UpgradeDataComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.UpgradeDataComponent result, in PrototypeMaterializationContext context = default) {
+        if (this.Entries.Length == 0) {
+          result.Entries = default;
+        } else {
+          var list = frame.AllocateList(out result.Entries, this.Entries.Length);
+          for (int i = 0; i < this.Entries.Length; ++i) {
+            Quantum.UpgradeEntry tmp = default;
+            this.Entries[i].Materialize(frame, ref tmp, in context);
+            list.Add(tmp);
+          }
+        }
+        result.ChoicesPerLevel = this.ChoicesPerLevel;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.UpgradeEntry))]
+  public unsafe partial class UpgradeEntryPrototype : StructPrototype {
+    public AssetRef<EntityPrototype> Prefab;
+    public Int32 Id;
+    public Int32 MinLevel;
+    public Int32 Weight;
+    public QBoolean CanBeRepeated;
+    public Int32 FireCooldown;
+    public Int32 FireCdTicks;
+    public FP MuzzleOffset;
+    public Quantum.QEnum32<UpgradeCategory> Category;
+    partial void MaterializeUser(Frame frame, ref Quantum.UpgradeEntry result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.UpgradeEntry result, in PrototypeMaterializationContext context = default) {
+        result.Prefab = this.Prefab;
+        result.Id = this.Id;
+        result.MinLevel = this.MinLevel;
+        result.Weight = this.Weight;
+        result.CanBeRepeated = this.CanBeRepeated;
+        result.FireCooldown = this.FireCooldown;
+        result.FireCdTicks = this.FireCdTicks;
+        result.MuzzleOffset = this.MuzzleOffset;
+        result.Category = this.Category;
         MaterializeUser(frame, ref result, in context);
     }
   }

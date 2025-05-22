@@ -16,6 +16,5 @@ component XPPickup {
 signal OnXpAdquired ( EntityRef target, FP xpAmount);
 event OnXpAdquired { EntityRef Target; FP XpAmount; }
 
-
 signal OnLevelUp ( EntityRef target, int newLevel);
 event OnLevelUp { EntityRef Target; int NewLevel; }

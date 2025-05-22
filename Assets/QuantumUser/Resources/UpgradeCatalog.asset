@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecda80042ade6b445a93da981e008d4a, type: 3}
+  m_Name: UpgradeCatalog
+  m_EditorClassIdentifier: 
+  Entries:
+  - Key: 0
+    DisplayName: Magic Hand
+    Description: Calls a magic hand to drag enemies away
+    Label: Weapon
+    Icon: {fileID: -126443362, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
+    IconColor: {r: 0, g: 0.711498, b: 1, a: 1}
+  - Key: 1
+    DisplayName: War Lighter
+    Description: Burn nearby enemies.
+    Label: Weapon
+    Icon: {fileID: -1917760231, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
+    IconColor: {r: 1, g: 0.3499613, b: 0, a: 1}
+  - Key: 2
+    DisplayName: Magic Horse
+    Description: Increase move speed by 5%
+    Label: Upgrade
+    Icon: {fileID: -1917760231, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
+    IconColor: {r: 0.60764694, g: 1, b: 0, a: 1}
+  - Key: 3
+    DisplayName: Accuracy Eye
+    Description: Your physical attacks hit 1 more time
+    Label: Upgrade
+    Icon: {fileID: -1048668326, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
+    IconColor: {r: 0, g: 1, b: 0.7704737, a: 1}
+  - Key: 4
+    DisplayName: Milk
+    Description: Increase your health by 10%
+    Label: Upgrade
+    Icon: {fileID: -1153420782, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
+    IconColor: {r: 1, g: 0.96776116, b: 0.4584905, a: 1}
+  - Key: 4
+    DisplayName: Milk
+    Description: Throws a flipping knife
+    Label: Upgrade
+    Icon: {fileID: 1094901051, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
+    IconColor: {r: 1, g: 0.96776116, b: 0.4584905, a: 1}

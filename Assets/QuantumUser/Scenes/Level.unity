@@ -3222,6 +3222,14 @@ PrefabInstance:
       propertyPath: m_LocalScale.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3808413602702969786, guid: 220879fa23f51440ba0e98d9af09544a, type: 3}
+      propertyPath: catalog
+      value: 
+      objectReference: {fileID: 11400000, guid: 43b2d701ea3c73c4088d75eb29596cf9, type: 2}
+    - target: {fileID: 3808413602702969786, guid: 220879fa23f51440ba0e98d9af09544a, type: 3}
+      propertyPath: rewardCardPrefab
+      value: 
+      objectReference: {fileID: 3665822714873189936, guid: 45d6c2bc5ef2b3c47a9965b7bff58cb5, type: 3}
     - target: {fileID: 3843453513879375333, guid: 220879fa23f51440ba0e98d9af09544a, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -3310,6 +3318,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameUI
       objectReference: {fileID: 0}
+    - target: {fileID: 7778722632205615974, guid: 220879fa23f51440ba0e98d9af09544a, type: 3}
+      propertyPath: m_Alpha
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8164695778656028049, guid: 220879fa23f51440ba0e98d9af09544a, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -3350,10 +3362,6 @@ PrefabInstance:
     - target: {fileID: 728730217810199848, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
       propertyPath: m_Name
       value: Game
-      objectReference: {fileID: 0}
-    - target: {fileID: 3372475939401507569, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
-      propertyPath: Prototype.CycleDuration.RawValue
-      value: 1310720
       objectReference: {fileID: 0}
     - target: {fileID: 7207393148808095406, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
       propertyPath: m_LocalPosition.x

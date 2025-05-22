@@ -1,0 +1,37 @@
+enum UpgradeCategory { WeaponUnlock, WeaponUpgrade }
+
+// Describes one upgrade or new weapon option
+struct UpgradeEntry {
+	AssetRef<EntityPrototype>   Prefab;         // prefab for weapon or effect entity
+	int			Id;            // unique identifier for deduplication
+	int         MinLevel;       // minimum player level to unlock
+	int        Weight;         // relative weight in random selection
+	bool		CanBeRepeated;
+	
+	// Weapon
+	int                       FireCooldown;      // ticks between shots
+	int                       FireCdTicks;       // accumulates ticks
+	FP                        MuzzleOffset;      // how far forward from eyes to spawn
+
+  UpgradeCategory Category;
+}
+
+// Master list of all upgrades, editable in the Inspector
+singleton component UpgradeDataComponent {
+  list<UpgradeEntry> Entries;
+  int                ChoicesPerLevel;   // e.g. 3 choices at each level up
+}
+
+// Per-player upgrade state
+component PlayerUpgradeComponent {
+  list<int> AcquiredUpgrades;  // Ids of entries already taken
+  bool       WaitingForChoice;    // true between level-up and player pick
+  [AllocateOnComponentAdded]
+  list<int> PendingChoices; // entries currently on offer
+  int		ChosenUpgradeId;
+}
+
+event OnChooseUpgrades{ EntityRef Target; }
+
+event OnHasChoosenUpgrades{ EntityRef Target; int ChoosenId; }
+signal OnHasChoosenUpgrades ( EntityRef target, int choosenId );
