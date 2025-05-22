@@ -107,7 +107,7 @@ public unsafe class GameUIController : QuantumCallbacks
         f.TryGet(entity, out XPComponent xPComponent);
         FP nextLevelXp = XPPickupSystem.XPForNextLevel(xPComponent.Level + 1);
         xpBarFill.transform.localScale = new Vector3((xPComponent.CurrentXP / nextLevelXp).AsFloat, 1, 1);
-        xpLevelText.text = "Level " + xPComponent.Level;
+        xpLevelText.text = "Level " + (xPComponent.Level + 1);
     }
 
     private void OnGameOver(EventOnGameOver e)

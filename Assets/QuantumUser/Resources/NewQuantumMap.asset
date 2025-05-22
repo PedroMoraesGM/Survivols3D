@@ -412,7 +412,7 @@ MonoBehaviour:
           FireCooldown: 50
           FireCdTicks: 50
           MuzzleOffset:
-            RawValue: 0
+            RawValue: 65536
           Category:
             Value: 0
         - Prefab:
@@ -426,7 +426,7 @@ MonoBehaviour:
           FireCooldown: 50
           FireCdTicks: 50
           MuzzleOffset:
-            RawValue: 0
+            RawValue: 65536
           Category:
             Value: 0
         - Prefab:

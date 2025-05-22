@@ -15,15 +15,15 @@ public class UpgradeCardItem : MonoBehaviour
     [SerializeField] private TMP_Text choiceText;
     [SerializeField] private Button selectButton;
 
-    private string _upgradeId;
+    public int UpgradeId;
 
     /// <summary>
     /// Call this to initialize the card with both the simulation data (entry)
     /// and the UI metadata (catalog entry), plus the callback to invoke on click.
     /// </summary>
-    public void Setup(int entry, UpgradeCatalog.Entry meta, Action<string> onSelected, int choiceOrder)
+    public void Setup(int entry, UpgradeCatalog.Entry meta, Action<int> onSelected, int choiceOrder)
     {
-        _upgradeId = entry.ToString();
+        UpgradeId = entry;
         nameText.text = meta.DisplayName;
         descText.text = meta.Description;
         labelText.text = meta.Label;
@@ -36,7 +36,32 @@ public class UpgradeCardItem : MonoBehaviour
         {
             // Play a little feedback
             transform.DOPunchScale(Vector3.one * 0.1f, 0.2f, 3, 1);
-            onSelected(_upgradeId);
+            onSelected(UpgradeId);
         });
+    }
+
+    /// <summary>
+    /// Plays feedback (e.g. a punch-scale + color flash), then invokes onComplete.
+    /// </summary>
+    public void PlaySelectionEffect(Action onComplete)
+    {        
+        transform
+          .DOPunchScale(Vector3.one * 0.2f, 0.3f, vibrato: 2, elasticity: 0.5f)
+          .OnComplete(() =>
+          {
+              // optional: flash background
+              var img = GetComponent<Image>();
+              if (img != null)
+              {
+              img
+                .DOColor(Color.yellow, 0.15f)
+                .SetLoops(2, LoopType.Yoyo)
+                .OnComplete(() => onComplete());
+              }
+              else
+              {
+                  onComplete();
+              }
+          });
     }
 }

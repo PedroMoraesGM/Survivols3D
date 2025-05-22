@@ -19,9 +19,26 @@ public class UpgradeUIController : MonoBehaviour
 
     private void OnHasChoosenUpgrades(EventOnHasChoosenUpgrades e)
     {
-        Debug.Log("Has choosen upgrades!");
-        rewardsFrame.DOFade(0, 0.35f);
+        // Find the instantiated card whose ID matches the player's choice
+        foreach (var card in rewardsContent.GetComponentsInChildren<UpgradeCardItem>(true))
+        {
+            if (card.UpgradeId == e.ChoosenId)
+            {
+                // Play its selection effect, then fade out the panel
+                card.PlaySelectionEffect(() =>
+                {
+                    rewardsFrame
+                      .DOFade(0, 0.35f)
+                      .OnComplete(() => rewardsFrame.gameObject.SetActive(false));
+                });
+                return;
+            }
+        }
 
+        // Fallback: if not found, just hide immediately
+        rewardsFrame
+          .DOFade(0, 0.25f)
+          .OnComplete(() => rewardsFrame.gameObject.SetActive(false));
     }
 
     private void OnRewardsDisplay(EventOnChooseUpgrades e)
@@ -63,7 +80,7 @@ public class UpgradeUIController : MonoBehaviour
                        // here `id` is fixed per iteration
                        id => OnCardSelected(), i+1);
 
-            // Animate in…
+            // Animate inï¿½
             card.transform.localScale = Vector3.zero;
             card.transform
                 .DOScale(1, 0.3f)
