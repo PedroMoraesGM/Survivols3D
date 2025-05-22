@@ -47,7 +47,6 @@ public class UpgradeUIController : MonoBehaviour
         if (!f.TryGet(e.Target, out PlayerLink playerLink)) return;
         if (!e.Game.PlayerIsLocal(playerLink.Player)) return;
 
-        Debug.Log("On upgrades display!");
 
         // Show the panel
         rewardsFrame.gameObject.SetActive(true);
@@ -60,6 +59,7 @@ public class UpgradeUIController : MonoBehaviour
         // Resolve the pending choices list
         var pending = f.ResolveList(playerUpgrade.PendingChoices);
 
+
         // Clear out any old cards
         foreach (Transform child in rewardsContent)
         {
@@ -70,15 +70,19 @@ public class UpgradeUIController : MonoBehaviour
         for (int i = 0; i < pending.Count; i++)
         {
             var entryForThisCard = pending[i];
-            Debug.Log("Pending chioce ID:" + pending[i]);   
+
             var metaForThisCard = catalog.Get(entryForThisCard);
+            Debug.Log("On upgrades display! entry ID:" + entryForThisCard);
 
             var card = Instantiate(rewardCardPrefab, rewardsContent);
-
-            card.Setup(entryForThisCard,
+            if (metaForThisCard != null)
+            {
+                Debug.Log("Meta is valid");
+                card.Setup(entryForThisCard,
                        metaForThisCard,
                        // here `id` is fixed per iteration
-                       id => OnCardSelected(), i+1);
+                       id => OnCardSelected(), i + 1);
+            }
 
             // Animate in�
             card.transform.localScale = Vector3.zero;

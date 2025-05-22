@@ -10,7 +10,7 @@ namespace Tomorrow.Quantum
     {
         public void OnCollisionEnter3D(Frame f, CollisionInfo3D info)
         {
-            // if(!f.IsVerified) return;
+             if(!f.IsVerified) return;
 
             OnProjectileHittingEnemy(f, info);
             OnPlayerTouchesXp(f, info);

@@ -34,7 +34,6 @@ namespace Tomorrow.Quantum
             // Compute steering
             if (m.HasTarget) //&& f.Unsafe.Exists(m.CurrentTarget))
             {
-                Debug.Log("Missile has target");
                 var targetPos = f.Unsafe.GetPointer<Transform3D>(m.CurrentTarget)->Position;
                 var toTarget = (targetPos - pos).Normalized;
                 dir = (filter.Transform->Forward * (FP._1 - m.HomingStrength)

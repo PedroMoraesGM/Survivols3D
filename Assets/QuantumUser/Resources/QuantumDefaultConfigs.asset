@@ -470,6 +470,8 @@ MonoBehaviour:
     - Character
     - Enemy
     - EnemyTrigger
+    - Projectile
+    - Xp
     - 
     - 
     - 
@@ -491,9 +493,7 @@ MonoBehaviour:
     - 
     - 
     - 
-    - 
-    - 
-    LayerMatrix: ffffffffffffffffffffffffffffffffffffffffffffffff7fffffffbffeffff7ffeffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    LayerMatrix: fffffffffffbfffffffbfffffffffffffffbfffffffbffff7ffdffffbffaffff7ffaffffbffbffff49fcffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
   Navigation:
     DefaultNavMeshAgent:
       Id:

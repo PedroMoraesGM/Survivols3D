@@ -39,6 +39,7 @@ public unsafe class UpgradeSystem : SystemSignalsOnly, ISignalOnLevelUp
             }
 
             pending.Add(pool[idx].Id);
+            Debug.Log("Adding pending choice id:" + pool[idx].Id);
             pool.RemoveAt(idx);
         }
     }

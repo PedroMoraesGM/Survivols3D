@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6233162574216195367}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 3243995432783473386}
   - component: {fileID: 7430521348955286880}
   - component: {fileID: 6234384833554714873}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Xp Pickup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -164,7 +164,7 @@ MonoBehaviour:
       IsPersistent: 1
       CompoundShapes: []
     LayerSource: 0
-    Layer: 0
+    Layer: 10
     CallbackFlags:
       Value: 1170
   PhysicsBody:
@@ -362,7 +362,7 @@ GameObject:
   - component: {fileID: 8717550431490649219}
   - component: {fileID: 5764196240165340140}
   - component: {fileID: 1245320413542619983}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

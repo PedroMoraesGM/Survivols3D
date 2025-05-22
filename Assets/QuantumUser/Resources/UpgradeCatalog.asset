@@ -43,9 +43,9 @@ MonoBehaviour:
     Label: Upgrade
     Icon: {fileID: -1153420782, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
     IconColor: {r: 1, g: 0.96776116, b: 0.4584905, a: 1}
-  - Key: 4
-    DisplayName: Milk
+  - Key: 5
+    DisplayName: Flipping Knife
     Description: Throws a flipping knife
     Label: Upgrade
     Icon: {fileID: 1094901051, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
-    IconColor: {r: 1, g: 0.96776116, b: 0.4584905, a: 1}
+    IconColor: {r: 0.7660377, g: 0.7660377, b: 0.7660377, a: 1}

@@ -19,9 +19,9 @@ public class UpgradeCatalog : ScriptableObject
 
     public List<Entry> Entries;
 
-    // Helper lookup (build at Awake or via Editor script)
     Dictionary<int, Entry> _map;
-    public void OnEnable()
+
+    public void InitializeMap()
     {
         _map = new Dictionary<int, Entry>();
         foreach (var e in Entries) _map[e.Key] = e;
@@ -29,6 +29,9 @@ public class UpgradeCatalog : ScriptableObject
 
     public Entry Get(int key)
     {
+        if (_map == null)
+            InitializeMap();
+
         return _map.TryGetValue(key, out var e) ? e : null;
     }
 }

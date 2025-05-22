@@ -51,6 +51,8 @@ public unsafe class XPPickupSystem : SystemSignalsOnly, ISignalOnEnemyDefeated, 
             f.Signals.OnLevelUp(target, xpComponent->Level);
             f.Events.OnLevelUp(target, xpComponent->Level);
 
+            Debug.Log("Character levelup! level:" + xpComponent->Level + " currentxp:" + xpComponent->CurrentXP);
+
             // Prepare for the next loop iteration
             nextLevelReq = XPForNextLevel(xpComponent->Level + 1);
         }

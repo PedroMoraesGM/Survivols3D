@@ -61,7 +61,7 @@ MonoBehaviour:
           RawValue: 1310720
         Y:
           RawValue: 655360
-      PlayersCount: 2
+      PlayersCount: 5
       CountdownTime: 3
       GameTime: 60
       FinishedTime: 5

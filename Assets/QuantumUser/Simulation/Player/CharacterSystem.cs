@@ -50,9 +50,10 @@ namespace Quantum
                 input = *f.GetPlayerInput(link->Player);
             }
 
-            if (input.Reset && f.Unsafe.GetPointerSingleton<Game>()->CurrentGameState == GameState.GameOver)
+            if (input.Reset && filter.Character->IsDead)
             {
-                SceneManager.LoadScene(0);
+                // Tell the view layer to disconnect & go to menu
+                f.Events.OnRequestDisconnect(filter.Entity);
             }
         }
     }
