@@ -719,26 +719,18 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct UpgradeEntry {
-    public const Int32 SIZE = 48;
+    public const Int32 SIZE = 24;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(32)]
-    public AssetRef<EntityPrototype> Prefab;
-    [FieldOffset(8)]
-    public Int32 Id;
-    [FieldOffset(12)]
-    public Int32 MinLevel;
     [FieldOffset(16)]
-    public Int32 Weight;
-    [FieldOffset(20)]
-    public QBoolean CanBeRepeated;
-    [FieldOffset(4)]
-    public Int32 FireCooldown;
+    public AssetRef<EntityPrototype> Prefab;
     [FieldOffset(0)]
-    public Int32 FireCdTicks;
-    [FieldOffset(40)]
-    public FP MuzzleOffset;
-    [FieldOffset(24)]
-    public UpgradeCategory Category;
+    public Int32 Id;
+    [FieldOffset(4)]
+    public Int32 MinLevel;
+    [FieldOffset(8)]
+    public Int32 Weight;
+    [FieldOffset(12)]
+    public QBoolean CanBeRepeated;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 8101;
@@ -747,24 +739,16 @@ namespace Quantum {
         hash = hash * 31 + MinLevel.GetHashCode();
         hash = hash * 31 + Weight.GetHashCode();
         hash = hash * 31 + CanBeRepeated.GetHashCode();
-        hash = hash * 31 + FireCooldown.GetHashCode();
-        hash = hash * 31 + FireCdTicks.GetHashCode();
-        hash = hash * 31 + MuzzleOffset.GetHashCode();
-        hash = hash * 31 + (Int32)Category;
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (UpgradeEntry*)ptr;
-        serializer.Stream.Serialize(&p->FireCdTicks);
-        serializer.Stream.Serialize(&p->FireCooldown);
         serializer.Stream.Serialize(&p->Id);
         serializer.Stream.Serialize(&p->MinLevel);
         serializer.Stream.Serialize(&p->Weight);
         QBoolean.Serialize(&p->CanBeRepeated, serializer);
-        serializer.Stream.Serialize((Int32*)&p->Category);
         AssetRef.Serialize(&p->Prefab, serializer);
-        FP.Serialize(&p->MuzzleOffset, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -1124,6 +1108,24 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct OwnerData : Quantum.IComponent {
+    public const Int32 SIZE = 8;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(0)]
+    public EntityRef OwnerEntity;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 10313;
+        hash = hash * 31 + OwnerEntity.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (OwnerData*)ptr;
+        EntityRef.Serialize(&p->OwnerEntity, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerLink : Quantum.IComponent {
     public const Int32 SIZE = 8;
     public const Int32 ALIGNMENT = 4;
@@ -1283,22 +1285,19 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct ShootingWeaponComponent : Quantum.IComponent {
-    public const Int32 SIZE = 32;
+    public const Int32 SIZE = 24;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(16)]
-    public EntityRef OwnerEntity;
     [FieldOffset(8)]
     public AssetRef<EntityPrototype> ProjectilePrefab;
     [FieldOffset(4)]
     public Int32 FireCooldown;
     [FieldOffset(0)]
     public Int32 FireCdTicks;
-    [FieldOffset(24)]
+    [FieldOffset(16)]
     public FP MuzzleOffset;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 5647;
-        hash = hash * 31 + OwnerEntity.GetHashCode();
         hash = hash * 31 + ProjectilePrefab.GetHashCode();
         hash = hash * 31 + FireCooldown.GetHashCode();
         hash = hash * 31 + FireCdTicks.GetHashCode();
@@ -1311,7 +1310,6 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->FireCdTicks);
         serializer.Stream.Serialize(&p->FireCooldown);
         AssetRef.Serialize(&p->ProjectilePrefab, serializer);
-        EntityRef.Serialize(&p->OwnerEntity, serializer);
         FP.Serialize(&p->MuzzleOffset, serializer);
     }
   }
@@ -1555,6 +1553,8 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<NavMeshPathfinder>();
       BuildSignalsArrayOnComponentAdded<NavMeshSteeringAgent>();
       BuildSignalsArrayOnComponentRemoved<NavMeshSteeringAgent>();
+      BuildSignalsArrayOnComponentAdded<Quantum.OwnerData>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.OwnerData>();
       BuildSignalsArrayOnComponentAdded<PhysicsBody2D>();
       BuildSignalsArrayOnComponentRemoved<PhysicsBody2D>();
       BuildSignalsArrayOnComponentAdded<PhysicsBody3D>();
@@ -1815,6 +1815,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(NullableFPVector2), NullableFPVector2.SIZE);
       typeRegistry.Register(typeof(NullableFPVector3), NullableFPVector3.SIZE);
       typeRegistry.Register(typeof(NullableNonNegativeFP), NullableNonNegativeFP.SIZE);
+      typeRegistry.Register(typeof(Quantum.OwnerData), Quantum.OwnerData.SIZE);
       typeRegistry.Register(typeof(PhysicsBody2D), PhysicsBody2D.SIZE);
       typeRegistry.Register(typeof(PhysicsBody3D), PhysicsBody3D.SIZE);
       typeRegistry.Register(typeof(PhysicsCallbacks2D), PhysicsCallbacks2D.SIZE);
@@ -1859,7 +1860,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum._globals_), Quantum._globals_.SIZE);
     }
     static partial void InitComponentTypeIdGen() {
-      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 19)
+      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 20)
         .AddBuiltInComponents()
         .Add<Quantum.Ball>(Quantum.Ball.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.Character>(Quantum.Character.Serialize, null, null, ComponentFlags.None)
@@ -1869,6 +1870,7 @@ namespace Quantum {
         .Add<Quantum.Game>(Quantum.Game.Serialize, Quantum.Game.OnAdded, Quantum.Game.OnRemoved, ComponentFlags.Singleton)
         .Add<Quantum.Goal>(Quantum.Goal.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.HomingProjectileComponent>(Quantum.HomingProjectileComponent.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.OwnerData>(Quantum.OwnerData.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.PlayerLink>(Quantum.PlayerLink.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.PlayerRegistryComponent>(Quantum.PlayerRegistryComponent.Serialize, null, Quantum.PlayerRegistryComponent.OnRemoved, ComponentFlags.Singleton)
         .Add<Quantum.PlayerUpgradeComponent>(Quantum.PlayerUpgradeComponent.Serialize, Quantum.PlayerUpgradeComponent.OnAdded, Quantum.PlayerUpgradeComponent.OnRemoved, ComponentFlags.None)

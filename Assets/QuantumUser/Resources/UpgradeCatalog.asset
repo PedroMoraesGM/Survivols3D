@@ -20,32 +20,38 @@ MonoBehaviour:
     Icon: {fileID: -126443362, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
     IconColor: {r: 0, g: 0.711498, b: 1, a: 1}
   - Key: 1
-    DisplayName: War Lighter
-    Description: Burn nearby enemies.
+    DisplayName: Bouncy Missile
+    Description: Throws an artifact that bounces across enemies.
     Label: Weapon
-    Icon: {fileID: -1917760231, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
-    IconColor: {r: 1, g: 0.3499613, b: 0, a: 1}
+    Icon: {fileID: 1997661575, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
+    IconColor: {r: 0.31764707, g: 0.91764706, b: 0.40392157, a: 1}
   - Key: 2
-    DisplayName: Magic Horse
-    Description: Increase move speed by 5%
-    Label: Upgrade
-    Icon: {fileID: -1917760231, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
-    IconColor: {r: 0.60764694, g: 1, b: 0, a: 1}
-  - Key: 3
-    DisplayName: Accuracy Eye
-    Description: Your physical attacks hit 1 more time
-    Label: Upgrade
-    Icon: {fileID: -1048668326, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
-    IconColor: {r: 0, g: 1, b: 0.7704737, a: 1}
-  - Key: 4
-    DisplayName: Milk
-    Description: Increase your health by 10%
-    Label: Upgrade
-    Icon: {fileID: -1153420782, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
-    IconColor: {r: 1, g: 0.96776116, b: 0.4584905, a: 1}
-  - Key: 5
     DisplayName: Flipping Knife
     Description: Throws a flipping knife
     Label: Upgrade
     Icon: {fileID: 1094901051, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
     IconColor: {r: 0.7660377, g: 0.7660377, b: 0.7660377, a: 1}
+  - Key: 3
+    DisplayName: War Lighter
+    Description: Burn nearby enemies.
+    Label: Weapon
+    Icon: {fileID: -1917760231, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
+    IconColor: {r: 1, g: 0.3499613, b: 0, a: 1}
+  - Key: 4
+    DisplayName: Magic Horse
+    Description: Increase move speed by 5%
+    Label: Upgrade
+    Icon: {fileID: -1917760231, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
+    IconColor: {r: 0.60764694, g: 1, b: 0, a: 1}
+  - Key: 5
+    DisplayName: Accuracy Eye
+    Description: Your physical attacks hit 1 more time
+    Label: Upgrade
+    Icon: {fileID: -1048668326, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
+    IconColor: {r: 0, g: 1, b: 0.7704737, a: 1}
+  - Key: 6
+    DisplayName: Milk
+    Description: Increase your health by 10%
+    Label: Upgrade
+    Icon: {fileID: -1153420782, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
+    IconColor: {r: 1, g: 0.96776116, b: 0.4584905, a: 1}

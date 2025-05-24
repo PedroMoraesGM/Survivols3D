@@ -96,21 +96,8 @@ namespace Tomorrow.Quantum
 
         void ApplyUpgradeToPlayer(Frame f, EntityRef player, UpgradeEntry entry)
         {
-            if (entry.Category == UpgradeCategory.WeaponUnlock)
-            {
-                var newWeapon = f.Create();
-
-                // Weapon
-                f.Set(newWeapon, new ShootingWeaponComponent
-                {
-                    OwnerEntity = player,
-                    ProjectilePrefab = entry.Prefab,
-                    FireCdTicks = entry.FireCdTicks,
-                    FireCooldown = entry.FireCooldown,
-                    MuzzleOffset = entry.MuzzleOffset
-                });
-            }
-            // May add other effect types
+            var newUpgrade = f.Create(entry.Prefab);
+            f.Set(newUpgrade, new OwnerData() { OwnerEntity = player });            
         }
     }
 }

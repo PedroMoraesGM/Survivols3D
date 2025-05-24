@@ -14,19 +14,21 @@ namespace Quantum {
   using UnityEngine;
   
   [UnityEngine.DisallowMultipleComponent()]
-  public unsafe partial class QPrototypeShootingWeaponComponent : QuantumUnityComponentPrototype<Quantum.Prototypes.ShootingWeaponComponentPrototype>, IQuantumUnityPrototypeWrapperForComponent<Quantum.ShootingWeaponComponent> {
-    partial void CreatePrototypeUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.ShootingWeaponComponentPrototype prototype);
+  public unsafe partial class QPrototypeOwnerData : QuantumUnityComponentPrototype<Quantum.Prototypes.OwnerDataPrototype>, IQuantumUnityPrototypeWrapperForComponent<Quantum.OwnerData> {
+    partial void CreatePrototypeUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.OwnerDataPrototype prototype);
     [DrawInline()]
     [ReadOnly(InEditMode = false)]
-    public Quantum.Prototypes.ShootingWeaponComponentPrototype Prototype;
+    public Quantum.Prototypes.Unity.OwnerDataPrototype Prototype;
     public override System.Type ComponentType {
       get {
-        return typeof(Quantum.ShootingWeaponComponent);
+        return typeof(Quantum.OwnerData);
       }
     }
     public override ComponentPrototype CreatePrototype(Quantum.QuantumEntityPrototypeConverter converter) {
-      CreatePrototypeUser(converter, ref Prototype);
-      return Prototype;
+      Quantum.Prototypes.OwnerDataPrototype result;
+      converter.Convert(Prototype, out result);
+      CreatePrototypeUser(converter, ref result);
+      return result;
     }
   }
 }

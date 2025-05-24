@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &728730217810199848
+--- !u!1 &676405245586260271
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,29 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7207393148808095406}
-  - component: {fileID: 754762862132343408}
-  - component: {fileID: 3832144046871412136}
-  - component: {fileID: 4682554637992653183}
-  - component: {fileID: 1086186911056547274}
-  - component: {fileID: 4603876843233098770}
-  - component: {fileID: 3372475939401507569}
-  - component: {fileID: 3522200128369236728}
-  - component: {fileID: 949806551900884606}
+  - component: {fileID: 4426728493768658687}
+  - component: {fileID: 7911495737506667483}
+  - component: {fileID: 2165766613236295114}
   m_Layer: 0
-  m_Name: Game
+  m_Name: BouncyMissile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7207393148808095406
+--- !u!4 &4426728493768658687
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 728730217810199848}
+  m_GameObject: {fileID: 676405245586260271}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -39,13 +33,13 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &754762862132343408
+--- !u!114 &7911495737506667483
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 728730217810199848}
+  m_GameObject: {fileID: 676405245586260271}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 836dcb7e0f6259748b850a10912ce727, type: 3}
@@ -268,181 +262,23 @@ MonoBehaviour:
   View:
     Id:
       Value: 0
---- !u!114 &3832144046871412136
+--- !u!114 &2165766613236295114
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 728730217810199848}
+  m_GameObject: {fileID: 676405245586260271}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee60dcd1dfaa0466fb1e5a458c9eea95, type: 3}
+  m_Script: {fileID: 11500000, guid: 7b995ad7ed1e0b344b0683a8c5d5bf7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    _empty_prototype_dummy_field_: 0
---- !u!114 &4682554637992653183
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 728730217810199848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 395354f833ac90e4da04dca5e032ebda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prototype:
-    ActivePlayers: []
---- !u!114 &1086186911056547274
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 728730217810199848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4bfadfa48a0510a44ae4670014d82f0b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prototype:
-    ActiveEnemies: []
---- !u!114 &4603876843233098770
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 728730217810199848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2921d25690c2c641b5daffd8eb81ee8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prototype:
-    TimeSinceLastSpawn:
-      RawValue: 0
-    CurrentInterval:
+    ProjectilePrefab:
+      Id:
+        Value: 1278416079342391519
+    FireCooldown: 30
+    FireCdTicks: 30
+    MuzzleOffset:
       RawValue: 65536
-    CurrentBatchSize: 5
-    HPMultiplier:
-      RawValue: 65536
-    DamageMultiplier:
-      RawValue: 65536
-    SpawnRadius:
-      RawValue: 1966080
-    Settings:
-      EnemyPrefab:
-        Id:
-          Value: 1450041578110963961
-      BaseInterval:
-        RawValue: 65536
-      BaseBatchSize: 1
-      BaseHP:
-        RawValue: 655360
-      BaseDamage:
-        RawValue: 65536
---- !u!114 &3372475939401507569
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 728730217810199848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b6e9435e16e74f4da12df33b157ccb8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prototype:
-    Cycle: 0
-    TimeElapsed:
-      RawValue: 0
-    CycleDuration:
-      RawValue: 1310720
---- !u!114 &3522200128369236728
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 728730217810199848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0c5978fb548e2b4cabe65888d43bd44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prototype:
-    Entries:
-    - Prefab:
-        Id:
-          Value: 1450041578110963961
-      MinWave: 0
-      Weight:
-        RawValue: 65536
-    - Prefab:
-        Id:
-          Value: 1368644212753541733
-      MinWave: 1
-      Weight:
-        RawValue: 65536
-    - Prefab:
-        Id:
-          Value: 1296241623356491307
-      MinWave: 2
-      Weight:
-        RawValue: 81920
-    - Prefab:
-        Id:
-          Value: 1346333854077795796
-      MinWave: 3
-      Weight:
-        RawValue: 131072
-    - Prefab:
-        Id:
-          Value: 1505494659213548563
-      MinWave: 4
-      Weight:
-        RawValue: 196608
---- !u!114 &949806551900884606
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 728730217810199848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4139d9d03a6eafc47953452160392552, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Prototype:
-    Entries:
-    - Prefab:
-        Id:
-          Value: 1348710445196619827
-      Id: 0
-      MinLevel: 0
-      Weight: 1
-      CanBeRepeated:
-        Value: 1
-    - Prefab:
-        Id:
-          Value: 1412917834980047614
-      Id: 1
-      MinLevel: 0
-      Weight: 1
-      CanBeRepeated:
-        Value: 1
-    - Prefab:
-        Id:
-          Value: 1266653282462716527
-      Id: 2
-      MinLevel: 0
-      Weight: 1
-      CanBeRepeated:
-        Value: 1
-    ChoicesPerLevel: 3

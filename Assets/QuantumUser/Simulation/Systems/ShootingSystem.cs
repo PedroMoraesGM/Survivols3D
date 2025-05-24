@@ -11,18 +11,18 @@ namespace Tomorrow.Quantum
         {
             public EntityRef Entity;
             //public Transform3D* Transform;
-            //public Character* Character; 
+            public OwnerData* OwnerData;
             public ShootingWeaponComponent* WeaponComponent;
             //public PlayerLink* Link;          // so we only run for real players
        }
 
         public override void Update(Frame f, ref Filter filter)
         {
-            if (!filter.WeaponComponent->OwnerEntity.IsValid) return;
+            if (!filter.OwnerData->OwnerEntity.IsValid) return;
 
-            if (f.Get<Character>(filter.WeaponComponent->OwnerEntity).IsDead) return;
+            if (f.Get<Character>(filter.OwnerData->OwnerEntity).IsDead) return;
 
-            if (f.Get<PlayerLink>(filter.WeaponComponent->OwnerEntity).Player == PlayerRef.None) return;
+            if (f.Get<PlayerLink>(filter.OwnerData->OwnerEntity).Player == PlayerRef.None) return;
 
             ref var ply = ref *filter.WeaponComponent;
 
@@ -35,7 +35,7 @@ namespace Tomorrow.Quantum
 
             // 2) Cooldown expired ? fire!
             // 2.a Compute spawn point & forward dir
-            var ownerTrasnform = f.Get<Transform3D>(filter.WeaponComponent->OwnerEntity);
+            var ownerTrasnform = f.Get<Transform3D>(filter.OwnerData->OwnerEntity);
 
             FPVector3 forward = ownerTrasnform.Forward;
             FPVector3 spawnPos = ownerTrasnform.Position + forward * filter.WeaponComponent->MuzzleOffset;

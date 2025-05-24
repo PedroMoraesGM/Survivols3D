@@ -533,6 +533,7 @@ GameObject:
   - component: {fileID: 542360606360257469}
   - component: {fileID: 7187150980592027417}
   - component: {fileID: 5052360162997991742}
+  - component: {fileID: 1034736552393520118}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -952,14 +953,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    OwnerEntity: {fileID: -8659347868862416721}
     ProjectilePrefab:
       Id:
-        Value: 1517981128656675034
+        Value: 1278416079342391519
     FireCooldown: 50
     FireCdTicks: 50
     MuzzleOffset:
       RawValue: 65536
+--- !u!114 &1034736552393520118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2043308203219904105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f55584c1b851a242bddc6446f328c9c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    OwnerEntity: {fileID: -8659347868862416721}
 --- !u!1 &2760386084047579640
 GameObject:
   m_ObjectHideFlags: 0

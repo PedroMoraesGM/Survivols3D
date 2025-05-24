@@ -113,6 +113,17 @@ namespace Quantum.Prototypes.Unity {
     }
   }
   [System.SerializableAttribute()]
+  public unsafe partial class OwnerDataPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.OwnerDataPrototype> {
+    public Quantum.QuantumEntityPrototype OwnerEntity;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.OwnerDataPrototype prototype);
+    public override Quantum.Prototypes.OwnerDataPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.OwnerDataPrototype();
+      converter.Convert(this.OwnerEntity, out result.OwnerEntity);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
   public unsafe partial class PlayerInfoPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.PlayerInfoPrototype> {
     public Quantum.QuantumEntityPrototype Entity;
     public FPVector3 Position;
@@ -154,25 +165,6 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.Velocity, out result.Velocity);
       converter.Convert(this.Elapsed, out result.Elapsed);
       converter.Convert(this.TimeToLive, out result.TimeToLive);
-      ConvertUser(converter, ref result);
-      return result;
-    }
-  }
-  [System.SerializableAttribute()]
-  public unsafe partial class ShootingWeaponComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.ShootingWeaponComponentPrototype> {
-    public Quantum.QuantumEntityPrototype OwnerEntity;
-    public AssetRef<EntityPrototype> ProjectilePrefab;
-    public Int32 FireCooldown;
-    public Int32 FireCdTicks;
-    public FP MuzzleOffset;
-    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.ShootingWeaponComponentPrototype prototype);
-    public override Quantum.Prototypes.ShootingWeaponComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
-      var result = new Quantum.Prototypes.ShootingWeaponComponentPrototype();
-      converter.Convert(this.OwnerEntity, out result.OwnerEntity);
-      converter.Convert(this.ProjectilePrefab, out result.ProjectilePrefab);
-      converter.Convert(this.FireCooldown, out result.FireCooldown);
-      converter.Convert(this.FireCdTicks, out result.FireCdTicks);
-      converter.Convert(this.MuzzleOffset, out result.MuzzleOffset);
       ConvertUser(converter, ref result);
       return result;
     }

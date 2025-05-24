@@ -280,6 +280,19 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.OwnerData))]
+  public unsafe class OwnerDataPrototype : ComponentPrototype<Quantum.OwnerData> {
+    public MapEntityId OwnerEntity;
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.OwnerData component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.OwnerData result, in PrototypeMaterializationContext context = default) {
+        PrototypeValidator.FindMapEntity(this.OwnerEntity, in context, out result.OwnerEntity);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerInfo))]
   public unsafe class PlayerInfoPrototype : StructPrototype {
     public MapEntityId Entity;
@@ -413,23 +426,23 @@ namespace Quantum.Prototypes {
   }
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.ShootingWeaponComponent))]
-  public unsafe class ShootingWeaponComponentPrototype : ComponentPrototype<Quantum.ShootingWeaponComponent> {
-    public MapEntityId OwnerEntity;
+  public unsafe partial class ShootingWeaponComponentPrototype : ComponentPrototype<Quantum.ShootingWeaponComponent> {
     public AssetRef<EntityPrototype> ProjectilePrefab;
     public Int32 FireCooldown;
     public Int32 FireCdTicks;
     public FP MuzzleOffset;
+    partial void MaterializeUser(Frame frame, ref Quantum.ShootingWeaponComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.ShootingWeaponComponent component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.ShootingWeaponComponent result, in PrototypeMaterializationContext context = default) {
-        PrototypeValidator.FindMapEntity(this.OwnerEntity, in context, out result.OwnerEntity);
         result.ProjectilePrefab = this.ProjectilePrefab;
         result.FireCooldown = this.FireCooldown;
         result.FireCdTicks = this.FireCdTicks;
         result.MuzzleOffset = this.MuzzleOffset;
+        MaterializeUser(frame, ref result, in context);
     }
   }
   [System.SerializableAttribute()]
@@ -524,10 +537,6 @@ namespace Quantum.Prototypes {
     public Int32 MinLevel;
     public Int32 Weight;
     public QBoolean CanBeRepeated;
-    public Int32 FireCooldown;
-    public Int32 FireCdTicks;
-    public FP MuzzleOffset;
-    public Quantum.QEnum32<UpgradeCategory> Category;
     partial void MaterializeUser(Frame frame, ref Quantum.UpgradeEntry result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.UpgradeEntry result, in PrototypeMaterializationContext context = default) {
         result.Prefab = this.Prefab;
@@ -535,10 +544,6 @@ namespace Quantum.Prototypes {
         result.MinLevel = this.MinLevel;
         result.Weight = this.Weight;
         result.CanBeRepeated = this.CanBeRepeated;
-        result.FireCooldown = this.FireCooldown;
-        result.FireCdTicks = this.FireCdTicks;
-        result.MuzzleOffset = this.MuzzleOffset;
-        result.Category = this.Category;
         MaterializeUser(frame, ref result, in context);
     }
   }

@@ -403,72 +403,26 @@ MonoBehaviour:
         Entries:
         - Prefab:
             Id:
-              Value: 1517981128656675034
+              Value: 1348710445196619827
           Id: 0
           MinLevel: 0
           Weight: 1
           CanBeRepeated:
             Value: 1
-          FireCooldown: 50
-          FireCdTicks: 50
-          MuzzleOffset:
-            RawValue: 65536
-          Category:
-            Value: 0
         - Prefab:
             Id:
-              Value: 1517981128656675034
+              Value: 1412917834980047614
           Id: 1
           MinLevel: 0
           Weight: 1
           CanBeRepeated:
             Value: 1
-          FireCooldown: 50
-          FireCdTicks: 50
-          MuzzleOffset:
-            RawValue: 65536
-          Category:
-            Value: 0
         - Prefab:
             Id:
-              Value: 1361179226252959751
+              Value: 1266653282462716527
           Id: 2
           MinLevel: 0
           Weight: 1
           CanBeRepeated:
             Value: 1
-          FireCooldown: 30
-          FireCdTicks: 30
-          MuzzleOffset:
-            RawValue: 65536
-          Category:
-            Value: 0
-        - Prefab:
-            Id:
-              Value: 1361179226252959751
-          Id: 3
-          MinLevel: 0
-          Weight: 1
-          CanBeRepeated:
-            Value: 1
-          FireCooldown: 30
-          FireCdTicks: 30
-          MuzzleOffset:
-            RawValue: 65536
-          Category:
-            Value: 0
-        - Prefab:
-            Id:
-              Value: 1361179226252959751
-          Id: 4
-          MinLevel: 0
-          Weight: 0
-          CanBeRepeated:
-            Value: 1
-          FireCooldown: 30
-          FireCdTicks: 30
-          MuzzleOffset:
-            RawValue: 65536
-          Category:
-            Value: 0
         ChoicesPerLevel: 3

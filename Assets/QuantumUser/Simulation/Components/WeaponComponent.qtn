@@ -1,5 +1,4 @@
 component ShootingWeaponComponent {
-  EntityRef					OwnerEntity;
   AssetRef<EntityPrototype> ProjectilePrefab;  // your homing/bounce missile prefab
   int                       FireCooldown;      // ticks between shots
   int                       FireCdTicks;       // accumulates ticks
