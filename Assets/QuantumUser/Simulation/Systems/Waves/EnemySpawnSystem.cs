@@ -12,6 +12,8 @@ public unsafe class EnemySpawnSystem : SystemMainThread
         var waveData = f.GetSingleton<EnemyWaveComponent>();
         var entries = f.ResolveList(waveData.Entries);
 
+        if (f.Unsafe.GetPointerSingleton<Game>()->CurrentGameState == GameState.GameOver) return;
+
         // Only advance spawn if below threshold and timer elapsed
         int activeCount = CountActiveEnemies(f);  // block-iterator count
         spawner->TimeSinceLastSpawn += f.DeltaTime;

@@ -25,7 +25,7 @@ namespace Quantum
                 {
                     character->CurrentHealth -= enemy->Damage;
 
-                    if (character->CurrentHealth < 0)
+                    if (character->CurrentHealth < 0 && !character->IsDead)
                     {
                         f.Signals.OnPlayerDefeated(target, dealer);
                         f.Events.OnPlayerDefeated(target, dealer);
