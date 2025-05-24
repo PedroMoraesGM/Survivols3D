@@ -170,6 +170,7 @@ GameObject:
   - component: {fileID: 8791417216987077302}
   - component: {fileID: 2411738147683654810}
   - component: {fileID: 7107326377363849311}
+  - component: {fileID: 8474774495975209206}
   m_Layer: 7
   m_Name: Crab
   m_TagString: Untagged
@@ -521,3 +522,20 @@ MonoBehaviour:
   hitEffect: {fileID: 6671774691050469131, guid: bfcae38d72df4b643b0de3d8a639e906, type: 3}
   enemyRenderer: {fileID: 5214489336421857711}
   hitBlinkDuration: 0.15
+--- !u!114 &8474774495975209206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5247745156847184110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c97ae6f6fcc6b74b9c43ee8fb1fb8be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    SlowMultiplier:
+      RawValue: 65536
+    SlowTimer:
+      RawValue: 0

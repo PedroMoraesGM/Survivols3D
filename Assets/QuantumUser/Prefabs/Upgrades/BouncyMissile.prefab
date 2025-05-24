@@ -278,7 +278,6 @@ MonoBehaviour:
     ProjectilePrefab:
       Id:
         Value: 1278416079342391519
-    FireCooldown: 30
-    FireCdTicks: 30
+    FireCooldown: 120
     MuzzleOffset:
       RawValue: 65536

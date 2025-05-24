@@ -955,7 +955,7 @@ MonoBehaviour:
   Prototype:
     ProjectilePrefab:
       Id:
-        Value: 1278416079342391519
+        Value: 1361179226252959751
     FireCooldown: 50
     FireCdTicks: 50
     MuzzleOffset:

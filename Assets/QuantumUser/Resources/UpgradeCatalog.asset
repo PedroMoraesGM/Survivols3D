@@ -27,23 +27,29 @@ MonoBehaviour:
     IconColor: {r: 0.31764707, g: 0.91764706, b: 0.40392157, a: 1}
   - Key: 2
     DisplayName: Flipping Knife
-    Description: Throws a flipping knife
+    Description: Throws a flipping knife.
     Label: Upgrade
     Icon: {fileID: 1094901051, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
     IconColor: {r: 0.7660377, g: 0.7660377, b: 0.7660377, a: 1}
   - Key: 3
+    DisplayName: Ice Roses
+    Description: Plant a Ice Rose that deal damage and slow enemies.
+    Label: Weapon
+    Icon: {fileID: -715076045, guid: 496bbe8cfd3c03d4bb40fe182e3b0957, type: 3}
+    IconColor: {r: 0, g: 0.9490196, b: 1, a: 1}
+  - Key: 4
     DisplayName: War Lighter
     Description: Burn nearby enemies.
     Label: Weapon
     Icon: {fileID: -1917760231, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
     IconColor: {r: 1, g: 0.3499613, b: 0, a: 1}
-  - Key: 4
+  - Key: 5
     DisplayName: Magic Horse
     Description: Increase move speed by 5%
     Label: Upgrade
     Icon: {fileID: -1917760231, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
     IconColor: {r: 0.60764694, g: 1, b: 0, a: 1}
-  - Key: 5
+  - Key: 6
     DisplayName: Accuracy Eye
     Description: Your physical attacks hit 1 more time
     Label: Upgrade

@@ -56,6 +56,27 @@ namespace Quantum.Prototypes {
     public FP Value;
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.AreaWeaponComponent))]
+  public unsafe partial class AreaWeaponComponentPrototype : ComponentPrototype<Quantum.AreaWeaponComponent> {
+    public Int32 Damage;
+    public Int32 DamageCooldown;
+    public QBoolean IsDamageTick;
+    public FP TimeToLive;
+    partial void MaterializeUser(Frame frame, ref Quantum.AreaWeaponComponent result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.AreaWeaponComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.AreaWeaponComponent result, in PrototypeMaterializationContext context = default) {
+        result.Damage = this.Damage;
+        result.DamageCooldown = this.DamageCooldown;
+        result.IsDamageTick = this.IsDamageTick;
+        result.TimeToLive = this.TimeToLive;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Ball))]
   public unsafe class BallPrototype : ComponentPrototype<Quantum.Ball> {
     public FPVector3 Velocity;
@@ -403,25 +424,23 @@ namespace Quantum.Prototypes {
   }
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Projectile))]
-  public unsafe class ProjectilePrototype : ComponentPrototype<Quantum.Projectile> {
-    public MapEntityId Owner;
+  public unsafe partial class ProjectilePrototype : ComponentPrototype<Quantum.Projectile> {
     public FP Damage;
     public Int32 HitsToDestroy;
     public FP Velocity;
-    public FP Elapsed;
     public FP TimeToLive;
+    partial void MaterializeUser(Frame frame, ref Quantum.Projectile result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.Projectile component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.Projectile result, in PrototypeMaterializationContext context = default) {
-        PrototypeValidator.FindMapEntity(this.Owner, in context, out result.Owner);
         result.Damage = this.Damage;
         result.HitsToDestroy = this.HitsToDestroy;
         result.Velocity = this.Velocity;
-        result.Elapsed = this.Elapsed;
         result.TimeToLive = this.TimeToLive;
+        MaterializeUser(frame, ref result, in context);
     }
   }
   [System.SerializableAttribute()]
@@ -429,7 +448,6 @@ namespace Quantum.Prototypes {
   public unsafe partial class ShootingWeaponComponentPrototype : ComponentPrototype<Quantum.ShootingWeaponComponent> {
     public AssetRef<EntityPrototype> ProjectilePrefab;
     public Int32 FireCooldown;
-    public Int32 FireCdTicks;
     public FP MuzzleOffset;
     partial void MaterializeUser(Frame frame, ref Quantum.ShootingWeaponComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -440,8 +458,24 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.ShootingWeaponComponent result, in PrototypeMaterializationContext context = default) {
         result.ProjectilePrefab = this.ProjectilePrefab;
         result.FireCooldown = this.FireCooldown;
-        result.FireCdTicks = this.FireCdTicks;
         result.MuzzleOffset = this.MuzzleOffset;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.SlowAreaComponent))]
+  public unsafe partial class SlowAreaComponentPrototype : ComponentPrototype<Quantum.SlowAreaComponent> {
+    public FP SlowAmount;
+    public FP SlowDuration;
+    partial void MaterializeUser(Frame frame, ref Quantum.SlowAreaComponent result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.SlowAreaComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.SlowAreaComponent result, in PrototypeMaterializationContext context = default) {
+        result.SlowAmount = this.SlowAmount;
+        result.SlowDuration = this.SlowDuration;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -487,6 +521,21 @@ namespace Quantum.Prototypes {
         result.DamageMultiplier = this.DamageMultiplier;
         result.SpawnRadius = this.SpawnRadius;
         this.Settings.Materialize(frame, ref result.Settings, in context);
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.StatusEffectComponent))]
+  public unsafe partial class StatusEffectComponentPrototype : ComponentPrototype<Quantum.StatusEffectComponent> {
+    public FP SlowMultiplier;
+    partial void MaterializeUser(Frame frame, ref Quantum.StatusEffectComponent result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.StatusEffectComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.StatusEffectComponent result, in PrototypeMaterializationContext context = default) {
+        result.SlowMultiplier = this.SlowMultiplier;
         MaterializeUser(frame, ref result, in context);
     }
   }

@@ -14,6 +14,7 @@ namespace Tomorrow.Quantum
             public EntityRef Entity;
             public Transform3D* Transform;
             public EnemyAI* EnemyAI;
+            public StatusEffectComponent* StatusEffect;
         }
 
         public override void Update(Frame f, ref Filter enemy)
@@ -45,7 +46,7 @@ namespace Tomorrow.Quantum
             if (bestDistSqr < FP.MaxValue && enemy.EnemyAI->CanMove)
             {
                 var dir = (bestTarget.Position - mePos).Normalized;
-                var moveDelta = dir * enemy.EnemyAI->Speed;
+                var moveDelta = dir * enemy.EnemyAI->Speed * enemy.StatusEffect->SlowMultiplier;
                 enemy.Transform->Position += moveDelta;
             }
 

@@ -362,7 +362,7 @@ MonoBehaviour:
     TimeElapsed:
       RawValue: 0
     CycleDuration:
-      RawValue: 1310720
+      RawValue: 3276800
 --- !u!114 &3522200128369236728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -441,6 +441,14 @@ MonoBehaviour:
         Id:
           Value: 1266653282462716527
       Id: 2
+      MinLevel: 0
+      Weight: 1
+      CanBeRepeated:
+        Value: 1
+    - Prefab:
+        Id:
+          Value: 1525995945446780013
+      Id: 3
       MinLevel: 0
       Weight: 1
       CanBeRepeated:

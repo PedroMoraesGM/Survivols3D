@@ -67,7 +67,6 @@
     <Compile Include="Assets\Photon\Quantum\Simulation\SystemsConfig.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Systems\CollisionSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Game\Game.cs" />
-    <Compile Include="Assets\QuantumUser\Simulation\Systems\UpgradeS\HomingProjectileSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\CommandSetup.User.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Systems\PlayerRegistryResetSystem.cs" />
     <Compile Include="Assets\Photon\Quantum\Simulation\QuantumSimulationCore.cs" />
@@ -83,6 +82,7 @@
     <Compile Include="Assets\QuantumUser\Simulation\RuntimePlayer.User.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\FrameContext.User.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\SimulationConfig.User.cs" />
+    <Compile Include="Assets\QuantumUser\Simulation\Systems\StatusEffectSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Systems\ShootingSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Utils\Timer.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Systems\SpawnSystem.cs" />
@@ -91,7 +91,9 @@
     <Compile Include="Assets\QuantumUser\Simulation\Systems\ProjectileLifetimeSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Systems\GameSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Systems\EnemyResetSystem.cs" />
+    <Compile Include="Assets\QuantumUser\Simulation\Systems\Upgrades\AreaWeaponSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\SystemSetup.User.cs" />
+    <Compile Include="Assets\QuantumUser\Simulation\Systems\Upgrades\HomingProjectileSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\RuntimeConfig.User.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Systems\Waves\ProgressionSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Player\CharacterSystem.cs" />
@@ -102,11 +104,13 @@
     <None Include="Assets\QuantumUser\Simulation\Components\Character.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\Upgrade.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\PlayerRegistryComponent.qtn" />
+    <None Include="Assets\QuantumUser\Simulation\Components\StatusEffectComponent.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\Wall.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\SpawnWaves.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\Ball.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\XP.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Quantum.Simulation.asmref" />
+    <None Include="Assets\QuantumUser\Simulation\Components\AreaWeaponComponent.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\WeaponComponent.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\Projectile.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\Input.qtn" />

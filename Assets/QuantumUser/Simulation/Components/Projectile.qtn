@@ -1,8 +1,7 @@
 component Projectile {
-	EntityRef Owner;
 	FP Damage;
 	int HitsToDestroy;
 	FP Velocity;
-	FP Elapsed;
+	[ExcludeFromPrototype] FP Elapsed;
 	FP TimeToLive;
 }

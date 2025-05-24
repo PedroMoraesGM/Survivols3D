@@ -89,6 +89,8 @@
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumStaticSphereCollider3D.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumUnityRuntime.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumRunnerLocalSavegame.cs" />
+    <Compile Include="Assets\QuantumUser\View\Generated\QPrototypeAreaWeaponComponent.cs" />
+    <Compile Include="Assets\QuantumUser\View\Generated\QPrototypeSlowAreaComponent.cs" />
     <Compile Include="Assets\QuantumUser\View\Generated\QPrototypeCharacter.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QPrototypeNavMeshAvoidanceObstacle.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumMultiClientPlayerView.cs" />
@@ -112,6 +114,7 @@
     <Compile Include="Assets\Photon\Quantum\Runtime\QPrototypeTransform2D.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumGraphProfilerPing.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumStaticTerrainCollider3D.cs" />
+    <Compile Include="Assets\QuantumUser\View\Generated\QPrototypeStatusEffectComponent.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QPrototypePhysicsJoints2D.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumTaskRunnerJobs.cs" />
     <Compile Include="Assets\QuantumUser\View\Generated\QPrototypePlayerRegistryComponent.cs" />

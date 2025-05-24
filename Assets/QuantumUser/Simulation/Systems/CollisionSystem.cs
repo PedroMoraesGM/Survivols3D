@@ -46,8 +46,11 @@ namespace Tomorrow.Quantum
                 {
                     Debug.Log("[CollisionSystem] projectile hitted enemy!");
 
-                    f.Signals.OnEnemyHit(info.Other, projectile->Owner, projectile->Damage);
-                    f.Events.OnEnemyHit(info.Other, projectile->Owner, projectile->Damage);
+                    if (!f.Unsafe.TryGetPointer<OwnerData>(info.Entity, out var owner))
+                        return;
+
+                    f.Signals.OnEnemyHit(info.Other, owner->OwnerEntity, projectile->Damage);
+                    f.Events.OnEnemyHit(info.Other, owner->OwnerEntity, projectile->Damage);
                 }
 
                 projectile->HitsToDestroy--;

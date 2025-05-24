@@ -148,27 +148,6 @@ namespace Quantum.Prototypes.Unity {
       return result;
     }
   }
-  [System.SerializableAttribute()]
-  public unsafe partial class ProjectilePrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.ProjectilePrototype> {
-    public Quantum.QuantumEntityPrototype Owner;
-    public FP Damage;
-    public Int32 HitsToDestroy;
-    public FP Velocity;
-    public FP Elapsed;
-    public FP TimeToLive;
-    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.ProjectilePrototype prototype);
-    public override Quantum.Prototypes.ProjectilePrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
-      var result = new Quantum.Prototypes.ProjectilePrototype();
-      converter.Convert(this.Owner, out result.Owner);
-      converter.Convert(this.Damage, out result.Damage);
-      converter.Convert(this.HitsToDestroy, out result.HitsToDestroy);
-      converter.Convert(this.Velocity, out result.Velocity);
-      converter.Convert(this.Elapsed, out result.Elapsed);
-      converter.Convert(this.TimeToLive, out result.TimeToLive);
-      ConvertUser(converter, ref result);
-      return result;
-    }
-  }
 }
 #pragma warning restore 0109
 #pragma warning restore 1591

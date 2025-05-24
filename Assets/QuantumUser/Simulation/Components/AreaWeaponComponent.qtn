@@ -1,0 +1,15 @@
+component AreaWeaponComponent {
+	int						Damage;
+	int    DamageCooldown;      // ticks between shots
+	[ExcludeFromPrototype] int                     DamageCdTicks;       // accumulates ticks
+
+	bool				IsDamageTick;
+
+	[ExcludeFromPrototype] FP Elapsed;
+	FP TimeToLive;
+}
+
+component SlowAreaComponent {
+	FP SlowAmount;        // e.g. 0.5 means 50% speed
+	FP SlowDuration;      // duration in seconds
+}

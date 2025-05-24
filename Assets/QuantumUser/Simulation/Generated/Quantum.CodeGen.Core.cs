@@ -820,6 +820,46 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct AreaWeaponComponent : Quantum.IComponent {
+    public const Int32 SIZE = 32;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(0)]
+    public Int32 Damage;
+    [FieldOffset(8)]
+    public Int32 DamageCooldown;
+    [FieldOffset(4)]
+    [ExcludeFromPrototype()]
+    public Int32 DamageCdTicks;
+    [FieldOffset(12)]
+    public QBoolean IsDamageTick;
+    [FieldOffset(16)]
+    [ExcludeFromPrototype()]
+    public FP Elapsed;
+    [FieldOffset(24)]
+    public FP TimeToLive;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 7457;
+        hash = hash * 31 + Damage.GetHashCode();
+        hash = hash * 31 + DamageCooldown.GetHashCode();
+        hash = hash * 31 + DamageCdTicks.GetHashCode();
+        hash = hash * 31 + IsDamageTick.GetHashCode();
+        hash = hash * 31 + Elapsed.GetHashCode();
+        hash = hash * 31 + TimeToLive.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (AreaWeaponComponent*)ptr;
+        serializer.Stream.Serialize(&p->Damage);
+        serializer.Stream.Serialize(&p->DamageCdTicks);
+        serializer.Stream.Serialize(&p->DamageCooldown);
+        QBoolean.Serialize(&p->IsDamageTick, serializer);
+        FP.Serialize(&p->Elapsed, serializer);
+        FP.Serialize(&p->TimeToLive, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Ball : Quantum.IComponent {
     public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 8;
@@ -1247,24 +1287,22 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Projectile : Quantum.IComponent {
-    public const Int32 SIZE = 48;
+    public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
-    public EntityRef Owner;
-    [FieldOffset(16)]
     public FP Damage;
     [FieldOffset(0)]
     public Int32 HitsToDestroy;
-    [FieldOffset(40)]
-    public FP Velocity;
-    [FieldOffset(24)]
-    public FP Elapsed;
     [FieldOffset(32)]
+    public FP Velocity;
+    [FieldOffset(16)]
+    [ExcludeFromPrototype()]
+    public FP Elapsed;
+    [FieldOffset(24)]
     public FP TimeToLive;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 16141;
-        hash = hash * 31 + Owner.GetHashCode();
         hash = hash * 31 + Damage.GetHashCode();
         hash = hash * 31 + HitsToDestroy.GetHashCode();
         hash = hash * 31 + Velocity.GetHashCode();
@@ -1276,7 +1314,6 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (Projectile*)ptr;
         serializer.Stream.Serialize(&p->HitsToDestroy);
-        EntityRef.Serialize(&p->Owner, serializer);
         FP.Serialize(&p->Damage, serializer);
         FP.Serialize(&p->Elapsed, serializer);
         FP.Serialize(&p->TimeToLive, serializer);
@@ -1292,6 +1329,7 @@ namespace Quantum {
     [FieldOffset(4)]
     public Int32 FireCooldown;
     [FieldOffset(0)]
+    [ExcludeFromPrototype()]
     public Int32 FireCdTicks;
     [FieldOffset(16)]
     public FP MuzzleOffset;
@@ -1311,6 +1349,28 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->FireCooldown);
         AssetRef.Serialize(&p->ProjectilePrefab, serializer);
         FP.Serialize(&p->MuzzleOffset, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct SlowAreaComponent : Quantum.IComponent {
+    public const Int32 SIZE = 16;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(0)]
+    public FP SlowAmount;
+    [FieldOffset(8)]
+    public FP SlowDuration;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 21283;
+        hash = hash * 31 + SlowAmount.GetHashCode();
+        hash = hash * 31 + SlowDuration.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (SlowAreaComponent*)ptr;
+        FP.Serialize(&p->SlowAmount, serializer);
+        FP.Serialize(&p->SlowDuration, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -1353,6 +1413,29 @@ namespace Quantum {
         FP.Serialize(&p->SpawnRadius, serializer);
         FP.Serialize(&p->TimeSinceLastSpawn, serializer);
         Quantum.SpawnSettings.Serialize(&p->Settings, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct StatusEffectComponent : Quantum.IComponent {
+    public const Int32 SIZE = 16;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(0)]
+    public FP SlowMultiplier;
+    [FieldOffset(8)]
+    [ExcludeFromPrototype()]
+    public FP SlowTimer;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 10597;
+        hash = hash * 31 + SlowMultiplier.GetHashCode();
+        hash = hash * 31 + SlowTimer.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (StatusEffectComponent*)ptr;
+        FP.Serialize(&p->SlowMultiplier, serializer);
+        FP.Serialize(&p->SlowTimer, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -1523,6 +1606,8 @@ namespace Quantum {
       _ISignalOnLevelUpSystems = BuildSignalsArray<ISignalOnLevelUp>();
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
+      BuildSignalsArrayOnComponentAdded<Quantum.AreaWeaponComponent>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.AreaWeaponComponent>();
       BuildSignalsArrayOnComponentAdded<Quantum.Ball>();
       BuildSignalsArrayOnComponentRemoved<Quantum.Ball>();
       BuildSignalsArrayOnComponentAdded<Quantum.Character>();
@@ -1583,8 +1668,12 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<Quantum.Projectile>();
       BuildSignalsArrayOnComponentAdded<Quantum.ShootingWeaponComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.ShootingWeaponComponent>();
+      BuildSignalsArrayOnComponentAdded<Quantum.SlowAreaComponent>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.SlowAreaComponent>();
       BuildSignalsArrayOnComponentAdded<Quantum.SpawnerComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.SpawnerComponent>();
+      BuildSignalsArrayOnComponentAdded<Quantum.StatusEffectComponent>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.StatusEffectComponent>();
       BuildSignalsArrayOnComponentAdded<Transform2D>();
       BuildSignalsArrayOnComponentRemoved<Transform2D>();
       BuildSignalsArrayOnComponentAdded<Transform2DVertical>();
@@ -1748,6 +1837,7 @@ namespace Quantum {
       SerializeInput = Quantum.Input.Serialize;
     }
     static partial void RegisterSimulationTypesGen(TypeRegistry typeRegistry) {
+      typeRegistry.Register(typeof(Quantum.AreaWeaponComponent), Quantum.AreaWeaponComponent.SIZE);
       typeRegistry.Register(typeof(AssetGuid), AssetGuid.SIZE);
       typeRegistry.Register(typeof(AssetRef), AssetRef.SIZE);
       typeRegistry.Register(typeof(Quantum.Ball), Quantum.Ball.SIZE);
@@ -1842,10 +1932,12 @@ namespace Quantum {
       typeRegistry.Register(typeof(Shape2D), Shape2D.SIZE);
       typeRegistry.Register(typeof(Shape3D), Shape3D.SIZE);
       typeRegistry.Register(typeof(Quantum.ShootingWeaponComponent), Quantum.ShootingWeaponComponent.SIZE);
+      typeRegistry.Register(typeof(Quantum.SlowAreaComponent), Quantum.SlowAreaComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.SpawnSettings), Quantum.SpawnSettings.SIZE);
       typeRegistry.Register(typeof(Quantum.SpawnerComponent), Quantum.SpawnerComponent.SIZE);
       typeRegistry.Register(typeof(SpringJoint), SpringJoint.SIZE);
       typeRegistry.Register(typeof(SpringJoint3D), SpringJoint3D.SIZE);
+      typeRegistry.Register(typeof(Quantum.StatusEffectComponent), Quantum.StatusEffectComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.Timer), Quantum.Timer.SIZE);
       typeRegistry.Register(typeof(Transform2D), Transform2D.SIZE);
       typeRegistry.Register(typeof(Transform2DVertical), Transform2DVertical.SIZE);
@@ -1860,8 +1952,9 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum._globals_), Quantum._globals_.SIZE);
     }
     static partial void InitComponentTypeIdGen() {
-      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 20)
+      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 23)
         .AddBuiltInComponents()
+        .Add<Quantum.AreaWeaponComponent>(Quantum.AreaWeaponComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.Ball>(Quantum.Ball.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.Character>(Quantum.Character.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.EnemyAI>(Quantum.EnemyAI.Serialize, null, null, ComponentFlags.None)
@@ -1877,7 +1970,9 @@ namespace Quantum {
         .Add<Quantum.ProgressionComponent>(Quantum.ProgressionComponent.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.Projectile>(Quantum.Projectile.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.ShootingWeaponComponent>(Quantum.ShootingWeaponComponent.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.SlowAreaComponent>(Quantum.SlowAreaComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.SpawnerComponent>(Quantum.SpawnerComponent.Serialize, null, null, ComponentFlags.Singleton)
+        .Add<Quantum.StatusEffectComponent>(Quantum.StatusEffectComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.UpgradeDataComponent>(Quantum.UpgradeDataComponent.Serialize, null, Quantum.UpgradeDataComponent.OnRemoved, ComponentFlags.Singleton)
         .Add<Quantum.Wall>(Quantum.Wall.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.XPComponent>(Quantum.XPComponent.Serialize, null, null, ComponentFlags.None)

@@ -23,8 +23,8 @@ public unsafe class ProgressionSystem : SystemMainThread
             // Interval *= 0.67 (i.e. -33%), BatchSize *= 1.5, HP×=2, Damage×=1.25
             spawner->CurrentInterval *= FP._0_75;
             spawner->CurrentBatchSize = (int)(spawner->CurrentBatchSize * FP._1_50);
-            spawner->HPMultiplier *= FP._2;
-            spawner->DamageMultiplier *= FP._1_25;
+            spawner->HPMultiplier *= FP._1_50;
+            spawner->DamageMultiplier *= FP._1_50;
         }
     }
 }
