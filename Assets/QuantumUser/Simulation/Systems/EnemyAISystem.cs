@@ -13,12 +13,13 @@ namespace Tomorrow.Quantum
         {
             public EntityRef Entity;
             public Transform3D* Transform;
-            public PhysicsBody3D* Body;
             public EnemyAI* EnemyAI;
         }
 
         public override void Update(Frame f, ref Filter enemy)
         {
+            if (!f.IsVerified) return;
+
             // 1) Grab the singleton registry
             var registryComp = f.GetSingleton<PlayerRegistryComponent>();
             var players = f.ResolveList(registryComp.ActivePlayers);
@@ -41,12 +42,11 @@ namespace Tomorrow.Quantum
             }
 
             // 3) Chase if found
-            if (bestDistSqr < FP.MaxValue)
+            if (bestDistSqr < FP.MaxValue && enemy.EnemyAI->CanMove)
             {
                 var dir = (bestTarget.Position - mePos).Normalized;
                 var moveDelta = dir * enemy.EnemyAI->Speed;
-                enemy.Body->Velocity = moveDelta;
-                enemy.Body->ClearForce();
+                enemy.Transform->Position += moveDelta;
             }
 
             // Check if distance is very close to try hit player
@@ -54,17 +54,6 @@ namespace Tomorrow.Quantum
             {
                 f.Signals.OnPlayerHit(bestTarget.Entity, enemy.Entity, enemy.EnemyAI->Damage);
                 f.Events.OnPlayerHit(bestTarget.Entity, enemy.Entity, enemy.EnemyAI->Damage);
-            }
-        }
-
-        private void TryHitPlayer(Frame f, TriggerInfo3D info)
-        {
-            if (f.Unsafe.TryGetPointer<Character>(info.Entity, out Character* player))
-            {
-                if (f.Unsafe.TryGetPointer<EnemyAI>(info.Other, out EnemyAI* enemy))
-                {
-                    
-                }
             }
         }
 

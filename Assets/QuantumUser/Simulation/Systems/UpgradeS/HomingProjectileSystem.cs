@@ -8,13 +8,12 @@ namespace Tomorrow.Quantum
     [Preserve]
     public unsafe class HomingProjectileSystem :
       SystemMainThreadFilter<HomingProjectileSystem.Filter>,
-      ISignalOnCollisionEnter3D
+      ISignalOnTriggerEnter3D, ISignalOnTrigger3D
     {
         public struct Filter
         {
             public EntityRef Entity;
             public Transform3D* Transform;
-            public PhysicsBody3D* Body;
             public HomingProjectileComponent* Missile;
         }
 
@@ -28,7 +27,7 @@ namespace Tomorrow.Quantum
             // Acquire target if needed
             if (!m.HasTarget || m.CurrentTarget.IsValid)
             {
-                m.HasTarget = TryAcquireClosestEnemy(f, pos, out m.CurrentTarget);
+                m.HasTarget = TryAcquireClosestEnemy(f, filter, pos, out m.CurrentTarget);
             }
 
             // Compute steering
@@ -38,6 +37,8 @@ namespace Tomorrow.Quantum
                 var toTarget = (targetPos - pos).Normalized;
                 dir = (filter.Transform->Forward * (FP._1 - m.HomingStrength)
                        + toTarget * m.HomingStrength).Normalized;
+                
+                filter.Transform->LookAt(targetPos);
             }
             else
             {
@@ -48,12 +49,11 @@ namespace Tomorrow.Quantum
             }
 
             // Apply velocity
-            filter.Body->Velocity = dir * m.Speed;
-            filter.Body->ClearForce();
+            filter.Transform->Position += dir * m.Speed;
         }
 
         // Helper to pick the nearest EnemyAI
-        bool TryAcquireClosestEnemy(Frame f, FPVector3 from, out EntityRef best)
+        bool TryAcquireClosestEnemy(Frame f, Filter filter, FPVector3 from, out EntityRef best)
         {
             best = EntityRef.None;
             FP bestDsqr = FP.MaxValue;
@@ -63,7 +63,7 @@ namespace Tomorrow.Quantum
                 var e = block.Entity;
                 var p = f.Unsafe.GetPointer<Transform3D>(e)->Position;
                 FP dsq = (p - from).SqrMagnitude;
-                if (dsq < bestDsqr)
+                if (dsq < bestDsqr && (filter.Missile->PreviousTarget != e || filter.Missile->CanRepeatTarget))
                 {
                     bestDsqr = dsq;
                     best = e;
@@ -74,7 +74,7 @@ namespace Tomorrow.Quantum
         }
 
         // 2) Collision signal for bounces
-        public void OnCollisionEnter3D(Frame f, CollisionInfo3D info)
+        public void OnTriggerEnter3D(Frame f, TriggerInfo3D info)
         {
             // Only handle collisions where the *projectile* entity has a BouncyMissileComponent
             if (!f.Unsafe.TryGetPointer(info.Entity, out HomingProjectileComponent* bm))
@@ -90,6 +90,7 @@ namespace Tomorrow.Quantum
             if (bm->RemainingBounces > 0)
             {
                 // Reset so next tick it will retarget
+                bm->PreviousTarget = bm->CurrentTarget;
                 bm->HasTarget = false;
                 bm->CurrentTarget = EntityRef.None;
             }
@@ -98,9 +99,23 @@ namespace Tomorrow.Quantum
                 //// No bounces left ? destroy
                 //f.Destroy(info.Entity);
             }
+        }
 
-            // f.Signals.OnEnemyHit(info.Other, /*owner*/..., /*damage*/...);
-            // f.Events.OnEnemyHit(info.Other, /*owner*/..., /*damage*/...);
+        public void OnTrigger3D(Frame f, TriggerInfo3D info)
+        {
+            if (f.Unsafe.TryGetPointer<HomingProjectileComponent>(info.Entity, out HomingProjectileComponent* projectile))
+            {
+                if (f.Unsafe.TryGetPointer<EnemyAI>(info.Other, out EnemyAI* enemy))
+                {
+                    if (projectile->CanDragTarget)
+                    {
+                        FPVector3 move = (f.Unsafe.GetPointer<Transform3D>(info.Entity)->Forward) + (f.Unsafe.GetPointer<Transform3D>(info.Entity)->Up * FP._0_04);
+                        FPVector3 pos = f.Unsafe.GetPointer<Transform3D>(info.Other)->Position;
+                        f.Unsafe.GetPointer<Transform3D>(info.Other)->Position = new FPVector3(pos.X + move.X, FPMath.Max( pos.Y + move.Y, -FP._6), pos.Z + move.Z);
+
+                    }
+                }
+            }
         }
     }
 }

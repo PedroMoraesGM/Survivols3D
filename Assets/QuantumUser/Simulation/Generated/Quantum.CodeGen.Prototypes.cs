@@ -110,6 +110,7 @@ namespace Quantum.Prototypes {
     public FP CloseDamageRange;
     public FP Speed;
     public FP MinHeightLimit;
+    public QBoolean CanMove;
     partial void MaterializeUser(Frame frame, ref Quantum.EnemyAI result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.EnemyAI component = default;
@@ -123,6 +124,7 @@ namespace Quantum.Prototypes {
         result.CloseDamageRange = this.CloseDamageRange;
         result.Speed = this.Speed;
         result.MinHeightLimit = this.MinHeightLimit;
+        result.CanMove = this.CanMove;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -235,6 +237,8 @@ namespace Quantum.Prototypes {
     public FP Speed;
     public FP HomingStrength;
     public QBoolean HasTarget;
+    public QBoolean CanDragTarget;
+    public QBoolean CanRepeatTarget;
     public MapEntityId CurrentTarget;
     public MapEntityId PreviousTarget;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -247,6 +251,8 @@ namespace Quantum.Prototypes {
         result.Speed = this.Speed;
         result.HomingStrength = this.HomingStrength;
         result.HasTarget = this.HasTarget;
+        result.CanDragTarget = this.CanDragTarget;
+        result.CanRepeatTarget = this.CanRepeatTarget;
         PrototypeValidator.FindMapEntity(this.CurrentTarget, in context, out result.CurrentTarget);
         PrototypeValidator.FindMapEntity(this.PreviousTarget, in context, out result.PreviousTarget);
     }

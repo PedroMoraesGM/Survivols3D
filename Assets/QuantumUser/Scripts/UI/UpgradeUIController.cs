@@ -15,6 +15,17 @@ public class UpgradeUIController : MonoBehaviour
     {
         QuantumEvent.Subscribe(this, (EventOnChooseUpgrades e) => OnRewardsDisplay(e));
         QuantumEvent.Subscribe(this, (EventOnHasChoosenUpgrades e) => OnHasChoosenUpgrades(e));
+        QuantumEvent.Subscribe(this, (EventOnPlayerDefeated e) => OnPlayerDefeated(e));
+
+    }
+
+    private void OnPlayerDefeated(EventOnPlayerDefeated e)
+    {
+        var f = e.Game.Frames.Verified;
+        if (!f.TryGet(e.Target, out PlayerLink playerLink)) return;
+        if (!e.Game.PlayerIsLocal(playerLink.Player)) return;
+
+        HideUI();
     }
 
     private void OnHasChoosenUpgrades(EventOnHasChoosenUpgrades e)
@@ -91,11 +102,14 @@ public class UpgradeUIController : MonoBehaviour
                 .SetEase(Ease.OutBack)
                 .SetDelay(0.1f * i);
         }
-    }
+    }    
 
     private void OnCardSelected()
     {
-        // hide UI
+        HideUI();
+    }
+    private void HideUI()
+    {
         rewardsFrame.DOFade(0, 0.25f).OnComplete(() =>
         {
             rewardsFrame.gameObject.SetActive(false);

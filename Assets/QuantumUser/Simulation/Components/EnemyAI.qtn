@@ -9,6 +9,8 @@ component EnemyAI {
 	//Move
 	FP Speed;
 	FP MinHeightLimit;
+
+	bool CanMove;
 }
 
 struct EnemyInfo {

@@ -919,20 +919,22 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct EnemyAI : Quantum.IComponent {
-    public const Int32 SIZE = 48;
+    public const Int32 SIZE = 56;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(16)]
-    public FP Health;
-    [FieldOffset(40)]
-    public FP XpDrop;
-    [FieldOffset(8)]
-    public FP Damage;
-    [FieldOffset(0)]
-    public FP CloseDamageRange;
-    [FieldOffset(32)]
-    public FP Speed;
     [FieldOffset(24)]
+    public FP Health;
+    [FieldOffset(48)]
+    public FP XpDrop;
+    [FieldOffset(16)]
+    public FP Damage;
+    [FieldOffset(8)]
+    public FP CloseDamageRange;
+    [FieldOffset(40)]
+    public FP Speed;
+    [FieldOffset(32)]
     public FP MinHeightLimit;
+    [FieldOffset(0)]
+    public QBoolean CanMove;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 8737;
@@ -942,11 +944,13 @@ namespace Quantum {
         hash = hash * 31 + CloseDamageRange.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + MinHeightLimit.GetHashCode();
+        hash = hash * 31 + CanMove.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (EnemyAI*)ptr;
+        QBoolean.Serialize(&p->CanMove, serializer);
         FP.Serialize(&p->CloseDamageRange, serializer);
         FP.Serialize(&p->Damage, serializer);
         FP.Serialize(&p->Health, serializer);
@@ -1075,19 +1079,23 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HomingProjectileComponent : Quantum.IComponent {
-    public const Int32 SIZE = 40;
+    public const Int32 SIZE = 48;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public Int32 RemainingBounces;
-    [FieldOffset(32)]
+    [FieldOffset(40)]
     public FP Speed;
-    [FieldOffset(24)]
+    [FieldOffset(32)]
     public FP HomingStrength;
-    [FieldOffset(4)]
+    [FieldOffset(12)]
     public QBoolean HasTarget;
+    [FieldOffset(4)]
+    public QBoolean CanDragTarget;
     [FieldOffset(8)]
-    public EntityRef CurrentTarget;
+    public QBoolean CanRepeatTarget;
     [FieldOffset(16)]
+    public EntityRef CurrentTarget;
+    [FieldOffset(24)]
     public EntityRef PreviousTarget;
     public override Int32 GetHashCode() {
       unchecked { 
@@ -1096,6 +1104,8 @@ namespace Quantum {
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + HomingStrength.GetHashCode();
         hash = hash * 31 + HasTarget.GetHashCode();
+        hash = hash * 31 + CanDragTarget.GetHashCode();
+        hash = hash * 31 + CanRepeatTarget.GetHashCode();
         hash = hash * 31 + CurrentTarget.GetHashCode();
         hash = hash * 31 + PreviousTarget.GetHashCode();
         return hash;
@@ -1104,6 +1114,8 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (HomingProjectileComponent*)ptr;
         serializer.Stream.Serialize(&p->RemainingBounces);
+        QBoolean.Serialize(&p->CanDragTarget, serializer);
+        QBoolean.Serialize(&p->CanRepeatTarget, serializer);
         QBoolean.Serialize(&p->HasTarget, serializer);
         EntityRef.Serialize(&p->CurrentTarget, serializer);
         EntityRef.Serialize(&p->PreviousTarget, serializer);

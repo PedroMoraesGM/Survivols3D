@@ -3,6 +3,8 @@ component HomingProjectileComponent {
   FP      Speed;
   FP      HomingStrength;
   bool    HasTarget;
+  bool	  CanDragTarget;
+  bool	  CanRepeatTarget;
   EntityRef CurrentTarget;
   EntityRef PreviousTarget;
 }

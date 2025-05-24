@@ -93,6 +93,8 @@ namespace Quantum.Prototypes.Unity {
     public FP Speed;
     public FP HomingStrength;
     public QBoolean HasTarget;
+    public QBoolean CanDragTarget;
+    public QBoolean CanRepeatTarget;
     public Quantum.QuantumEntityPrototype CurrentTarget;
     public Quantum.QuantumEntityPrototype PreviousTarget;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.HomingProjectileComponentPrototype prototype);
@@ -102,6 +104,8 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.Speed, out result.Speed);
       converter.Convert(this.HomingStrength, out result.HomingStrength);
       converter.Convert(this.HasTarget, out result.HasTarget);
+      converter.Convert(this.CanDragTarget, out result.CanDragTarget);
+      converter.Convert(this.CanRepeatTarget, out result.CanRepeatTarget);
       converter.Convert(this.CurrentTarget, out result.CurrentTarget);
       converter.Convert(this.PreviousTarget, out result.PreviousTarget);
       ConvertUser(converter, ref result);

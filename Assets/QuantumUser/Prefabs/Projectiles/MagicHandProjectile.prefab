@@ -183,7 +183,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3592403866736512146}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.9948554, z: -0, w: 0.10130528}
+  m_LocalRotation: {x: -0, y: 0.85693365, z: -0, w: -0.5154267}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
@@ -356,7 +356,7 @@ MonoBehaviour:
       RawValue: 0
   PhysicsCollider:
     IsEnabled: 1
-    IsTrigger: 0
+    IsTrigger: 1
     Material:
       Id:
         Value: 2301746459976711362
@@ -425,9 +425,9 @@ MonoBehaviour:
     LayerSource: 0
     Layer: 9
     CallbackFlags:
-      Value: 1170
+      Value: 466
   PhysicsBody:
-    IsEnabled: 1
+    IsEnabled: 0
     Config2D: 116
     Config3D: 58
     RotationFreeze: 255
@@ -610,8 +610,8 @@ MonoBehaviour:
   Prototype:
     Owner: {fileID: 0}
     Damage:
-      RawValue: 327680
-    HitsToDestroy: 3
+      RawValue: 131072
+    HitsToDestroy: 5
     Velocity:
       RawValue: 0
     Elapsed:
@@ -631,12 +631,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    RemainingBounces: 3
+    RemainingBounces: 0
     Speed:
-      RawValue: 3276800
+      RawValue: 49152
     HomingStrength:
       RawValue: 65536
     HasTarget:
       Value: 0
+    CanDragTarget:
+      Value: 1
+    CanRepeatTarget:
+      Value: 1
     CurrentTarget: {fileID: 0}
     PreviousTarget: {fileID: 0}

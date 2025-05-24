@@ -1,4 +1,5 @@
 using Quantum;
+using UnityEngine;
 using UnityEngine.Scripting;
 
 [Preserve]
@@ -7,6 +8,7 @@ public unsafe class ProjectileLifetimeSystem : SystemMainThreadFilter<Projectile
     public struct Filter
     {
         public EntityRef Entity;
+        public Transform3D* Transform;
         public Projectile* Projectile;
     }
 
@@ -17,6 +19,9 @@ public unsafe class ProjectileLifetimeSystem : SystemMainThreadFilter<Projectile
         if (p.Elapsed >= p.TimeToLive)
         {
             f.Destroy(filter.Entity);
+            return;
         }
+
+        filter.Transform->Position += filter.Transform->Forward * filter.Projectile->Velocity;
     }
 }

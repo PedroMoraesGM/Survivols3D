@@ -14,7 +14,7 @@ PrefabInstance:
       objectReference: {fileID: 9100000, guid: b1e8fd631998ba443847eac07814be79, type: 2}
     - target: {fileID: 2411738147683654810, guid: 34e9040c5f039124bbebc480af942488, type: 3}
       propertyPath: Prototype.Speed.RawValue
-      value: 196608
+      value: 3511
       objectReference: {fileID: 0}
     - target: {fileID: 2411738147683654810, guid: 34e9040c5f039124bbebc480af942488, type: 3}
       propertyPath: Prototype.Damage.RawValue

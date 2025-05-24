@@ -40,7 +40,7 @@ namespace Tomorrow.Quantum
             FPVector3 forward = ownerTrasnform.Forward;
             FPVector3 spawnPos = ownerTrasnform.Position + forward * filter.WeaponComponent->MuzzleOffset;
 
-            // 2.b Instantiate projectile (must match your ProjectilePrefab’s Archetype)
+            // 2.b Instantiate projectile (must match your ProjectilePrefabï¿½s Archetype)
             var proj = f.Create(filter.WeaponComponent->ProjectilePrefab);
             var projComp = f.Unsafe.GetPointer<Projectile>(proj);
             projComp->Owner = filter.Entity;
@@ -50,11 +50,11 @@ namespace Tomorrow.Quantum
             projTransform->Position = spawnPos;
             projTransform->Rotation = ownerTrasnform.Rotation;
 
-            // 2.d Initialize its PhysicsBody3D velocity
-            var body = f.Unsafe.GetPointer<PhysicsBody3D>(proj);
-            body->Velocity = forward * projComp->Velocity;
+            //// 2.d Initialize its PhysicsBody3D velocity
+            //var body = f.Unsafe.GetPointer<PhysicsBody3D>(proj);
+            //body->Velocity = forward * projComp->Velocity;
 
-            // 3) Reset your player’s cooldown
+            // 3) Reset your playerï¿½s cooldown
             ply.FireCooldown = ply.FireCdTicks;
         }
     }

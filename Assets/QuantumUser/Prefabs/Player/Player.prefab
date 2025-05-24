@@ -955,7 +955,7 @@ MonoBehaviour:
     OwnerEntity: {fileID: -8659347868862416721}
     ProjectilePrefab:
       Id:
-        Value: 1361179226252959751
+        Value: 1517981128656675034
     FireCooldown: 50
     FireCdTicks: 50
     MuzzleOffset:
