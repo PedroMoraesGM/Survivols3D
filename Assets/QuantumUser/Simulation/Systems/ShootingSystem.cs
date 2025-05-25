@@ -1,6 +1,7 @@
 using UnityEngine.Scripting;
 using Photon.Deterministic;
 using Quantum;
+using UnityEngine;
 
 namespace Tomorrow.Quantum
 {
@@ -18,7 +19,7 @@ namespace Tomorrow.Quantum
         {
             if (!filter.OwnerData->OwnerEntity.IsValid) return;
 
-            if (f.Get<Character>(filter.OwnerData->OwnerEntity).IsDead) return;
+            if (f.Get<HealthComponent>(filter.OwnerData->OwnerEntity).IsDead) return;
 
             if (f.Get<PlayerLink>(filter.OwnerData->OwnerEntity).Player == PlayerRef.None) return;
 
@@ -36,17 +37,22 @@ namespace Tomorrow.Quantum
             var ownerTrasnform = f.Get<Transform3D>(filter.OwnerData->OwnerEntity);
 
             FPVector3 forward = ownerTrasnform.Forward;
-            FPVector3 spawnPos = ownerTrasnform.Position + forward * filter.WeaponComponent->MuzzleOffset;
+            FPVector3 spawnPos = ownerTrasnform.Position + forward * filter.WeaponComponent->MuzzleOffset.X + ownerTrasnform.Up * filter.WeaponComponent->MuzzleOffset.Y;
 
             // Instantiate projectile (must match your ProjectilePrefab�s Archetype)
             var proj = f.Create(filter.WeaponComponent->ProjectilePrefab);
-            var projComp = f.Unsafe.GetPointer<OwnerData>(proj);
+            if (!f.Unsafe.TryGetPointer<OwnerData>(proj, out var projComp))
+            {
+                f.Set(proj, new OwnerData { });
+                projComp = f.Unsafe.GetPointer<OwnerData>(proj);
+            }
             projComp->OwnerEntity = filter.OwnerData->OwnerEntity;
 
             // Initialize its Transform
+            var character = f.Unsafe.GetPointer<Character>(filter.OwnerData->OwnerEntity);
             var projTransform = f.Unsafe.GetPointer<Transform3D>(proj);
             projTransform->Position = spawnPos;
-            projTransform->Rotation = ownerTrasnform.Rotation;
+            projTransform->Rotation = FPQuaternion.Euler(character->VerticalLookPitch, ownerTrasnform.Rotation.AsEuler.Y, ownerTrasnform.Rotation.AsEuler.Z);
 
             // Reset players cooldown
             ply.FireCdTicks = ply.FireCooldown;

@@ -17,11 +17,11 @@ namespace QuantumUser.View.Controllers
 
         private void OnEnable()
         {
-            QuantumEvent.Subscribe(this, (EventOnEnemyDefeated sig) => OnEnemyDefeated(sig));
-            QuantumEvent.Subscribe(this, (EventOnEnemyHit sig) => OnEnemyHit(sig));
+            QuantumEvent.Subscribe(this, (EventOnDefeated sig) => OnEnemyDefeated(sig));
+            QuantumEvent.Subscribe(this, (EventOnHit sig) => OnEnemyHit(sig));
         }
 
-        private void OnEnemyDefeated(EventOnEnemyDefeated sig)
+        private void OnEnemyDefeated(EventOnDefeated sig)
         {
             if (sig.Target != EntityRef) return;
 
@@ -29,7 +29,7 @@ namespace QuantumUser.View.Controllers
             if(destroyEffect) Instantiate(destroyEffect, transform.position, Quaternion.identity);
         }
 
-        private void OnEnemyHit(EventOnEnemyHit sig)
+        private void OnEnemyHit(EventOnHit sig)
         {
             if (sig.Target != EntityRef) return;
 

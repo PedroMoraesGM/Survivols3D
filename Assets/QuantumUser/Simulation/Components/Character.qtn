@@ -1,9 +1,4 @@
 component Character {
-
-	FP MaxHealth;
-	FP CurrentHealth;
-	QBoolean IsDead;
-
 	// Move 
 	FP MoveSpeed;
 	FP HorizontalTurnSpeedDegrees;
@@ -15,8 +10,3 @@ component Character {
 
 	[ExcludeFromPrototype] FPVector2 LookDelta;
 }
-
-signal OnPlayerHit(EntityRef target, EntityRef dealer,  FP damage);
-signal OnPlayerDefeated(EntityRef target, EntityRef dealer );
-event OnPlayerHit { EntityRef Target; EntityRef Dealer; FP Damage;  }
-event OnPlayerDefeated { EntityRef Target; EntityRef Dealer; }

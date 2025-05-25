@@ -51,9 +51,6 @@ namespace Tomorrow.Quantum
             if (!f.Unsafe.TryGetPointer<AreaWeaponComponent>(info.Entity, out var areaWeapon))
                 return;
 
-            if (!f.Unsafe.TryGetPointer<EnemyAI>(info.Other, out var enemy))
-                return;
-
             // Check for Slow area
             if(f.Unsafe.TryGetPointer<SlowAreaComponent>(info.Entity, out var slowArea))
             {
@@ -73,8 +70,8 @@ namespace Tomorrow.Quantum
                 return;
 
             // Apply damage 
-            f.Signals.OnEnemyHit(info.Other, owner->OwnerEntity, areaWeapon->Damage);
-            f.Events.OnEnemyHit(info.Other, owner->OwnerEntity, areaWeapon->Damage);
+            f.Signals.OnHit(info.Other, owner->OwnerEntity, areaWeapon->Damage);
+            f.Events.OnHit(info.Other, owner->OwnerEntity, areaWeapon->Damage);
         }
     }
 }

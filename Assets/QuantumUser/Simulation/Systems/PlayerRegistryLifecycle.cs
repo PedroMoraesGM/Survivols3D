@@ -15,8 +15,6 @@ namespace Tomorrow.Quantum
             //c->ActivePlayers = f.AllocateList<PlayerInfo>(16);
             // Allocate an empty list in the frame heap
             c->ActivePlayers = f.AllocateList<PlayerInfo>();
-
-            //Debug.Log("[PlayerRegistryLifecycle] OnAdded");
         }
 
         public void OnRemoved(Frame f, EntityRef e, PlayerRegistryComponent* c)
@@ -24,8 +22,6 @@ namespace Tomorrow.Quantum
             // Free & nullify so Quantum can serialize correctly
             f.FreeList(c->ActivePlayers);
             c->ActivePlayers = default;
-
-            //Debug.Log("[PlayerRegistryLifecycle] OnRemoved");
         }
     }
 }

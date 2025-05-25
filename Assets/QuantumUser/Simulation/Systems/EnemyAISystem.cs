@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Tomorrow.Quantum
 {
     [Preserve]
-    public unsafe class EnemyAISystem : SystemMainThreadFilter<EnemyAISystem.Filter>, ISignalOnEnemyHit
+    public unsafe class EnemyAISystem : SystemMainThreadFilter<EnemyAISystem.Filter>, ISignalOnHit
     {
         public struct Filter
         {
@@ -53,8 +53,8 @@ namespace Tomorrow.Quantum
             // Check if distance is very close to try hit player
             if (enemy.EnemyAI->CloseDamageRange > bestDistSqr)
             {
-                f.Signals.OnPlayerHit(bestTarget.Entity, enemy.Entity, enemy.EnemyAI->Damage);
-                f.Events.OnPlayerHit(bestTarget.Entity, enemy.Entity, enemy.EnemyAI->Damage);
+                f.Signals.OnHit(bestTarget.Entity, enemy.Entity, enemy.EnemyAI->Damage);
+                f.Events.OnHit(bestTarget.Entity, enemy.Entity, enemy.EnemyAI->Damage);
             }
         }
 
@@ -62,22 +62,22 @@ namespace Tomorrow.Quantum
         {
             if (f.Unsafe.TryGetPointer(target, out EnemyAI* enemy))
             {
-                enemy->Health -= damage;
+                f.Unsafe.TryGetPointer(target, out HealthComponent* health);
+                health->CurrentHealth -= damage;
 
-                if(enemy->Health < 0)
+                if(health->CurrentHealth < 0)
                 {
-                    f.Signals.OnEnemyDefeated(target,dealer);
-                    f.Events.OnEnemyDefeated(target, dealer);
+                    f.Signals.OnDefeated(target, dealer);
+                    f.Events.OnDefeated(target, dealer);
                     f.Destroy(target); 
                     Debug.Log("Enemy destroyed");
                 }
             }
         }
 
-        public void OnEnemyHit(Frame f, EntityRef target, EntityRef dealer, FP damage)
+        public void OnHit(Frame f, EntityRef target, EntityRef dealer, FP damage)
         {
             HitEnemy(f, target, dealer, damage);
-            
         }
     }
 }

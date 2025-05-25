@@ -11,6 +11,7 @@ namespace Tomorrow.Quantum
         public struct Filter
         {
             public EntityRef Entity;
+            public HealthComponent* HealthComponent;
             public PlayerLink* Link;
             public Transform3D* Transform;
         }
@@ -19,6 +20,9 @@ namespace Tomorrow.Quantum
         {
             // Only include real players
             if (filter.Link->Player == PlayerRef.None)
+                return;
+
+            if (filter.HealthComponent->IsDead)
                 return;
 
             // Grab the singleton registry

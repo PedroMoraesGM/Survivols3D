@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8618597181333356685, guid: 34e9040c5f039124bbebc480af942488, type: 3}
+      propertyPath: Prototype.MaxHealth.RawValue
+      value: 3932160
+      objectReference: {fileID: 0}
     - target: {fileID: 1014936992563765277, guid: 34e9040c5f039124bbebc480af942488, type: 3}
       propertyPath: m_Controller
       value: 

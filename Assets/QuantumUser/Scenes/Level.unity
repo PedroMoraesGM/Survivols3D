@@ -3259,6 +3259,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Game
       objectReference: {fileID: 0}
+    - target: {fileID: 949806551900884606, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
+      propertyPath: Prototype.Entries.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 949806551900884606, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
+      propertyPath: Prototype.Entries.Array.data[4].Id
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 949806551900884606, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
+      propertyPath: Prototype.Entries.Array.data[4].Weight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 949806551900884606, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
+      propertyPath: Prototype.Entries.Array.data[4].Prefab.Id.Value
+      value: 1447083690833105115
+      objectReference: {fileID: 0}
+    - target: {fileID: 949806551900884606, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
+      propertyPath: Prototype.Entries.Array.data[4].CanBeRepeated.Value
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7207393148808095406, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

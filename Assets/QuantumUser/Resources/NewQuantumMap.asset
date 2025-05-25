@@ -433,4 +433,12 @@ MonoBehaviour:
           Weight: 1
           CanBeRepeated:
             Value: 1
+        - Prefab:
+            Id:
+              Value: 1447083690833105115
+          Id: 4
+          MinLevel: 0
+          Weight: 1
+          CanBeRepeated:
+            Value: 1
         ChoicesPerLevel: 3

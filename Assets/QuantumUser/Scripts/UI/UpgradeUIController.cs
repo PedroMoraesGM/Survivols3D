@@ -15,11 +15,11 @@ public class UpgradeUIController : MonoBehaviour
     {
         QuantumEvent.Subscribe(this, (EventOnChooseUpgrades e) => OnRewardsDisplay(e));
         QuantumEvent.Subscribe(this, (EventOnHasChoosenUpgrades e) => OnHasChoosenUpgrades(e));
-        QuantumEvent.Subscribe(this, (EventOnPlayerDefeated e) => OnPlayerDefeated(e));
+        QuantumEvent.Subscribe(this, (EventOnDefeated e) => OnPlayerDefeated(e));
 
     }
 
-    private void OnPlayerDefeated(EventOnPlayerDefeated e)
+    private void OnPlayerDefeated(EventOnDefeated e)
     {
         var f = e.Game.Frames.Verified;
         if (!f.TryGet(e.Target, out PlayerLink playerLink)) return;
@@ -30,6 +30,10 @@ public class UpgradeUIController : MonoBehaviour
 
     private void OnHasChoosenUpgrades(EventOnHasChoosenUpgrades e)
     {
+        var f = e.Game.Frames.Verified;
+        if (!f.TryGet(e.Target, out PlayerLink playerLink)) return;
+        if (!e.Game.PlayerIsLocal(playerLink.Player)) return;
+
         // Find the instantiated card whose ID matches the player's choice
         foreach (var card in rewardsContent.GetComponentsInChildren<UpgradeCardItem>(true))
         {
@@ -57,7 +61,6 @@ public class UpgradeUIController : MonoBehaviour
         var f = e.Game.Frames.Verified;
         if (!f.TryGet(e.Target, out PlayerLink playerLink)) return;
         if (!e.Game.PlayerIsLocal(playerLink.Player)) return;
-
 
         // Show the panel
         rewardsFrame.gameObject.SetActive(true);

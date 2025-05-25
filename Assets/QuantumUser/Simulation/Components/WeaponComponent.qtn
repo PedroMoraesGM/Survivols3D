@@ -2,5 +2,5 @@ component ShootingWeaponComponent {
   AssetRef<EntityPrototype> ProjectilePrefab;  // your homing/bounce missile prefab
   int                       FireCooldown;      // ticks between shots
   [ExcludeFromPrototype] int                       FireCdTicks;       // accumulates ticks
-  FP                        MuzzleOffset;      // how far forward from eyes to spawn
+  FPVector3                        MuzzleOffset;      // how far forward from eyes to spawn
 }

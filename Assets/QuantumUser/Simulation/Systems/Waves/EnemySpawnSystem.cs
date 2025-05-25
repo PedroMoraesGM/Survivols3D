@@ -69,8 +69,11 @@ public unsafe class EnemySpawnSystem : SystemMainThread
                 f.Unsafe.GetPointer<Transform3D>(enemy)->Position = pos;
 
                 // Initialize health & damage as before
+                var enemyHealth = f.Unsafe.GetPointer<HealthComponent>(enemy);
+                enemyHealth->MaxHealth *= spawner->HPMultiplier;
+                enemyHealth->CurrentHealth = enemyHealth->MaxHealth;
+
                 var enemyAi = f.Unsafe.GetPointer<EnemyAI>(enemy);
-                enemyAi->Health *= spawner->HPMultiplier;
                 enemyAi->Damage *= spawner->DamageMultiplier;
             }
         }

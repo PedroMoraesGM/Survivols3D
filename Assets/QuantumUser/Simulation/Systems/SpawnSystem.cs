@@ -80,12 +80,15 @@ namespace Tomorrow.Quantum
 
         void SpawnPlayer(Frame f, int index, PlayerRef player)
         {
-            var paddleEntity = Spawn(f, index);
+            var playerEntity = Spawn(f, index);
+            var health = f.Unsafe.GetPointer<HealthComponent>(playerEntity);
+            health->CurrentHealth = health->MaxHealth;
+
             var playerLink = new PlayerLink()
             {
                 Player = player,
             };
-            f.Add(paddleEntity, playerLink);
+            f.Add(playerEntity, playerLink);
         }
 
         void SpawnAI(Frame f, int index)

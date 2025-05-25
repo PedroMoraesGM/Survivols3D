@@ -94,9 +94,6 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Character))]
   public unsafe partial class CharacterPrototype : ComponentPrototype<Quantum.Character> {
-    public FP MaxHealth;
-    public FP CurrentHealth;
-    public QBoolean IsDead;
     public FP MoveSpeed;
     public FP HorizontalTurnSpeedDegrees;
     public FP VerticalTurnSpeedDegrees;
@@ -110,9 +107,6 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.Character result, in PrototypeMaterializationContext context = default) {
-        result.MaxHealth = this.MaxHealth;
-        result.CurrentHealth = this.CurrentHealth;
-        result.IsDead = this.IsDead;
         result.MoveSpeed = this.MoveSpeed;
         result.HorizontalTurnSpeedDegrees = this.HorizontalTurnSpeedDegrees;
         result.VerticalTurnSpeedDegrees = this.VerticalTurnSpeedDegrees;
@@ -125,7 +119,6 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.EnemyAI))]
   public unsafe partial class EnemyAIPrototype : ComponentPrototype<Quantum.EnemyAI> {
-    public FP Health;
     public FP XpDrop;
     public FP Damage;
     public FP CloseDamageRange;
@@ -139,7 +132,6 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.EnemyAI result, in PrototypeMaterializationContext context = default) {
-        result.Health = this.Health;
         result.XpDrop = this.XpDrop;
         result.Damage = this.Damage;
         result.CloseDamageRange = this.CloseDamageRange;
@@ -248,6 +240,21 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.Goal result, in PrototypeMaterializationContext context = default) {
         result.Index = this.Index;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.HealthComponent))]
+  public unsafe partial class HealthComponentPrototype : ComponentPrototype<Quantum.HealthComponent> {
+    public FP MaxHealth;
+    partial void MaterializeUser(Frame frame, ref Quantum.HealthComponent result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.HealthComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.HealthComponent result, in PrototypeMaterializationContext context = default) {
+        result.MaxHealth = this.MaxHealth;
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -448,7 +455,7 @@ namespace Quantum.Prototypes {
   public unsafe partial class ShootingWeaponComponentPrototype : ComponentPrototype<Quantum.ShootingWeaponComponent> {
     public AssetRef<EntityPrototype> ProjectilePrefab;
     public Int32 FireCooldown;
-    public FP MuzzleOffset;
+    public FPVector3 MuzzleOffset;
     partial void MaterializeUser(Frame frame, ref Quantum.ShootingWeaponComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.ShootingWeaponComponent component = default;

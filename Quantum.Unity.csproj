@@ -112,6 +112,7 @@
     <Compile Include="Assets\Photon\Quantum\Runtime\CustomCallbacks.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QPrototypePhysicsBody3D.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QPrototypeTransform2D.cs" />
+    <Compile Include="Assets\QuantumUser\View\Generated\QPrototypeHealthComponent.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumGraphProfilerPing.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumStaticTerrainCollider3D.cs" />
     <Compile Include="Assets\QuantumUser\View\Generated\QPrototypeStatusEffectComponent.cs" />

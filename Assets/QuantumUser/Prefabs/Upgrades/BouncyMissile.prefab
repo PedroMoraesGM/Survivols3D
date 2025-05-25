@@ -280,4 +280,9 @@ MonoBehaviour:
         Value: 1278416079342391519
     FireCooldown: 120
     MuzzleOffset:
-      RawValue: 65536
+      X:
+        RawValue: 65536
+      Y:
+        RawValue: 0
+      Z:
+        RawValue: 0

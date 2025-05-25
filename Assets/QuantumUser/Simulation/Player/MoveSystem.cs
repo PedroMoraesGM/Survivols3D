@@ -20,6 +20,8 @@ namespace Tomorrow.Quantum
             public PhysicsBody3D* Body;
             public Character* Character;
             public CharacterController3D* Controller;
+            public HealthComponent* Health;
+            public StatusEffectComponent* Status;
             public PlayerLink* PlayerLink;
         }
 
@@ -60,7 +62,7 @@ namespace Tomorrow.Quantum
                 filter.Character->VerticalLookPitch = vPitch;
             }
 
-            if (filter.Character->IsDead) return; // If is dead he can only move camera
+            if (filter.Health->IsDead) return; // If is dead he can only move camera
 
             FPVector2 moveAxis = input.MoveAxis;  // X = strafe, Y = forward/back
 
@@ -92,7 +94,7 @@ namespace Tomorrow.Quantum
             // 6) Compute the actual move vector and issue the move
             FPVector3 clampedDir = predictedPos - currentPos;
             //filter.Controller->Move(f, filter.Entity, clampedDir);
-            filter.Body->AddForceAtPosition(clampedDir * filter.Character->MoveSpeed, filter.Transform->Position, filter.Transform);
+            filter.Body->AddForceAtPosition(clampedDir * filter.Character->MoveSpeed * filter.Status->SlowMultiplier, filter.Transform->Position, filter.Transform);
             //filter.Body->Velocity = clampedDir * filter.Character->MoveSpeed;
             //filter.Body->ClearForce();
             //filter.Body->AddForce(clampedDir * filter.Character->MoveSpeed);

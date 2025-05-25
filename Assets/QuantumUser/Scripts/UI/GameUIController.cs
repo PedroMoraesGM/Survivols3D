@@ -71,8 +71,8 @@ public unsafe class GameUIController : QuantumCallbacks
         QuantumEvent.Subscribe(this, (EventOnGameStateChanged e) => OnGameStateChanged(e));
         QuantumEvent.Subscribe(this, (EventOnScoreChanged e) => OnScoreChanged(e));
         QuantumEvent.Subscribe(this, (EventOnGameTerminated e) => OnGameTerminated(e));
-        QuantumEvent.Subscribe(this, (EventOnPlayerHit e) => OnPlayerHit(e));
-        QuantumEvent.Subscribe(this, (EventOnPlayerDefeated e) => OnPlayerDefeated(e));
+        QuantumEvent.Subscribe(this, (EventOnHit e) => OnPlayerHit(e));
+        QuantumEvent.Subscribe(this, (EventOnDefeated e) => OnPlayerDefeated(e));
         QuantumEvent.Subscribe(this, (EventOnGameOver e) => OnGameOver(e));
         QuantumEvent.Subscribe(this, (EventOnXpAdquired e) => OnXpAdqured(e));
         QuantumEvent.Subscribe(this, (EventOnLevelUp e) => OnLevelUp(e));
@@ -115,7 +115,7 @@ public unsafe class GameUIController : QuantumCallbacks
         resetGameTooltip.SetActive(true);
     }
 
-    private void OnPlayerDefeated(EventOnPlayerDefeated e)
+    private void OnPlayerDefeated(EventOnDefeated e)
     {
         var f = e.Game.Frames.Verified;
         if (!f.TryGet(e.Target, out PlayerLink playerLink)) return;
@@ -125,7 +125,7 @@ public unsafe class GameUIController : QuantumCallbacks
         gameoverScreen.DOFade(1, 1);
     }
 
-    private void OnPlayerHit(EventOnPlayerHit e)
+    private void OnPlayerHit(EventOnHit e)
     {
         var f = e.Game.Frames.Verified;
         if (!f.TryGet(e.Target, out PlayerLink playerLink)) return;
@@ -135,11 +135,11 @@ public unsafe class GameUIController : QuantumCallbacks
         healthVignette.DOKill();
         healthVignette.DOFade(0, healthBlinkDuration);
 
-        f.Unsafe.TryGetPointer(e.Target, out Character* character);
+        f.Unsafe.TryGetPointer(e.Target, out HealthComponent* health);
 
         healthBarCanvasGroup.DOKill();
         healthBarCanvasGroup.DOFade(1, 0.35f);
-        healthBarImage.transform.localScale = new Vector3(Math.Clamp((character->CurrentHealth / character->MaxHealth).AsFloat, 0, 1), 1, 1);
+        healthBarImage.transform.localScale = new Vector3(Math.Clamp((health->CurrentHealth / health->MaxHealth).AsFloat, 0, 1), 1, 1);
 
         CancelInvoke(nameof(DisableHealthBar));
         Invoke(nameof(DisableHealthBar), disableBarDelay);

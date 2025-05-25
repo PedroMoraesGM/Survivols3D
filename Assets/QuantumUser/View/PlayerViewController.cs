@@ -44,8 +44,8 @@ namespace QuantumUser.View.Controllers
 
         private void UpdateCharacterView(Frame frame)
         {
-            var character = frame.Unsafe.GetPointer<Character>(EntityRef);
-            bool isDead = character->IsDead;
+            var health = frame.Unsafe.GetPointer<HealthComponent>(EntityRef);
+            bool isDead = health->IsDead;
 
             DeadFirstPersonView.SetActive(isPlayerLocal && isDead);
             DeadThirdPersonView.SetActive(!isPlayerLocal && isDead);
@@ -54,7 +54,7 @@ namespace QuantumUser.View.Controllers
             thirdPersonView.gameObject.SetActive(!isPlayerLocal && !isDead);
             headCanvas.gameObject.SetActive(!isPlayerLocal && !isDead);
 
-            healthBar.transform.localScale = new Vector3((character->CurrentHealth / character->MaxHealth).AsFloat, 1);
+            healthBar.transform.localScale = new Vector3((health->CurrentHealth / health->MaxHealth).AsFloat, 1);
         }
 
         public override void OnUpdateView()

@@ -4,29 +4,8 @@ using UnityEngine;
 using UnityEngine.Scripting;
 
 [Preserve]
-public unsafe class XPPickupSystem : SystemSignalsOnly, ISignalOnEnemyDefeated, ISignalOnXpAdquired
+public unsafe class XPPickupSystem : SystemSignalsOnly, ISignalOnDefeated, ISignalOnXpAdquired
 {
-    public void OnEnemyDefeated(Frame f, EntityRef target, EntityRef dealer)
-    {
-        Debug.Log("[XPPickupSystem] Enemy defeated! ");
-        if (f.Unsafe.TryGetPointer<XPComponent>(dealer, out XPComponent* dealerXpComponent))
-        {
-            if (f.Unsafe.TryGetPointer<EnemyAI>(target, out EnemyAI* enemyAi)) {
-
-                EntityRef xpEntity = f.Create(dealerXpComponent->XpPrefab);
-
-                if (f.Unsafe.TryGetPointer<XPPickup>(xpEntity, out var xpPickup))
-                {
-                    // Assign target xp value to new created xp pickup
-                    xpPickup->Value = enemyAi->XpDrop;
-                }
-
-                // Spawn at same position as the target;
-                f.Unsafe.GetPointer<Transform3D>(xpEntity)->Position = f.Unsafe.GetPointer<Transform3D>(target)->Position;
-            }
-        }
-    }
-
     public void OnXpAdquired(Frame f, EntityRef target, FP xpAmount)
     {
         // Grab the player’s XPComponent
@@ -74,4 +53,23 @@ public unsafe class XPPickupSystem : SystemSignalsOnly, ISignalOnEnemyDefeated, 
         }
     }
 
+    public void OnDefeated(Frame f, EntityRef target, EntityRef dealer)
+    {
+        if (f.Unsafe.TryGetPointer<XPComponent>(dealer, out XPComponent* dealerXpComponent))
+        {
+            if (f.Unsafe.TryGetPointer<EnemyAI>(target, out EnemyAI* enemyAi))
+            {
+                EntityRef xpEntity = f.Create(dealerXpComponent->XpPrefab);
+
+                if (f.Unsafe.TryGetPointer<XPPickup>(xpEntity, out var xpPickup))
+                {
+                    // Assign target xp value to new created xp pickup
+                    xpPickup->Value = enemyAi->XpDrop;
+                }
+
+                // Spawn at same position as the target;
+                f.Unsafe.GetPointer<Transform3D>(xpEntity)->Position = f.Unsafe.GetPointer<Transform3D>(target)->Position;
+            }
+        }
+    }
 }

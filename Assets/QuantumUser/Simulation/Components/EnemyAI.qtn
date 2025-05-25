@@ -1,6 +1,4 @@
 component EnemyAI {
-
-	FP Health;
 	FP XpDrop;
 
 	FP Damage;
@@ -20,8 +18,3 @@ struct EnemyInfo {
 singleton component EnemyRegistryComponent {
   list<EnemyInfo> ActiveEnemies;
 }
-
-signal OnEnemyHit(EntityRef target, EntityRef dealer,  FP damage);
-signal OnEnemyDefeated(EntityRef target, EntityRef dealer );
-event OnEnemyHit { EntityRef Target; EntityRef Dealer; FP Damage;  }
-event OnEnemyDefeated { EntityRef Target; EntityRef Dealer; }

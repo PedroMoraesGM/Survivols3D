@@ -1,0 +1,11 @@
+component HealthComponent
+{
+	FP MaxHealth;
+	[ExcludeFromPrototype] FP CurrentHealth;
+	[ExcludeFromPrototype] QBoolean IsDead;
+}
+
+signal OnHit(EntityRef target, EntityRef dealer,  FP damage);
+signal OnDefeated(EntityRef target, EntityRef dealer );
+event OnHit { EntityRef Target; EntityRef Dealer; FP Damage;  }
+event OnDefeated { EntityRef Target; EntityRef Dealer; }

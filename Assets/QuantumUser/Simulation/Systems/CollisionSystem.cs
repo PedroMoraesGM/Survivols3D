@@ -17,7 +17,7 @@ namespace Tomorrow.Quantum
 
         public void OnTriggerEnter3D(Frame f, TriggerInfo3D info)
         {
-            OnProjectileHittingEnemy(f, info);
+            OnProjectileHitting(f, info);
         }
 
         private void OnPlayerTouchesXp(Frame f, CollisionInfo3D info)
@@ -38,19 +38,19 @@ namespace Tomorrow.Quantum
             }
         }
 
-        private void OnProjectileHittingEnemy(Frame f, TriggerInfo3D info)
+        private void OnProjectileHitting(Frame f, TriggerInfo3D info)
         {
             if (f.Unsafe.TryGetPointer<Projectile>(info.Entity, out Projectile* projectile))
             {
-                if (f.Unsafe.TryGetPointer<EnemyAI>(info.Other, out EnemyAI* enemy))
+                if (f.Unsafe.TryGetPointer<HealthComponent>(info.Other, out HealthComponent* health))
                 {
-                    Debug.Log("[CollisionSystem] projectile hitted enemy!");
+                    Debug.Log("[CollisionSystem] projectile hitted health!");
 
                     if (!f.Unsafe.TryGetPointer<OwnerData>(info.Entity, out var owner))
                         return;
 
-                    f.Signals.OnEnemyHit(info.Other, owner->OwnerEntity, projectile->Damage);
-                    f.Events.OnEnemyHit(info.Other, owner->OwnerEntity, projectile->Damage);
+                    f.Signals.OnHit(info.Other, owner->OwnerEntity, projectile->Damage);
+                    f.Events.OnHit(info.Other, owner->OwnerEntity, projectile->Damage);
                 }
 
                 projectile->HitsToDestroy--;
