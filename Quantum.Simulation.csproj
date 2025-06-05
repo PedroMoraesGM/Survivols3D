@@ -600,6 +600,10 @@
       <HintPath>P:\Program Files\Unity\6000.0.32f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEditor.Android.Extensions">
+      <HintPath>P:\Program Files\Unity\6000.0.32f1\Editor\Data\PlaybackEngines\AndroidPlayer\UnityEditor.Android.Extensions.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Quantum.Deterministic">
       <HintPath>Assets\Photon\Quantum\Assemblies\Quantum.Deterministic.dll</HintPath>
       <Private>False</Private>
@@ -610,6 +614,14 @@
     </Reference>
     <Reference Include="Quantum.Log">
       <HintPath>Assets\Photon\Quantum\Assemblies\Quantum.Log.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Android.Types">
+      <HintPath>P:\Program Files\Unity\6000.0.32f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Android.Gradle">
+      <HintPath>P:\Program Files\Unity\6000.0.32f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Gradle.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="netstandard">
