@@ -263,7 +263,8 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.HomingProjectileComponent))]
   public unsafe class HomingProjectileComponentPrototype : ComponentPrototype<Quantum.HomingProjectileComponent> {
-    public QBoolean IsEnemyTeam;
+    public QBoolean HomeToPlayers;
+    public FP MinFollowDistance;
     public Int32 RemainingBounces;
     public FP Speed;
     public FP HomingStrength;
@@ -278,7 +279,8 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.HomingProjectileComponent result, in PrototypeMaterializationContext context = default) {
-        result.IsEnemyTeam = this.IsEnemyTeam;
+        result.HomeToPlayers = this.HomeToPlayers;
+        result.MinFollowDistance = this.MinFollowDistance;
         result.RemainingBounces = this.RemainingBounces;
         result.Speed = this.Speed;
         result.HomingStrength = this.HomingStrength;

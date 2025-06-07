@@ -30,7 +30,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2411738147683654810, guid: 34e9040c5f039124bbebc480af942488, type: 3}
       propertyPath: Prototype.ShootRangeDistance.RawValue
-      value: 78643200
+      value: 52428800
       objectReference: {fileID: 0}
     - target: {fileID: 5214489336421857711, guid: 34e9040c5f039124bbebc480af942488, type: 3}
       propertyPath: m_Sprite

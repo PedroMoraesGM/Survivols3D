@@ -35,10 +35,15 @@ namespace Tomorrow.Quantum
             {
                 var targetPos = f.Unsafe.GetPointer<Transform3D>(m.CurrentTarget)->Position;
                 var toTarget = (targetPos - pos).Normalized;
+                var distance = (targetPos - pos).Magnitude;
                 dir = (filter.Transform->Forward * (FP._1 - m.HomingStrength)
                        + toTarget * m.HomingStrength).Normalized;
                 
                 filter.Transform->LookAt(targetPos);
+
+                // Apply velocity
+                if (filter.Missile->MinFollowDistance <= FP._0 || distance <= filter.Missile->MinFollowDistance)
+                    filter.Transform->Position += dir * m.Speed;
             }
             else
             {
@@ -48,8 +53,6 @@ namespace Tomorrow.Quantum
                 dir = filter.Transform->Forward;
             }
 
-            // Apply velocity
-            filter.Transform->Position += dir * m.Speed;
         }
 
         // Helper to pick the nearest EnemyAI
@@ -58,7 +61,7 @@ namespace Tomorrow.Quantum
             best = EntityRef.None;
             FP bestDsqr = FP.MaxValue;
 
-            if (filter.Missile->IsEnemyTeam)
+            if (filter.Missile->HomeToPlayers)
             {
                 foreach (var block in f.Unsafe.GetComponentBlockIterator<Character>()) // target player
                 {

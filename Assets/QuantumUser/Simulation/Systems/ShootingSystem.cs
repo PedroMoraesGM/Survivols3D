@@ -67,7 +67,7 @@ namespace Tomorrow.Quantum
             }
 
             // ───────────────────────────────────────────────
-            //  3) No cooldown and not in a burst → start a new burst
+            //  3) No cooldown and not in a burst > start a new burst
             // ───────────────────────────────────────────────
             weapon->BurstShotsRemaining = weapon->BurstCount;
             // Fire the very first shot _immediately_, so zero delay

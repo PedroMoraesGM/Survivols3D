@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 3243995432783473386}
   - component: {fileID: 7430521348955286880}
   - component: {fileID: 6234384833554714873}
+  - component: {fileID: -1142693209508762664}
   m_Layer: 10
   m_Name: Xp Pickup
   m_TagString: Untagged
@@ -351,6 +352,36 @@ MonoBehaviour:
   Prototype:
     Value:
       RawValue: 655360
+--- !u!114 &-1142693209508762664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2317848621223671581}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5653badc8c502a440a3860fc0720609e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    HomeToPlayers:
+      Value: 1
+    MinFollowDistance:
+      RawValue: 655360
+    RemainingBounces: 0
+    Speed:
+      RawValue: 32768
+    HomingStrength:
+      RawValue: 0
+    HasTarget:
+      Value: 0
+    CanDragTarget:
+      Value: 0
+    CanRepeatTarget:
+      Value: 0
+    CurrentTarget: {fileID: 0}
+    PreviousTarget: {fileID: 0}
 --- !u!1 &6526600374936880845
 GameObject:
   m_ObjectHideFlags: 0

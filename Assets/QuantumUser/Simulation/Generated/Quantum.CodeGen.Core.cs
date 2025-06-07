@@ -1119,13 +1119,15 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HomingProjectileComponent : Quantum.IComponent {
-    public const Int32 SIZE = 56;
+    public const Int32 SIZE = 64;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(16)]
-    public QBoolean IsEnemyTeam;
+    public QBoolean HomeToPlayers;
+    [FieldOffset(48)]
+    public FP MinFollowDistance;
     [FieldOffset(0)]
     public Int32 RemainingBounces;
-    [FieldOffset(48)]
+    [FieldOffset(56)]
     public FP Speed;
     [FieldOffset(40)]
     public FP HomingStrength;
@@ -1142,7 +1144,8 @@ namespace Quantum {
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 17041;
-        hash = hash * 31 + IsEnemyTeam.GetHashCode();
+        hash = hash * 31 + HomeToPlayers.GetHashCode();
+        hash = hash * 31 + MinFollowDistance.GetHashCode();
         hash = hash * 31 + RemainingBounces.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + HomingStrength.GetHashCode();
@@ -1160,10 +1163,11 @@ namespace Quantum {
         QBoolean.Serialize(&p->CanDragTarget, serializer);
         QBoolean.Serialize(&p->CanRepeatTarget, serializer);
         QBoolean.Serialize(&p->HasTarget, serializer);
-        QBoolean.Serialize(&p->IsEnemyTeam, serializer);
+        QBoolean.Serialize(&p->HomeToPlayers, serializer);
         EntityRef.Serialize(&p->CurrentTarget, serializer);
         EntityRef.Serialize(&p->PreviousTarget, serializer);
         FP.Serialize(&p->HomingStrength, serializer);
+        FP.Serialize(&p->MinFollowDistance, serializer);
         FP.Serialize(&p->Speed, serializer);
     }
   }

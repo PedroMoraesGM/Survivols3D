@@ -631,8 +631,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    IsEnemyTeam:
+    HomeToPlayers:
       Value: 1
+    MaxFollowDistance:
+      RawValue: 0
     RemainingBounces: 0
     Speed:
       RawValue: 19661
