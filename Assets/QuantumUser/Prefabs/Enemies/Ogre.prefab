@@ -34,7 +34,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2411738147683654810, guid: 34e9040c5f039124bbebc480af942488, type: 3}
       propertyPath: Prototype.ShootRangeDistance.RawValue
-      value: 196608
+      value: 16384000
       objectReference: {fileID: 0}
     - target: {fileID: 5214489336421857711, guid: 34e9040c5f039124bbebc480af942488, type: 3}
       propertyPath: m_Sprite
@@ -121,7 +121,7 @@ MonoBehaviour:
       Id:
         Value: 1404248118044848284
     CanShoot:
-      Value: 0
+      Value: 1
     BurstCount: 1
     BurstShotDelay: 0
     BurstDispersion:

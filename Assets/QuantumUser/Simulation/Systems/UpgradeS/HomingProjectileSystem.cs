@@ -66,14 +66,15 @@ namespace Tomorrow.Quantum
                 foreach (var block in f.Unsafe.GetComponentBlockIterator<Character>()) // target player
                 {
                     var e = block.Entity;
+                    if(f.Unsafe.GetPointer<HealthComponent>(e)->IsDead) continue; // skip if is dead
                     var p = f.Unsafe.GetPointer<Transform3D>(e)->Position;
+
                     FP dsq = (p - from).SqrMagnitude;
                     if (dsq < bestDsqr && (filter.Missile->PreviousTarget != e || filter.Missile->CanRepeatTarget))
                     {
                         bestDsqr = dsq;
                         best = e;
                     }
-
                 }
             }
             else
@@ -81,6 +82,7 @@ namespace Tomorrow.Quantum
                 foreach (var block in f.Unsafe.GetComponentBlockIterator<EnemyAI>()) // target enemy
                 {
                     var e = block.Entity;
+                    if (f.Unsafe.GetPointer<HealthComponent>(e)->IsDead) continue; // skip if is dead
                     var p = f.Unsafe.GetPointer<Transform3D>(e)->Position;
                     FP dsq = (p - from).SqrMagnitude;
                     if (dsq < bestDsqr && (filter.Missile->PreviousTarget != e || filter.Missile->CanRepeatTarget))
