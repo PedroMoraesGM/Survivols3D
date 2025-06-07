@@ -3458,12 +3458,9 @@ MonoBehaviour:
     Object: {fileID: 3505823711368435556}
   _readyCtaText: {fileID: 4793603973247479025}
   _countdownTimer: {fileID: 4358566858512745740}
-  _timeLeftText: {fileID: 1684140829499637193}
-  _scoreTexts:
-  - {fileID: 5450506339032502835}
-  - {fileID: 2895901529820592845}
   gameoverScreen: {fileID: 1912352857278229640}
   resetGameTooltip: {fileID: 5866620213817689491}
+  crosshairImage: {fileID: 7769777444700932201}
   healthBlinkDuration: 1
   healthVignette: {fileID: 4188151054547683627}
   healthBarCanvasGroup: {fileID: 6785057700743014406}
@@ -3487,6 +3484,81 @@ MonoBehaviour:
   rewardsContent: {fileID: 5523350182492213}
   rewardCardPrefab: {fileID: 3665822714873189936, guid: 45d6c2bc5ef2b3c47a9965b7bff58cb5, type: 3}
   catalog: {fileID: 11400000, guid: 43b2d701ea3c73c4088d75eb29596cf9, type: 2}
+--- !u!1 &7769777444700932201
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2448043794624555361}
+  - component: {fileID: 1175226468098167519}
+  - component: {fileID: 7577147927910034049}
+  m_Layer: 5
+  m_Name: Crosshair
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2448043794624555361
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7769777444700932201}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6207709939038117959}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 50, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1175226468098167519
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7769777444700932201}
+  m_CullTransparentMesh: 1
+--- !u!114 &7577147927910034049
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7769777444700932201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: a5a6e3f360707284c9dcf502973d4719, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &7854329375892731989
 GameObject:
   m_ObjectHideFlags: 0
@@ -4105,6 +4177,7 @@ RectTransform:
   - {fileID: 2735948097342269983}
   - {fileID: 7255099169464388555}
   - {fileID: 3751947242544891614}
+  - {fileID: 2448043794624555361}
   m_Father: {fileID: 3843453513879375333}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

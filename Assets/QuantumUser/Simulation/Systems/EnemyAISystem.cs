@@ -47,7 +47,14 @@ namespace Tomorrow.Quantum
             {
                 var dir = (bestTarget.Position - mePos).Normalized;
                 var moveDelta = dir * enemy.EnemyAI->Speed * enemy.StatusEffect->SlowMultiplier;
+                enemy.Transform->LookAt(bestTarget.Position);
                 enemy.Transform->Position += moveDelta;
+            }
+
+            // Check if disatance is close enough to shoot
+            if(f.Unsafe.TryGetPointer(enemy.Entity, out ShootingWeaponComponent* shootingWeapon))
+            {
+                shootingWeapon->CanShoot = bestDistSqr <= enemy.EnemyAI->ShootRangeDistance;
             }
 
             // Check if distance is very close to try hit player

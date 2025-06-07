@@ -931,15 +931,17 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct EnemyAI : Quantum.IComponent {
-    public const Int32 SIZE = 48;
+    public const Int32 SIZE = 56;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(40)]
+    [FieldOffset(48)]
     public FP XpDrop;
     [FieldOffset(16)]
     public FP Damage;
     [FieldOffset(8)]
     public FP CloseDamageRange;
     [FieldOffset(32)]
+    public FP ShootRangeDistance;
+    [FieldOffset(40)]
     public FP Speed;
     [FieldOffset(24)]
     public FP MinHeightLimit;
@@ -951,6 +953,7 @@ namespace Quantum {
         hash = hash * 31 + XpDrop.GetHashCode();
         hash = hash * 31 + Damage.GetHashCode();
         hash = hash * 31 + CloseDamageRange.GetHashCode();
+        hash = hash * 31 + ShootRangeDistance.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + MinHeightLimit.GetHashCode();
         hash = hash * 31 + CanMove.GetHashCode();
@@ -963,6 +966,7 @@ namespace Quantum {
         FP.Serialize(&p->CloseDamageRange, serializer);
         FP.Serialize(&p->Damage, serializer);
         FP.Serialize(&p->MinHeightLimit, serializer);
+        FP.Serialize(&p->ShootRangeDistance, serializer);
         FP.Serialize(&p->Speed, serializer);
         FP.Serialize(&p->XpDrop, serializer);
     }
@@ -1115,13 +1119,15 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HomingProjectileComponent : Quantum.IComponent {
-    public const Int32 SIZE = 48;
+    public const Int32 SIZE = 56;
     public const Int32 ALIGNMENT = 8;
+    [FieldOffset(16)]
+    public QBoolean IsEnemyTeam;
     [FieldOffset(0)]
     public Int32 RemainingBounces;
-    [FieldOffset(40)]
+    [FieldOffset(48)]
     public FP Speed;
-    [FieldOffset(32)]
+    [FieldOffset(40)]
     public FP HomingStrength;
     [FieldOffset(12)]
     public QBoolean HasTarget;
@@ -1129,13 +1135,14 @@ namespace Quantum {
     public QBoolean CanDragTarget;
     [FieldOffset(8)]
     public QBoolean CanRepeatTarget;
-    [FieldOffset(16)]
-    public EntityRef CurrentTarget;
     [FieldOffset(24)]
+    public EntityRef CurrentTarget;
+    [FieldOffset(32)]
     public EntityRef PreviousTarget;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 17041;
+        hash = hash * 31 + IsEnemyTeam.GetHashCode();
         hash = hash * 31 + RemainingBounces.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + HomingStrength.GetHashCode();
@@ -1153,6 +1160,7 @@ namespace Quantum {
         QBoolean.Serialize(&p->CanDragTarget, serializer);
         QBoolean.Serialize(&p->CanRepeatTarget, serializer);
         QBoolean.Serialize(&p->HasTarget, serializer);
+        QBoolean.Serialize(&p->IsEnemyTeam, serializer);
         EntityRef.Serialize(&p->CurrentTarget, serializer);
         EntityRef.Serialize(&p->PreviousTarget, serializer);
         FP.Serialize(&p->HomingStrength, serializer);
@@ -1334,32 +1342,63 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct ShootingWeaponComponent : Quantum.IComponent {
-    public const Int32 SIZE = 40;
+    public const Int32 SIZE = 72;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(8)]
+    [FieldOffset(32)]
     public AssetRef<EntityPrototype> ProjectilePrefab;
-    [FieldOffset(4)]
-    public Int32 FireCooldown;
+    [FieldOffset(28)]
+    public QBoolean CanShoot;
     [FieldOffset(0)]
+    public Int32 BurstCount;
+    [FieldOffset(12)]
+    public Int32 BurstShotDelay;
+    [FieldOffset(4)]
+    [ExcludeFromPrototype()]
+    public Int32 BurstDelayTicks;
+    [FieldOffset(40)]
+    public FP BurstDispersion;
+    [FieldOffset(24)]
+    public Int32 FireCooldown;
+    [FieldOffset(20)]
     [ExcludeFromPrototype()]
     public Int32 FireCdTicks;
     [FieldOffset(16)]
+    [ExcludeFromPrototype()]
+    public Int32 BurstShotsRemaining;
+    [FieldOffset(8)]
+    [ExcludeFromPrototype()]
+    public Int32 BurstShotCdTicks;
+    [FieldOffset(48)]
     public FPVector3 MuzzleOffset;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 5647;
         hash = hash * 31 + ProjectilePrefab.GetHashCode();
+        hash = hash * 31 + CanShoot.GetHashCode();
+        hash = hash * 31 + BurstCount.GetHashCode();
+        hash = hash * 31 + BurstShotDelay.GetHashCode();
+        hash = hash * 31 + BurstDelayTicks.GetHashCode();
+        hash = hash * 31 + BurstDispersion.GetHashCode();
         hash = hash * 31 + FireCooldown.GetHashCode();
         hash = hash * 31 + FireCdTicks.GetHashCode();
+        hash = hash * 31 + BurstShotsRemaining.GetHashCode();
+        hash = hash * 31 + BurstShotCdTicks.GetHashCode();
         hash = hash * 31 + MuzzleOffset.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (ShootingWeaponComponent*)ptr;
+        serializer.Stream.Serialize(&p->BurstCount);
+        serializer.Stream.Serialize(&p->BurstDelayTicks);
+        serializer.Stream.Serialize(&p->BurstShotCdTicks);
+        serializer.Stream.Serialize(&p->BurstShotDelay);
+        serializer.Stream.Serialize(&p->BurstShotsRemaining);
         serializer.Stream.Serialize(&p->FireCdTicks);
         serializer.Stream.Serialize(&p->FireCooldown);
+        QBoolean.Serialize(&p->CanShoot, serializer);
         AssetRef.Serialize(&p->ProjectilePrefab, serializer);
+        FP.Serialize(&p->BurstDispersion, serializer);
         FPVector3.Serialize(&p->MuzzleOffset, serializer);
     }
   }

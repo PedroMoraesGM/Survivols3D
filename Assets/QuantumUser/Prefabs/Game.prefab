@@ -397,14 +397,20 @@ MonoBehaviour:
         RawValue: 81920
     - Prefab:
         Id:
-          Value: 1346333854077795796
+          Value: 1280262240190112261
       MinWave: 3
+      Weight:
+        RawValue: 786432
+    - Prefab:
+        Id:
+          Value: 1346333854077795796
+      MinWave: 4
       Weight:
         RawValue: 131072
     - Prefab:
         Id:
           Value: 1505494659213548563
-      MinWave: 4
+      MinWave: 5
       Weight:
         RawValue: 196608
 --- !u!114 &949806551900884606

@@ -278,7 +278,13 @@ MonoBehaviour:
     ProjectilePrefab:
       Id:
         Value: 1500007670398204319
-    FireCooldown: 6
+    CanShoot:
+      Value: 1
+    BurstCount: 25
+    BurstShotDelay: 10
+    BurstDispersion:
+      RawValue: 327680
+    FireCooldown: 140
     MuzzleOffset:
       X:
         RawValue: 65536

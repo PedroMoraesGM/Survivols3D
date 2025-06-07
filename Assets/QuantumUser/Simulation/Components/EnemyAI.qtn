@@ -4,6 +4,8 @@ component EnemyAI {
 	FP Damage;
 	FP CloseDamageRange;
 
+	FP ShootRangeDistance;
+
 	//Move
 	FP Speed;
 	FP MinHeightLimit;

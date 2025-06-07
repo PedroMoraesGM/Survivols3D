@@ -36,12 +36,11 @@ public unsafe class GameUIController : QuantumCallbacks
     [SerializeField] private TextMeshProUGUI _readyCtaText;    
     [Header("Countdown")]
     [SerializeField] private TextMeshProUGUI _countdownTimer;
-    [Header("Playing")]
-    [SerializeField] private TextMeshProUGUI _timeLeftText;
-    [SerializeField] private TextMeshProUGUI[] _scoreTexts;
     [Header("Gameover")]
     [SerializeField] private CanvasGroup gameoverScreen;
     [SerializeField] private GameObject resetGameTooltip;
+    [Header("Playing")]
+    [SerializeField] private GameObject crosshairImage;
     [Header("Health UI")]
     [SerializeField] private float healthBlinkDuration = 1;
     [SerializeField] private Image healthVignette;
@@ -121,6 +120,7 @@ public unsafe class GameUIController : QuantumCallbacks
         if (!f.TryGet(e.Target, out PlayerLink playerLink)) return;
         if (!e.Game.PlayerIsLocal(playerLink.Player)) return;
 
+        crosshairImage.SetActive(false);
         gameoverScreen.gameObject.SetActive(true);
         gameoverScreen.DOFade(1, 1);
     }
@@ -173,9 +173,7 @@ public unsafe class GameUIController : QuantumCallbacks
         switch (e.state)
         {
             case GameState.Waiting:
-                SetUIState(UIState.Waiting);
-                foreach(TextMeshProUGUI t in _scoreTexts)                
-                    t.text = "0";                
+                SetUIState(UIState.Waiting);             
                 break;
             case GameState.Countdown:
                 SetUIState(UIState.Countdown);
@@ -194,7 +192,7 @@ public unsafe class GameUIController : QuantumCallbacks
 
     private void OnScoreChanged(EventOnScoreChanged e)
     {
-        _scoreTexts[e.playerIndex].text = e.score.ToString();
+        
     }
 
     private void OnGameTerminated(EventOnGameTerminated e)
@@ -216,16 +214,6 @@ public unsafe class GameUIController : QuantumCallbacks
     private void UpdatePlayingText()
     {
         if (_game.Frames.Predicted == null) { return; }
-
-        FP timeleft = _game.Frames.Predicted.Unsafe.GetPointerSingleton<Game>()->StateTimer.TimeLeft;
-        if(timeleft > 0)
-        {
-            int minutes = FPMath.FloorToInt(timeleft / 60);
-            int seconds = FPMath.FloorToInt(timeleft) % 60;
-            _timeLeftText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
-            // int milliSeconds = FPMath.FloorToInt(timeleft % 1 * 100);
-            // _timeLeftText.text = string.Format("{0:00}:{1:00}:{2:000}", minutes, seconds, milliSeconds);
-        }
     }
 
     private void UpdateCountdownText()

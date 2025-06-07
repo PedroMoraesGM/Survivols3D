@@ -314,10 +314,209 @@ MonoBehaviour:
     - rid: 7244867297225998340
     - rid: 7244867297225998341
     - rid: 7244867297225998342
+  - Components:
+    - rid: 6003845559427792896
+    - rid: 6003845559427792897
+    - rid: 6003845559427792898
+    - rid: 6003845559427792899
+    - rid: 6003845559427792900
+    - rid: 6003845559427792901
+    - rid: 6003845559427792902
+    - rid: 6003845559427792903
+    - rid: 6003845559427792904
+    - rid: 6003845559427792905
   SerializedTriangleDataUncompressedSize: 7736
   references:
     version: 2
     RefIds:
+    - rid: 6003845559427792896
+      type: {class: Transform3DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        Position:
+          X:
+            RawValue: -152899
+          Y:
+            RawValue: -358477
+          Z:
+            RawValue: 574390
+        Rotation:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 0
+          Z:
+            RawValue: 0
+    - rid: 6003845559427792897
+      type: {class: PhysicsCollider3DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        ShapeConfig:
+          ShapeType: 32
+          SphereRadius:
+            RawValue: 32768
+          CapsuleRadius:
+            RawValue: 60293
+          CapsuleHeight:
+            RawValue: 131072
+          PositionOffset:
+            X:
+              RawValue: 0
+            Y:
+              RawValue: 5898
+            Z:
+              RawValue: 0
+          BoxExtents:
+            X:
+              RawValue: 32768
+            Y:
+              RawValue: 32768
+            Z:
+              RawValue: 32768
+          RotationOffset:
+            X:
+              RawValue: 0
+            Y:
+              RawValue: 0
+            Z:
+              RawValue: 0
+          UserTag: 0
+          IsPersistent: 1
+          CompoundShapes: []
+        Layer: 7
+        IsTrigger: 0
+        PhysicsMaterial:
+          Id:
+            Value: 2301746459976711362
+    - rid: 6003845559427792898
+      type: {class: PhysicsBody3DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        Config:
+          Value: 58
+        Mass:
+          RawValue: 65536
+        Drag:
+          RawValue: 327680
+        AngularDrag:
+          RawValue: 327680
+        CenterOfMass:
+          X:
+            RawValue: 0
+          Y:
+            RawValue: 0
+          Z:
+            RawValue: 0
+        RotationFreeze:
+          Value: -1
+        GravityScale:
+          _hasValue: 0
+          _value:
+            RawValue: 0
+        InertiaScale:
+          _hasValue: 0
+          _value:
+            RawValue: 65536
+        InertiaMode: 0
+        ExplicitInertiaTensor:
+          X:
+            RawValue: 65536
+          Y:
+            RawValue: 65536
+          Z:
+            RawValue: 65536
+        ParametricInertiaShape:
+          ShapeType: 0
+          SphereRadius:
+            RawValue: 32768
+          CapsuleRadius:
+            RawValue: 32768
+          CapsuleHeight:
+            RawValue: 131072
+          PositionOffset:
+            X:
+              RawValue: 0
+            Y:
+              RawValue: 0
+            Z:
+              RawValue: 0
+          BoxExtents:
+            X:
+              RawValue: 32768
+            Y:
+              RawValue: 32768
+            Z:
+              RawValue: 32768
+          RotationOffset:
+            X:
+              RawValue: 0
+            Y:
+              RawValue: 0
+            Z:
+              RawValue: 0
+          UserTag: 0
+          IsPersistent: 1
+          CompoundShapes: []
+    - rid: 6003845559427792899
+      type: {class: PhysicsCallbacks3DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        CallbackFlags:
+          Value: 1538
+    - rid: 6003845559427792900
+      type: {class: CharacterController3DPrototype, ns: Quantum.Prototypes, asm: Quantum.Engine}
+      data:
+        Config:
+          Id:
+            Value: 2134412912622876830
+    - rid: 6003845559427792901
+      type: {class: EnemyAIPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        XpDrop:
+          RawValue: 131072
+        Damage:
+          RawValue: 26214
+        CloseDamageRange:
+          RawValue: 65536
+        ShootRangeDistance:
+          RawValue: 78643200
+        Speed:
+          RawValue: 1966
+        MinHeightLimit:
+          RawValue: -262144
+        CanMove:
+          Value: 1
+    - rid: 6003845559427792902
+      type: {class: HealthComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        MaxHealth:
+          RawValue: 1638400
+    - rid: 6003845559427792903
+      type: {class: OwnerDataPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        OwnerEntity:
+          SceneIndexPlusOne: 2
+    - rid: 6003845559427792904
+      type: {class: ShootingWeaponComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        ProjectilePrefab:
+          Id:
+            Value: 1503692620784273987
+        CanShoot:
+          Value: 1
+        BurstCount: 3
+        BurstShotDelay: 15
+        BurstDispersion:
+          RawValue: 196608
+        FireCooldown: 160
+        MuzzleOffset:
+          X:
+            RawValue: 65536
+          Y:
+            RawValue: 65536
+          Z:
+            RawValue: 0
+    - rid: 6003845559427792905
+      type: {class: StatusEffectComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
+      data:
+        SlowMultiplier:
+          RawValue: 65536
     - rid: 7244867297225998336
       type: {class: EnemyRegistryComponentPrototype, ns: Quantum.Prototypes, asm: Quantum.Simulation}
       data:
@@ -346,14 +545,20 @@ MonoBehaviour:
             RawValue: 81920
         - Prefab:
             Id:
+              Value: 1280262240190112261
+          MinWave: 1
+          Weight:
+            RawValue: 16384
+        - Prefab:
+            Id:
               Value: 1346333854077795796
-          MinWave: 3
+          MinWave: 4
           Weight:
             RawValue: 131072
         - Prefab:
             Id:
               Value: 1505494659213548563
-          MinWave: 4
+          MinWave: 5
           Weight:
             RawValue: 196608
     - rid: 7244867297225998338

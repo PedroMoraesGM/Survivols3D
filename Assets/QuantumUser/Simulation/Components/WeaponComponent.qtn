@@ -1,6 +1,17 @@
 component ShootingWeaponComponent {
   AssetRef<EntityPrototype> ProjectilePrefab;  // your homing/bounce missile prefab
+
+  bool			CanShoot;
+
+  // Burst?fire parameters (set in prototype)
+  int    BurstCount;       // how many bullets per burst
+  int    BurstShotDelay;   // ticks between each bullet in the burst
+  [ExcludeFromPrototype] int    BurstDelayTicks;  // ticks to wait after finishing a full burst
+  FP     BurstDispersion;  // max cone?angle (in degrees) for each bullet
+  
   int                       FireCooldown;      // ticks between shots
   [ExcludeFromPrototype] int                       FireCdTicks;       // accumulates ticks
+  [ExcludeFromPrototype] int BurstShotsRemaining;  // how many shots left in the current burst
+  [ExcludeFromPrototype] int BurstShotCdTicks;     // ticks until next shot in current burst
   FPVector3                        MuzzleOffset;      // how far forward from eyes to spawn
 }

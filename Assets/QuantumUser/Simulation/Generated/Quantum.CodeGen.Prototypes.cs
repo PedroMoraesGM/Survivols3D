@@ -122,6 +122,7 @@ namespace Quantum.Prototypes {
     public FP XpDrop;
     public FP Damage;
     public FP CloseDamageRange;
+    public FP ShootRangeDistance;
     public FP Speed;
     public FP MinHeightLimit;
     public QBoolean CanMove;
@@ -135,6 +136,7 @@ namespace Quantum.Prototypes {
         result.XpDrop = this.XpDrop;
         result.Damage = this.Damage;
         result.CloseDamageRange = this.CloseDamageRange;
+        result.ShootRangeDistance = this.ShootRangeDistance;
         result.Speed = this.Speed;
         result.MinHeightLimit = this.MinHeightLimit;
         result.CanMove = this.CanMove;
@@ -261,6 +263,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.HomingProjectileComponent))]
   public unsafe class HomingProjectileComponentPrototype : ComponentPrototype<Quantum.HomingProjectileComponent> {
+    public QBoolean IsEnemyTeam;
     public Int32 RemainingBounces;
     public FP Speed;
     public FP HomingStrength;
@@ -275,6 +278,7 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.HomingProjectileComponent result, in PrototypeMaterializationContext context = default) {
+        result.IsEnemyTeam = this.IsEnemyTeam;
         result.RemainingBounces = this.RemainingBounces;
         result.Speed = this.Speed;
         result.HomingStrength = this.HomingStrength;
@@ -454,6 +458,10 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.ShootingWeaponComponent))]
   public unsafe partial class ShootingWeaponComponentPrototype : ComponentPrototype<Quantum.ShootingWeaponComponent> {
     public AssetRef<EntityPrototype> ProjectilePrefab;
+    public QBoolean CanShoot;
+    public Int32 BurstCount;
+    public Int32 BurstShotDelay;
+    public FP BurstDispersion;
     public Int32 FireCooldown;
     public FPVector3 MuzzleOffset;
     partial void MaterializeUser(Frame frame, ref Quantum.ShootingWeaponComponent result, in PrototypeMaterializationContext context);
@@ -464,6 +472,10 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.ShootingWeaponComponent result, in PrototypeMaterializationContext context = default) {
         result.ProjectilePrefab = this.ProjectilePrefab;
+        result.CanShoot = this.CanShoot;
+        result.BurstCount = this.BurstCount;
+        result.BurstShotDelay = this.BurstShotDelay;
+        result.BurstDispersion = this.BurstDispersion;
         result.FireCooldown = this.FireCooldown;
         result.MuzzleOffset = this.MuzzleOffset;
         MaterializeUser(frame, ref result, in context);

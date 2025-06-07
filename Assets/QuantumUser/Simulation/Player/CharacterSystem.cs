@@ -41,7 +41,7 @@ namespace Quantum
                 {
                     f.Unsafe.TryGetPointer(target, out HealthComponent* health);
 
-                    health->CurrentHealth -= enemy->Damage;
+                    health->CurrentHealth -= damage;
 
                     if (health->CurrentHealth < 0 && !health->IsDead)
                     {

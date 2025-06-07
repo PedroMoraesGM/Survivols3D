@@ -64,18 +64,22 @@
     <Compile Include="Assets\QuantumUser\Scripts\UI\UpgradeUIController.cs" />
     <Compile Include="Assets\QuantumUser\View\PlayerViewController.cs" />
     <Compile Include="Assets\QuantumUser\Scripts\UpgradeCatalog.cs" />
+    <Compile Include="Assets\Scripts\CursorController.cs" />
     <Compile Include="Assets\QuantumUser\Scripts\DisconnectHandler.cs" />
+    <Compile Include="Assets\Vefects\Trails VFX URP\Scripts\Demo_FreeCam.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\QuantumUser\Scripts\UI\UpgradeCardItem.cs" />
     <Compile Include="Assets\Scripts\RotateToCameraView.cs" />
     <Compile Include="Assets\QuantumUser\Scripts\UI\GameUIController.cs" />
     <Compile Include="Assets\QuantumUser\View\EnemyViewController.cs" />
+    <Compile Include="Assets\Vefects\Trails VFX URP\Scripts\Demo_TurningAround.cs" />
     <Compile Include="Assets\QuantumUser\Scripts\Input\GameInput.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Photon\Quantum\Assemblies\Quantum.Deterministic.xml" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\Photon\PhotonLibs\netstandard2.0\debug\PhotonClient.xml" />
+    <None Include="Assets\Vefects\Trails VFX URP\Demo\Resources\Character\Shaders\SH_Vefects_URP_VFX_Character_Showoff.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile-2-Pass.shader" />
     <None Include="Assets\Photon\PhotonLibs\netstandard2.0\release\PhotonClient.dll" />
@@ -84,6 +88,7 @@
     <None Include="Assets\Materials\Textures\PixelTexturePack\Textures\License.txt" />
     <None Include="Assets\Photon\Quantum\Assemblies\Quantum.Log.dll" />
     <None Include="Assets\QuantumUser\readme.txt" />
+    <None Include="Assets\Vefects\Trails VFX URP\VFX\Shaders\SH_Vefects_VFX_URP_Trail_Distortion.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\Sprites\Hexany&apos;s Monster Menagerie\COPYING.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
@@ -94,6 +99,7 @@
     <None Include="Assets\Photon\Quantum\Assemblies\Quantum.Engine.xml" />
     <None Include="Assets\TextMesh Pro\Shaders\SDFFunctions.hlsl" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
+    <None Include="Assets\Vefects\Trails VFX URP\_ Extra\Shaders\SH_Vefects_Extra_Billboard_01.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
     <None Include="Assets\Photon\PhotonLibs\netstandard2.0\release\PhotonClient.xml" />
@@ -106,12 +112,15 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\Sprites\Hexany&apos;s Monster Menagerie\INFO.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
+    <None Include="Assets\Vefects\Trails VFX URP\VFX\Shaders\SH_Vefects_VFX_URP_Trail_New.shader" />
     <None Include="Assets\Photon\PhotonLibs\netstandard2.0\debug\PhotonClient.dll" />
     <None Include="Assets\Photon\Quantum\Assemblies\Quantum.Deterministic.dll" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\Photon\Quantum\Assemblies\Quantum.Log.xml" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
+    <None Include="Assets\Vefects\Trails VFX URP\Demo\Resources\Environment\Shaders\SH_Vefects_Grid_01.shader" />
     <None Include="Assets\Plugin\Demigiant\DOTween\readme.txt" />
+    <None Include="Assets\Vefects\Trails VFX URP\_ Extra\Shaders\SH_Vefects_Extra_Grid_01.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\Sprites\Hexany&apos;s Monster Menagerie\CHANGELOG.txt" />

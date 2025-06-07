@@ -1,4 +1,5 @@
 component HomingProjectileComponent {
+  bool	  IsEnemyTeam; // whether it should home enemies or players
   int     RemainingBounces;
   FP      Speed;
   FP      HomingStrength;

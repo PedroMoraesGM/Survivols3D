@@ -2680,6 +2680,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1631233120}
   - component: {fileID: 1631233121}
+  - component: {fileID: 1631233122}
   m_Layer: 0
   m_Name: GameInput
   m_TagString: Untagged
@@ -2715,6 +2716,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inputActions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+--- !u!114 &1631233122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1631233118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2cdc315e05797040afcb7eb4cfffe88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1687058477
 GameObject:
   m_ObjectHideFlags: 0
@@ -3278,6 +3291,14 @@ PrefabInstance:
     - target: {fileID: 949806551900884606, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
       propertyPath: Prototype.Entries.Array.data[4].CanBeRepeated.Value
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522200128369236728, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
+      propertyPath: Prototype.Entries.Array.data[3].MinWave
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522200128369236728, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
+      propertyPath: Prototype.Entries.Array.data[3].Weight.RawValue
+      value: 16384
       objectReference: {fileID: 0}
     - target: {fileID: 7207393148808095406, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
       propertyPath: m_LocalPosition.x

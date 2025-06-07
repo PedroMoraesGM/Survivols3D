@@ -27,7 +27,7 @@ namespace Tomorrow.Quantum
             // Acquire target if needed
             if (!m.HasTarget || m.CurrentTarget.IsValid)
             {
-                m.HasTarget = TryAcquireClosestEnemy(f, filter, pos, out m.CurrentTarget);
+                m.HasTarget = TryAcquireClosestTarget(f, filter, pos, out m.CurrentTarget);
             }
 
             // Compute steering
@@ -53,23 +53,42 @@ namespace Tomorrow.Quantum
         }
 
         // Helper to pick the nearest EnemyAI
-        bool TryAcquireClosestEnemy(Frame f, Filter filter, FPVector3 from, out EntityRef best)
+        bool TryAcquireClosestTarget(Frame f, Filter filter, FPVector3 from, out EntityRef best)
         {
             best = EntityRef.None;
             FP bestDsqr = FP.MaxValue;
 
-            foreach (var block in f.Unsafe.GetComponentBlockIterator<EnemyAI>())
+            if (filter.Missile->IsEnemyTeam)
             {
-                var e = block.Entity;
-                var p = f.Unsafe.GetPointer<Transform3D>(e)->Position;
-                FP dsq = (p - from).SqrMagnitude;
-                if (dsq < bestDsqr && (filter.Missile->PreviousTarget != e || filter.Missile->CanRepeatTarget))
+                foreach (var block in f.Unsafe.GetComponentBlockIterator<Character>()) // target player
                 {
-                    bestDsqr = dsq;
-                    best = e;
+                    var e = block.Entity;
+                    var p = f.Unsafe.GetPointer<Transform3D>(e)->Position;
+                    FP dsq = (p - from).SqrMagnitude;
+                    if (dsq < bestDsqr && (filter.Missile->PreviousTarget != e || filter.Missile->CanRepeatTarget))
+                    {
+                        bestDsqr = dsq;
+                        best = e;
+                    }
+
                 }
-                
             }
+            else
+            {
+                foreach (var block in f.Unsafe.GetComponentBlockIterator<EnemyAI>()) // target enemy
+                {
+                    var e = block.Entity;
+                    var p = f.Unsafe.GetPointer<Transform3D>(e)->Position;
+                    FP dsq = (p - from).SqrMagnitude;
+                    if (dsq < bestDsqr && (filter.Missile->PreviousTarget != e || filter.Missile->CanRepeatTarget))
+                    {
+                        bestDsqr = dsq;
+                        best = e;
+                    }
+
+                }
+            }
+            
             return best != EntityRef.None;
         }
 

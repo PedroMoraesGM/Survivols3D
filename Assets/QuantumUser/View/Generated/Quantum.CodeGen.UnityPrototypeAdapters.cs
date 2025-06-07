@@ -89,6 +89,7 @@ namespace Quantum.Prototypes.Unity {
   }
   [System.SerializableAttribute()]
   public unsafe partial class HomingProjectileComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.HomingProjectileComponentPrototype> {
+    public QBoolean IsEnemyTeam;
     public Int32 RemainingBounces;
     public FP Speed;
     public FP HomingStrength;
@@ -100,6 +101,7 @@ namespace Quantum.Prototypes.Unity {
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.HomingProjectileComponentPrototype prototype);
     public override Quantum.Prototypes.HomingProjectileComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.HomingProjectileComponentPrototype();
+      converter.Convert(this.IsEnemyTeam, out result.IsEnemyTeam);
       converter.Convert(this.RemainingBounces, out result.RemainingBounces);
       converter.Convert(this.Speed, out result.Speed);
       converter.Convert(this.HomingStrength, out result.HomingStrength);
