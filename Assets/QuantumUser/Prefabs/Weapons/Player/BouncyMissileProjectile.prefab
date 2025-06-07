@@ -168,7 +168,7 @@ GameObject:
   - component: {fileID: 3633275905070143746}
   - component: {fileID: 3297934888254379737}
   - component: {fileID: 4057375712824869747}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -652,8 +652,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    IsEnemyTeam:
+    HomeToPlayers:
       Value: 0
+    MinFollowDistance:
+      RawValue: 0
     RemainingBounces: 99
     Speed:
       RawValue: 65536

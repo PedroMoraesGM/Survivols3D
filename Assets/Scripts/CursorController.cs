@@ -12,6 +12,8 @@ public class CursorController : MonoBehaviour
             UpdateCursor();
         });
 
+        QuantumEvent.Subscribe(this, (EventOnRequestDisconnect e) => OnRequestDisconnect(e));
+
         // PauseMenu.OnPaused   += () => { _isPaused = true;  UpdateCursor(); };
         // PauseMenu.OnResumed  += () => { _isPaused = false; UpdateCursor(); };
     }
@@ -20,7 +22,15 @@ public class CursorController : MonoBehaviour
     {
         // PauseMenu.OnPaused   -= ...
         // PauseMenu.OnResumed  -= ...
-        _isPaused = false;
+    }
+
+    private void OnRequestDisconnect(EventOnRequestDisconnect e)
+    {
+        var f = e.Game.Frames.Verified;
+        if (!f.TryGet(e.Entity, out PlayerLink playerLink)) return;
+        if (!e.Game.PlayerIsLocal(playerLink.Player)) return;
+
+        _isPaused = true;
         UpdateCursor();
     }
 
