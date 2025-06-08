@@ -475,7 +475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prototype:
     Damage:
-      RawValue: 917504
+      RawValue: 1310720
     HitsToDestroy: 0
     Velocity:
       RawValue: 65536

@@ -3293,12 +3293,28 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3522200128369236728, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
+      propertyPath: Prototype.Entries.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522200128369236728, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
       propertyPath: Prototype.Entries.Array.data[3].MinWave
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3522200128369236728, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
+      propertyPath: Prototype.Entries.Array.data[6].MinWave
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522200128369236728, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
       propertyPath: Prototype.Entries.Array.data[3].Weight.RawValue
       value: 16384
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522200128369236728, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
+      propertyPath: Prototype.Entries.Array.data[6].Prefab.Id.Value
+      value: 1333386885804509343
+      objectReference: {fileID: 0}
+    - target: {fileID: 3522200128369236728, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
+      propertyPath: Prototype.Entries.Array.data[6].Weight.RawValue
+      value: 3277
       objectReference: {fileID: 0}
     - target: {fileID: 7207393148808095406, guid: 1dc86ff46316e4444bbac66e0005edb8, type: 3}
       propertyPath: m_LocalPosition.x

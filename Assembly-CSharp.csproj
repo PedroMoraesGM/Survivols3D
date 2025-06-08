@@ -85,6 +85,7 @@
     <None Include="Assets\Photon\PhotonLibs\netstandard2.0\release\PhotonClient.dll" />
     <None Include="Assets\Photon\Quantum\Assemblies\Quantum.Engine.dll" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
+    <None Include="Assets\Sprites\1-Bit Wonders\Readme.txt" />
     <None Include="Assets\Materials\Textures\PixelTexturePack\Textures\License.txt" />
     <None Include="Assets\Photon\Quantum\Assemblies\Quantum.Log.dll" />
     <None Include="Assets\QuantumUser\readme.txt" />

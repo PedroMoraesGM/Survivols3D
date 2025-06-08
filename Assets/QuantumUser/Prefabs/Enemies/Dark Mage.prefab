@@ -126,7 +126,7 @@ MonoBehaviour:
   Prototype:
     ProjectilePrefab:
       Id:
-        Value: 1503692620784273987
+        Value: 1431171765527782034
     CanShoot:
       Value: 1
     BurstCount: 3

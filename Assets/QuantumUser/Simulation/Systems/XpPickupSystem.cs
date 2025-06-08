@@ -59,6 +59,8 @@ public unsafe class XPPickupSystem : SystemSignalsOnly, ISignalOnDefeated, ISign
         {
             if (f.Unsafe.TryGetPointer<EnemyAI>(target, out EnemyAI* enemyAi))
             {
+                if (enemyAi->XpDrop == 0) return;
+                
                 EntityRef xpEntity = f.Create(dealerXpComponent->XpPrefab);
 
                 if (f.Unsafe.TryGetPointer<XPPickup>(xpEntity, out var xpPickup))
