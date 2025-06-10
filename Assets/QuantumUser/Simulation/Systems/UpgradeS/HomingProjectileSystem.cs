@@ -1,7 +1,9 @@
 using UnityEngine.Scripting;
 using Photon.Deterministic;
 using Quantum;
+using Quantum.Profiling;
 using UnityEngine;
+
 
 namespace Tomorrow.Quantum
 {
@@ -22,37 +24,43 @@ namespace Tomorrow.Quantum
         {
             ref var m = ref *filter.Missile;
             var pos = filter.Transform->Position;
-            FPVector3 dir;
 
-            // Acquire target if needed
-            if (!m.HasTarget || m.CurrentTarget.IsValid)
-            {
-                m.HasTarget = TryAcquireClosestTarget(f, filter, pos, out m.CurrentTarget);
-            }
+            // Acquire or validate target...
+            bool gotTarget = TryAcquireClosestTarget(f, filter, pos, out m.CurrentTarget);
 
-            // Compute steering
-            if (m.HasTarget) //&& f.Unsafe.Exists(m.CurrentTarget))
+            if (m.CurrentTarget.IsValid)
             {
                 var targetPos = f.Unsafe.GetPointer<Transform3D>(m.CurrentTarget)->Position;
-                var toTarget = (targetPos - pos).Normalized;
-                var distance = (targetPos - pos).Magnitude;
-                dir = (filter.Transform->Forward * (FP._1 - m.HomingStrength)
-                       + toTarget * m.HomingStrength).Normalized;
-                
-                filter.Transform->LookAt(targetPos);
+                var offset = targetPos - pos;
+                var distance = offset.Magnitude;
 
-                // Apply velocity
-                if (filter.Missile->MinFollowDistance <= FP._0 || distance <= filter.Missile->MinFollowDistance)
+                // Safe normalize:
+                FPVector3 toTarget = (distance > FP.Epsilon)
+                  ? offset / distance
+                  : filter.Transform->Forward;
+
+                // Blend forward & target
+                var blended = filter.Transform->Forward * (FP._1 - m.HomingStrength)
+                            + toTarget * m.HomingStrength;
+
+                // Safe normalize blended
+                FPVector3 dir = (blended.Magnitude > FP.Epsilon)
+                  ? blended / blended.Magnitude
+                  : filter.Transform->Forward;
+
+                // Only look if we actually have distance
+                if (distance > FP.Epsilon)
+                    filter.Transform->LookAt(targetPos);
+
+                // Move if within follow range
+                if (m.MinFollowDistance <= FP._0 || distance <= m.MinFollowDistance)
                     filter.Transform->Position += dir * m.Speed;
             }
             else
             {
-                // Lost or no target
-                m.HasTarget = false;
-                m.CurrentTarget = EntityRef.None;
-                dir = filter.Transform->Forward;
+                // fallback move forward
+                filter.Transform->Position += filter.Transform->Forward * m.Speed;
             }
-
         }
 
         // Helper to pick the nearest EnemyAI
@@ -100,43 +108,57 @@ namespace Tomorrow.Quantum
         // 2) Collision signal for bounces
         public void OnTriggerEnter3D(Frame f, TriggerInfo3D info)
         {
-            // Only handle collisions where the *projectile* entity has a BouncyMissileComponent
+            //Debug.LogError("[Homing] trigger enter");
+
+            if (!f.IsVerified) return;
+
+            // Only handle collisions where the *projectile* entity has a HomingProjectileComponent
             if (!f.Unsafe.TryGetPointer(info.Entity, out HomingProjectileComponent* bm))
                 return;
 
-            // And only if it hit an EnemyAI
-            if (!f.Unsafe.TryGetPointer(info.Other, out EnemyAI* enemy))
+            //Debug.LogError("[Homing] hp valid");
+
+            // And only if it hit an valid target
+            bool isValidTarget = (!bm->HomeToPlayers && f.Unsafe.TryGetPointer<EnemyAI>(info.Other, out EnemyAI* enemy)) || bm->HomeToPlayers && f.Unsafe.TryGetPointer<Character>(info.Other, out Character* character);
+            if (!isValidTarget)
                 return;
+
+            //Debug.LogError("[Homing] target valid");
 
             // Decrement bounces
             bm->RemainingBounces--;
 
-            if (bm->RemainingBounces > 0)
+            if (bm->RemainingBounces > 0 || bm->CanRepeatTarget)
             {
                 // Reset so next tick it will retarget
                 bm->PreviousTarget = bm->CurrentTarget;
-                bm->HasTarget = false;
                 bm->CurrentTarget = EntityRef.None;
+
+                //Debug.LogError("[Homing] reset target");
             }
             else
             {
-                //// No bounces left ? destroy
-                //f.Destroy(info.Entity);
+                // No bounces left ? destroy
+                f.Destroy(info.Entity);
+
+                //Debug.LogError("[Homing] destroy entity");
             }
         }
 
         public void OnTrigger3D(Frame f, TriggerInfo3D info)
         {
+            if (!f.IsVerified) return;
+
             if (f.Unsafe.TryGetPointer<HomingProjectileComponent>(info.Entity, out HomingProjectileComponent* projectile))
             {
-                if (f.Unsafe.TryGetPointer<EnemyAI>(info.Other, out EnemyAI* enemy))
+                bool isValidTarget = (!projectile->HomeToPlayers && f.Unsafe.TryGetPointer<EnemyAI>(info.Other, out EnemyAI* enemy)) || projectile->HomeToPlayers && f.Unsafe.TryGetPointer<Character>(info.Other, out Character* character);
+                if (isValidTarget)
                 {
                     if (projectile->CanDragTarget)
                     {
                         FPVector3 move = (f.Unsafe.GetPointer<Transform3D>(info.Entity)->Forward) + (f.Unsafe.GetPointer<Transform3D>(info.Entity)->Up * FP._0_04);
                         FPVector3 pos = f.Unsafe.GetPointer<Transform3D>(info.Other)->Position;
                         f.Unsafe.GetPointer<Transform3D>(info.Other)->Position = new FPVector3(pos.X + move.X, FPMath.Max( pos.Y + move.Y, -FP._6), pos.Z + move.Z);
-
                     }
                 }
             }

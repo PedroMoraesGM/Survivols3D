@@ -74,7 +74,6 @@
     <Compile Include="Assets\QuantumUser\Simulation\Systems\Waves\EnemySpawnSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Systems\PlayerRegistryLifecycle.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Systems\UpgradeSystem.cs" />
-    <Compile Include="Assets\QuantumUser\Simulation\Systems\BallSystem.cs" />
     <Compile Include="Assets\Photon\Quantum\Simulation\SimulationConfig.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Player\MoveSystem.cs" />
     <Compile Include="Assets\QuantumUser\Simulation\Systems\PlayerTrackingSystem.cs" />
@@ -108,7 +107,6 @@
     <None Include="Assets\QuantumUser\Simulation\Components\Wall.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\SpawnWaves.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\Health.qtn" />
-    <None Include="Assets\QuantumUser\Simulation\Components\Ball.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\XP.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Quantum.Simulation.asmref" />
     <None Include="Assets\QuantumUser\Simulation\Components\AreaWeaponComponent.qtn" />

@@ -77,21 +77,6 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.Ball))]
-  public unsafe class BallPrototype : ComponentPrototype<Quantum.Ball> {
-    public FPVector3 Velocity;
-    public MapEntityId Paddle;
-    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.Ball component = default;
-        Materialize((Frame)f, ref component, in context);
-        return f.Set(entity, component) == SetResult.ComponentAdded;
-    }
-    public void Materialize(Frame frame, ref Quantum.Ball result, in PrototypeMaterializationContext context = default) {
-        result.Velocity = this.Velocity;
-        PrototypeValidator.FindMapEntity(this.Paddle, in context, out result.Paddle);
-    }
-  }
-  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.Character))]
   public unsafe partial class CharacterPrototype : ComponentPrototype<Quantum.Character> {
     public FP MoveSpeed;

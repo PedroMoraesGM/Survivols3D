@@ -85,7 +85,7 @@ namespace Tomorrow.Quantum
             // Apply the upgrade (instantiate prefab, modify stats, etc.)
             ApplyUpgradeToPlayer(f, filter.Entity, chosenEntry);
 
-            // Record it so it won’t be offered again
+            // Record it so it wonï¿½t be offered again
             taken.Add(pending[chosenIndex]);
 
             // Clear pending and reset choice state

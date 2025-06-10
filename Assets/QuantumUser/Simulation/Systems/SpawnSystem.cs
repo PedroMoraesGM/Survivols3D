@@ -18,84 +18,47 @@ namespace Tomorrow.Quantum
         public void OnGameStarted(Frame f)
         {
             if(!f.IsVerified) return;
-            // comlete missing players with AI
-            int playerCount = f.ComponentCount<PlayerLink>();
-            int missingPlayers = f.RuntimeConfig.PlayersCount - playerCount;
-            if (missingPlayers <= 0) return;
-            for (int i = 0; i < missingPlayers; i++)
-            {
-                SpawnAI(f, playerCount+i);
-            }
+            //int playerCount = f.ComponentCount<PlayerLink>();
+            //int missingPlayers = f.RuntimeConfig.PlayersCount - playerCount;
+            //if (missingPlayers <= 0) return;
+            //for (int i = 0; i < missingPlayers; i++)
+            //{
+            //    SpawnAI(f, playerCount+i);
+            //}
         }
         public void OnGameStateChanged(Frame f, GameState state)
         {
             if(!f.IsVerified) return;
             if (state == GameState.Countdown)
             {
-                // spawn the ball
-                EntityRef ballEntity = f.Create(f.RuntimeConfig.BallPrototype);
-                f.Add(ballEntity, new Ball());
-                if (f.Unsafe.TryGetPointer<Transform3D>(ballEntity, out var ballTransform))
-                {
-                    RespawnBall(f, ballEntity);
-                }
+
             }
         }
 
         public void OnScoreChanged(Frame f, EntityRef ballEntity, EntityRef goalEntity)
         {
             if(!f.IsVerified) return;
-            if (f.Unsafe.TryGetPointer<Ball>(ballEntity, out Ball *ball))
-            {
-        
-            }
         }
 
         public void OnGameOver(Frame f)
         {
             if(!f.IsVerified) return;
-            foreach (var pair in f.GetComponentIterator<Ball>())
-            {
-                f.Destroy(pair.Entity);
-            }
-        }
-
-        void RespawnBall(Frame f, EntityRef ballEntity)
-        {
-            // reset position
-            if (f.Unsafe.TryGetPointer<Transform3D>(ballEntity, out var ballTransform))
-            {
-                ballTransform->Position = new FPVector3(
-                    f.RuntimeConfig.GameSize.X/2, 
-                    0,
-                    f.RuntimeConfig.GameSize.Y/2
-                );
-            }
-            // reset physics
-            if (f.Unsafe.TryGetPointer<Ball>(ballEntity, out var ball))
-            {
-                ball->Velocity = f.RuntimeConfig.BallSpeed * FPVector3.Forward;
-            }
         }
 
         void SpawnPlayer(Frame f, int index, PlayerRef player)
         {
             var playerEntity = Spawn(f, index);
+
             var health = f.Unsafe.GetPointer<HealthComponent>(playerEntity);
             health->CurrentHealth = health->MaxHealth;
 
             var playerLink = new PlayerLink()
             {
                 Player = player,
+                Class = (CharacterClass) PlayerPrefs.GetInt("SelectedCharacterClass", 0),
+                //Class = f.RuntimeConfig.SelectedClass
             };
             f.Add(playerEntity, playerLink);
-        }
-
-        void SpawnAI(Frame f, int index)
-        {
-            //var paddleEntity = Spawn(f, index);
-            //var playerAI = new PlayerAI();
-            //f.Add(paddleEntity, playerAI);
         }
 
         EntityRef Spawn(Frame f, int index)

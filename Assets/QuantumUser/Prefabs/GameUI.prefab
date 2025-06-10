@@ -920,7 +920,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.043836534, g: 0, b: 0.4339623, a: 1}
+  m_Color: {r: 0.07058824, g: 0.050980393, b: 0.2784314, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2027,10 +2027,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6255406161133662637}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7788339499931516990
 CanvasRenderer:
@@ -2079,6 +2079,7 @@ GameObject:
   - component: {fileID: 6944901788051962136}
   - component: {fileID: 7452330644189873028}
   - component: {fileID: 1851461849313384138}
+  - component: {fileID: 5207060899583001198}
   m_Layer: 5
   m_Name: Minimap
   m_TagString: Untagged
@@ -2127,7 +2128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.61960787, g: 0.6117647, b: 0.79607844, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2157,6 +2158,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
+--- !u!114 &5207060899583001198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4399443950531154061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a634a1ec85d7284b87b623cb53d0398, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minimapCamera: {fileID: 0}
+  mapArea: {fileID: 5993221889674120930}
+  dotPrefab: {fileID: 2832069466476117729, guid: 8de68e616c9147f4cb84a2325ffe7357, type: 3}
+  arrowPrefab: {fileID: 6806256052644826706, guid: 74ac16b9f66123c419f1de3ad506d1e4, type: 3}
+  classDotIcons:
+  - {fileID: 21300000, guid: 3b7e4b3f486987641be381bfdb366927, type: 3}
+  - {fileID: 21300000, guid: a745438596045f94f955a62ca523fb2b, type: 3}
+  - {fileID: 21300000, guid: f48cfc9312fae7b43b5ce83b0d4419bd, type: 3}
+  - {fileID: 21300000, guid: 8cfc21f51fe310f40a6ef57209a34392, type: 3}
+  classColors:
+  - {r: 0.3888889, g: 0.7222222, b: 1, a: 1}
+  - {r: 0.55, g: 0.55, b: 0.55, a: 1}
+  - {r: 0.8516483, g: 0.489011, b: 1, a: 1}
+  - {r: 0.22549015, g: 1, b: 0.5539215, a: 1}
+  edgeBuffer: 10
 --- !u!1 &4958541485017351602
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,10 +12,14 @@ namespace QuantumUser.View.Controllers
 
         public PlayerRef PlayerRef { get; private set; }
 
-
+        [SerializeField] private SpriteRenderer[] paintablePlayerRenderers;
+        [SerializeField] private AnimatorOverrideController[] firstPersonClassAnimators;
+        [SerializeField] private Animator firstPersonAnimator;
         [SerializeField] private GameObject firstPersonView;
         [SerializeField] private GameObject DeadFirstPersonView;
         [SerializeField] private Transform cameraPivot;
+        [SerializeField] private AnimatorOverrideController[] thirdPersonClassAnimators;
+        [SerializeField] private Animator thirdPersonAnimator;
         [SerializeField] private GameObject thirdPersonView;
         [SerializeField] private GameObject DeadThirdPersonView;
 
@@ -39,7 +43,20 @@ namespace QuantumUser.View.Controllers
 
                 RuntimePlayer data = frame.GetPlayerData(playerLink.Player);
                 nameText.text = data.PlayerNickname;
+
+                UpdateCharacterVisuals(playerLink);
             }            
+        }
+
+        private void UpdateCharacterVisuals(PlayerLink playerLink)
+        {
+            firstPersonAnimator.runtimeAnimatorController = firstPersonClassAnimators[((int)playerLink.Class)];
+            thirdPersonAnimator.runtimeAnimatorController = thirdPersonClassAnimators[((int)playerLink.Class)];
+
+            foreach (var item in paintablePlayerRenderers)
+            {
+                item.color = Game.Configurations.Runtime.ClassColors[(int)playerLink.Class];
+            }
         }
 
         private void UpdateCharacterView(Frame frame)

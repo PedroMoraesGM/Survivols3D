@@ -50,19 +50,6 @@ namespace Quantum.Prototypes.Unity {
   #endif //;
   
   [System.SerializableAttribute()]
-  public unsafe partial class BallPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BallPrototype> {
-    public FPVector3 Velocity;
-    public Quantum.QuantumEntityPrototype Paddle;
-    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BallPrototype prototype);
-    public override Quantum.Prototypes.BallPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
-      var result = new Quantum.Prototypes.BallPrototype();
-      converter.Convert(this.Velocity, out result.Velocity);
-      converter.Convert(this.Paddle, out result.Paddle);
-      ConvertUser(converter, ref result);
-      return result;
-    }
-  }
-  [System.SerializableAttribute()]
   public unsafe partial class EnemyInfoPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.EnemyInfoPrototype> {
     public Quantum.QuantumEntityPrototype Entity;
     public FPVector3 Position;

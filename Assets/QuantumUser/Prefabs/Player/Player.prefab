@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a1a2b680f2af7e64cac7c066ac10068f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ba3486a5bcac44e46b0c00aeb797eade, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -175,7 +175,7 @@ GameObject:
   - component: {fileID: 8846138780215322849}
   m_Layer: 0
   m_Name: Camera
-  m_TagString: Untagged
+  m_TagString: CameraMinimap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -205,7 +205,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.043137256, g: 0, b: 0.43529415, a: 1}
+  m_BackGroundColor: {r: 0.29411766, g: 0.1764706, b: 0.4117647, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -231,7 +231,7 @@ Camera:
   field of view: 60
   orthographic: 0
   orthographic size: 5
-  m_Depth: 0
+  m_Depth: -3
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 2048
@@ -366,9 +366,9 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a1a2b680f2af7e64cac7c066ac10068f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8056297fb9334f349bb879d9fc72d9c6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 1
+  m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 1}
@@ -403,7 +403,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1148972998113690066}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.38342437, z: -0, w: -0.9235723}
+  m_LocalRotation: {x: -0, y: 0.96195924, z: -0, w: 0.2731932}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 6, y: 6, z: 6}
   m_ConstrainProportionsScale: 0
@@ -668,7 +668,7 @@ Transform:
   m_GameObject: {fileID: 1650742728040437843}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 22.7, z: 0}
+  m_LocalPosition: {x: 0, y: 30, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1047,9 +1047,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerLocal: 0
+  paintablePlayerRenderers:
+  - {fileID: 6145047907127196223}
+  - {fileID: 2814461190959338772}
+  - {fileID: 1122415975779603667}
+  - {fileID: 7768880700503386896}
+  - {fileID: 2317541497076881487}
+  - {fileID: 1655733666431519060}
+  - {fileID: 3800946744890821083}
+  firstPersonClassAnimators:
+  - {fileID: 22100000, guid: 17ed9edab3fba0b498145f0113b20bc6, type: 2}
+  - {fileID: 22100000, guid: 149053a12a43bef44b252cb0c2d0f54d, type: 2}
+  - {fileID: 22100000, guid: 428b1ea1b4788584bbcf863d10895335, type: 2}
+  - {fileID: 22100000, guid: a0cbc5d39e423ca4ea407ac786721ea6, type: 2}
+  firstPersonAnimator: {fileID: 8593363888832625907}
   firstPersonView: {fileID: 3062163427441206921}
   DeadFirstPersonView: {fileID: 5156446338889130165}
   cameraPivot: {fileID: 782932668687836029}
+  thirdPersonClassAnimators:
+  - {fileID: 22100000, guid: ef78150dbd2ee27419dd9b455e606948, type: 2}
+  - {fileID: 22100000, guid: ad3904c48ee34d44fba002e1cce02e08, type: 2}
+  - {fileID: 22100000, guid: 47b94766385878e428cffb95a1a0e46e, type: 2}
+  - {fileID: 22100000, guid: 083d9f9251758fa42a8538e86ba9236c, type: 2}
+  thirdPersonAnimator: {fileID: 135365058814162283}
   thirdPersonView: {fileID: 8715744422700688798}
   DeadThirdPersonView: {fileID: 7166237911918744239}
   speedPitch: 1.5
@@ -1734,7 +1754,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6577253397102531174}
-  m_LocalRotation: {x: -0, y: 0.38342437, z: -0, w: -0.9235723}
+  m_LocalRotation: {x: -0, y: 0.96195924, z: -0, w: 0.2731932}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.017121, y: 0.017121, z: 0.017121}
   m_ConstrainProportionsScale: 0
@@ -1839,7 +1859,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2409954016420175888
 Transform:
   m_ObjectHideFlags: 0
@@ -2058,7 +2078,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &9005920214701545114
 Transform:
   m_ObjectHideFlags: 0
@@ -2547,7 +2567,7 @@ Animator:
   m_GameObject: {fileID: 8715744422700688798}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 88fb730de3a53f749a1dcf69d83f83b4, type: 2}
+  m_Controller: {fileID: 22100000, guid: 083d9f9251758fa42a8538e86ba9236c, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

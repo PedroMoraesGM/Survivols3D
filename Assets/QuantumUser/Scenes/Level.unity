@@ -1646,23 +1646,19 @@ MonoBehaviour:
     PlayerPrototype:
       Id:
         Value: 1496409425384618818
-    BallPrototype:
-      Id:
-        Value: 1513133757080442825
-    PaddleSpeed:
-      RawValue: 1179648
-    AIPaddleSpeed:
-      RawValue: 327680
-    BallSpeed:
-      RawValue: 196608
     GameSize:
       X:
         RawValue: 1310720
       Y:
         RawValue: 655360
-    PlayersCount: 2
+    ClassColors:
+    - {r: 0.3888889, g: 0.7222222, b: 1, a: 1}
+    - {r: 0.48299998, g: 0.48299998, b: 0.48299998, a: 1}
+    - {r: 0.8516483, g: 0.489011, b: 1, a: 1}
+    - {r: 0.22549015, g: 1, b: 0.5539215, a: 1}
+    PlayersCount: 5
     CountdownTime: 3
-    GameTime: 30
+    GameTime: 60
     FinishedTime: 5
   UseRandomSeed: 0
   SessionConfig: {fileID: 11400000, guid: ddced9348c7694940b05d96b4da144d6, type: 2}
@@ -3250,6 +3246,18 @@ PrefabInstance:
     - target: {fileID: 3843453513879375333, guid: 220879fa23f51440ba0e98d9af09544a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5207060899583001198, guid: 220879fa23f51440ba0e98d9af09544a, type: 3}
+      propertyPath: classColors.Array.data[1].b
+      value: 0.48299998
+      objectReference: {fileID: 0}
+    - target: {fileID: 5207060899583001198, guid: 220879fa23f51440ba0e98d9af09544a, type: 3}
+      propertyPath: classColors.Array.data[1].g
+      value: 0.48299998
+      objectReference: {fileID: 0}
+    - target: {fileID: 5207060899583001198, guid: 220879fa23f51440ba0e98d9af09544a, type: 3}
+      propertyPath: classColors.Array.data[1].r
+      value: 0.48299998
       objectReference: {fileID: 0}
     - target: {fileID: 7735671199035362733, guid: 220879fa23f51440ba0e98d9af09544a, type: 3}
       propertyPath: m_Name

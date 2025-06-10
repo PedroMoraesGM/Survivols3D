@@ -2,4 +2,9 @@ component PlayerLink
 {
     PlayerRef Player;
     [ExcludeFromPrototype] bool Ready;
+    [ExcludeFromPrototype] CharacterClass Class;
+}
+
+enum CharacterClass{
+    Tank, Assassin, Mage, Healer
 }

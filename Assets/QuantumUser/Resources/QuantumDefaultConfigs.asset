@@ -288,11 +288,6 @@ MonoBehaviour:
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Tomorrow.Quantum.BallSystem, Quantum.Simulation
-    SystemName: 
-    StartDisabled: 0
-    Children: []
-  - SystemType:
       AssemblyQualifiedName: Tomorrow.Quantum.CollisionSystem, Quantum.Simulation
     SystemName: 
     StartDisabled: 0

@@ -141,7 +141,7 @@ namespace Tomorrow.Quantum
             // In practice, we can multiply quaternions in Euler order:
             var rotYawRoll = FPQuaternion.Euler(verticalPitch, ownerEulerY, ownerEulerZ);
             var finalRot = spreadRot * rotYawRoll;
-            Debug.Log("spreadRot:" + spreadRot);
+            //Debug.Log("spreadRot:" + spreadRot);
 
             var projTf = f.Unsafe.GetPointer<Transform3D>(proj);
             projTf->Position = spawnPos;
