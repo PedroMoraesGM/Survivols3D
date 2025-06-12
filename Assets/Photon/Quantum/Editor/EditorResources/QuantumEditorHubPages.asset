@@ -358,7 +358,7 @@ MonoBehaviour:
       Icon: {fileID: 2800000, guid: 48362b7bdabe49d4b93c092e53f3c269, type: 3}
       StatusIcon: {fileID: 0}
       StartPlayMode: 0
-      Url: 
+      Url: https://doc.photonengine.com/quantum/current/quantum-intro
       Type:
         ScriptableObject: 
         Class: 
@@ -805,6 +805,27 @@ MonoBehaviour:
       Url: 
       Type:
         ScriptableObject: 
+        Class: 
+      Asset: {fileID: 0}
+      Id: 
+      StepElements: []
+    - Text: Upgrade SDK 3.0.3
+      Subtext: Create QuantumLookupTables global scriptable asset inside the QuantumUser
+        folder
+      WidgetMode:
+        Value: EnsureGlobalScriptableObjectExists
+      AutoComplete:
+        Value: GlobalScriptableObjectExists
+      Hide:
+        Value: GlobalScriptableObjectExists
+      Scene: 
+      AddSceneToTop: 0
+      Icon: {fileID: 2800000, guid: 1706062cff9ddc54bb26fb4afe08dc61, type: 3}
+      StatusIcon: {fileID: 2800000, guid: 8491ac03603357649a00077468789d52, type: 3}
+      StartPlayMode: 0
+      Url: 
+      Type:
+        ScriptableObject: Quantum.QuantumLookupTables
         Class: 
       Asset: {fileID: 0}
       Id: 

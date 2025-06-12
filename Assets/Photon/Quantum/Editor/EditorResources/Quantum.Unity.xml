@@ -49,12 +49,30 @@
         <member name="M:Quantum.QuantumUnityHostProfiler.EndLastNamedMarker">
             <inheritdoc cref="M:Quantum.Profiling.IHostProfiler.EndLastNamedMarker"/>
         </member>
+        <member name="T:Quantum.CapsuleDirection3D">
+            <summary>
+            The Quantum's representation for the capsule shape 3D world axis direction. 
+            </summary>
+        </member>
+        <member name="F:Quantum.CapsuleDirection3D.Y">
+            <summary>
+            The Y axis has the 
+            </summary>
+        </member>
+        <member name="F:Quantum.CapsuleDirection3D.X">
+            <summary>
+            </summary>
+        </member>
+        <member name="F:Quantum.CapsuleDirection3D.Z">
+            <summary>
+            </summary>
+        </member>
         <member name="T:Quantum.QuantumMapData">
             <summary>
             Unity component that holds and bakes the map data for a Quantum map from a given scene.
             </summary>
         </member>
-        <member name="F:Quantum.QuantumMapData.Asset">
+        <member name="F:Quantum.QuantumMapData.AssetRef">
             <summary>
             The source asset to bake the data into.
             </summary>
@@ -810,14 +828,9 @@
             Draws a gizmo of a given shape at the specified position and rotation
             </summary>
         </member>
-        <member name="M:Quantum.QuantumGameGizmos.InvalidateNavMeshGizmos">
+        <member name="M:Quantum.QuantumGameGizmos.InvalidateGizmos">
             <summary>
             Invalidates the navmesh gizmos.
-            </summary>
-        </member>
-        <member name="M:Quantum.QuantumGameGizmos.InvalidatePhysicsGizmos">
-            <summary>
-            Invalidates the physics gizmos.
             </summary>
         </member>
         <member name="M:Quantum.QuantumGameGizmos.OnBeforeBake(Quantum.QuantumMapData)">
@@ -831,7 +844,7 @@
             </summary>
             <param name="data"></param>
         </member>
-        <member name="M:Quantum.QuantumGameGizmos.CreateAndDrawNavMeshGizmo(Quantum.NavMesh,Quantum.NavMeshRegionMask)">
+        <member name="M:Quantum.QuantumGameGizmos.CreateAndDrawNavMeshGizmo(System.Boolean,Quantum.NavMesh,Quantum.NavMeshRegionMask@)">
             <summary>
               Creates a Unity mesh from the navmesh data and renders it as a gizmo. Uses submeshes to draw main mesh, regions and
               deactivated regions in different colors.
@@ -913,11 +926,27 @@
             Globally toggle on/off any simulation debug shape drawing.
             </summary>
         </member>
+        <member name="F:Quantum.DebugDraw.TextDrawDistance">
+            <summary>
+            The cutoff distance for rendering text.
+            </summary>
+        </member>
+        <member name="P:Quantum.DebugDraw.TextStyle">
+            <summary>
+            The style of the text in Draw.Text
+            </summary>
+        </member>
         <member name="M:Quantum.DebugDraw.Ray(Quantum.Draw.DebugRay)">
             <summary>
             The action to call on Draw.Ray.
             </summary>
             <param name="ray">Ray to be drawn in the view.</param>
+        </member>
+        <member name="M:Quantum.DebugDraw.Text(Quantum.Draw.DebugText)">
+            <summary>
+            The action to call on Draw.Text.
+            </summary>
+            <param name="text">The text information to draw in the view.</param>
         </member>
         <member name="M:Quantum.DebugDraw.Line(Quantum.Draw.DebugLine)">
             <summary>
@@ -955,12 +984,13 @@
             </summary>
             <param name="capsule">Capsule information</param>
         </member>
-        <member name="M:Quantum.DebugDraw.GetMaterial(Quantum.ColorRGBA)">
+        <member name="M:Quantum.DebugDraw.GetMaterial(Quantum.ColorRGBA,System.Boolean)">
             <summary>
             Return the debug shape drawing material based on the color.
             Will set the main color on the material.
             </summary>
             <param name="color">Color</param>
+            <param name="shaded">If the material should be shaded</param>
             <returns>Material</returns>
         </member>
         <member name="M:Quantum.DebugDraw.Clear">
@@ -978,11 +1008,10 @@
             Obsolete
             </summary>
         </member>
-        <member name="M:Quantum.DebugDraw.OnPostRender(UnityEngine.Camera)">
+        <member name="M:Quantum.DebugDraw.OnPostRender">
             <summary>
             Must be called from Unity callback OnPostRenderInternal to draw all debug shapes on top of everything else.
             </summary>
-            <param name="camera">The scene camera</param>
         </member>
         <member name="T:Quantum.QuantumStaticPolygonCollider2D">
             <summary>
@@ -1074,6 +1103,11 @@
             <summary>
             Inits a transform buffer, so updating with verified frames only can be switched on to guarantee smooth visuals. When in use, visuals are presented with latency proportional to ping.
             Turning this on only prepares the buffers and callbacks. Switching the interpolation mode is controlled with a separate toggle on the QuantumEntityView.
+            </summary>
+        </member>
+        <member name="F:Quantum.QuantumEntityViewFlags.DisableSearchInactiveForEntityViewComponents">
+            <summary>
+            Disable searching the inactive entity view game object children for entity view components.
             </summary>
         </member>
         <member name="T:Quantum.QuantumEntityViewTimeReference">
@@ -2431,6 +2465,11 @@
             to preload the address prior to loading.
             </summary>
         </member>
+        <member name="M:Quantum.QuantumGlobalScriptableObjectAddressAttribute.LoadAsync(System.Type)">
+            <summary>
+            Loads the asset from the <see cref="P:Quantum.QuantumGlobalScriptableObjectAddressAttribute.Address"/>.
+            </summary>
+        </member>
         <member name="T:Quantum.QuantumGlobalScriptableObjectResourceAttribute">
             <summary>
             If applied at the assembly level, allows <see cref="T:Quantum.QuantumGlobalScriptableObject`1"/> to be loaded with Resources.
@@ -2456,6 +2495,11 @@
         <member name="M:Quantum.QuantumGlobalScriptableObjectResourceAttribute.Load(System.Type)">
             <summary>
             Loads the asset from Resources synchronously.
+            </summary>
+        </member>
+        <member name="M:Quantum.QuantumGlobalScriptableObjectResourceAttribute.LoadAsync(System.Type)">
+            <summary>
+            Loads the asset from Resources asynchronously.
             </summary>
         </member>
         <member name="T:Quantum.QuantumSceneViewComponent`1">
@@ -2535,11 +2579,6 @@
         <member name="F:Quantum.QuantumStats.Predicted">
             <summary>
             Number of predicted frames.
-            </summary>
-        </member>
-        <member name="F:Quantum.QuantumStats.Resimulated">
-            <summary>
-            Number of resimulated frames.
             </summary>
         </member>
         <member name="F:Quantum.QuantumStats.SimulateTime">
@@ -3193,6 +3232,11 @@
             }
             </code></example>
         </member>
+        <member name="F:Quantum.QuantumMultiClientRunner.AppVersionPlayerPrefsKey">
+            <summary>
+            PlayerPrefs key that the private app version can be stored.
+            </summary>
+        </member>
         <member name="F:Quantum.QuantumMultiClientRunner.PlayerViewTemplate">
             <summary>
             Get instantiated for each client and makes connection controls for that client available.
@@ -3273,7 +3317,13 @@
         </member>
         <member name="F:Quantum.QuantumMultiClientRunner.UsePrivateAppVersion">
             <summary>
-            Use a private AppVersion when connecting to isolate matchmaking players
+            Use a private AppVersion when connecting to isolate matchmaking players from other room created by different machines/builds/editors using the same <see cref="F:Quantum.QuantumMultiClientRunner.ServerSettings"/>.
+            </summary>
+        </member>
+        <member name="F:Quantum.QuantumMultiClientRunner.PrivateAppVersion">
+            <summary>
+            The app version to use when <see cref="F:Quantum.QuantumMultiClientRunner.UsePrivateAppVersion"/> is enabled.
+            If <see cref="F:Quantum.QuantumMultiClientRunner.UsePrivateAppVersion"/> is set but this field is empty, a unique key is created and stored in PlayerPrefs under <see cref="F:Quantum.QuantumMultiClientRunner.AppVersionPlayerPrefsKey"/>.
             </summary>
         </member>
         <member name="M:Quantum.QuantumMultiClientRunner.Start">
@@ -3549,14 +3599,24 @@
             Define the capsule size if not source collider exists. The x-axis is the diameter and the y-axis is the height.
             </summary>
         </member>
+        <member name="F:Quantum.QuantumStaticCapsuleCollider2D.Direction">
+            <summary>
+            The world axis that the capsule will be aligned.
+            </summary>
+        </member>
         <member name="F:Quantum.QuantumStaticCapsuleCollider2D.PositionOffset">
             <summary>
-            The position offset added to the <see cref="P:UnityEngine.Transform.position"/> during baking.
+            Additional static collider settings.
             </summary>
         </member>
         <member name="F:Quantum.QuantumStaticCapsuleCollider2D.RotationOffset">
             <summary>
             The rotation offset added to the <see cref="P:UnityEngine.Transform.rotation"/> during baking.
+            </summary>
+        </member>
+        <member name="F:Quantum.QuantumStaticCapsuleCollider2D.Height">
+            <summary>
+            The optional 2D pseudo height of the collider.
             </summary>
         </member>
         <member name="F:Quantum.QuantumStaticCapsuleCollider2D.Settings">
@@ -3773,17 +3833,23 @@
             Get or set the Global instance of the scriptable object.
             </summary>
         </member>
-        <member name="P:Quantum.QuantumGlobalScriptableObject`1.IsGlobal">
-            <summary>
-            Is this instance a global instance.
-            </summary>
-        </member>
         <member name="M:Quantum.QuantumGlobalScriptableObject`1.TryGetGlobal(`0@)">
             <summary>
             Try get or load the global instance.
             </summary>
             <param name="global">Resulting global instance</param>
             <returns>True if the global instance was found</returns>
+        </member>
+        <member name="M:Quantum.QuantumGlobalScriptableObject`1.GetGlobalAsync">
+            <summary>
+            Get the Global instance of the scriptable object, attempting to load it asynchronously.
+            After it is done regular global accessor can be used.
+            </summary>
+        </member>
+        <member name="P:Quantum.QuantumGlobalScriptableObject`1.IsGlobal">
+            <summary>
+            Is this instance a global instance.
+            </summary>
         </member>
         <member name="M:Quantum.QuantumGlobalScriptableObject`1.OnLoadedAsGlobal">
             <summary>
@@ -3818,6 +3884,12 @@
             Loads or returns the current global instance. Returns <see langword="null"/> if loading an instance failed.
             </summary>
             <param name="global"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Quantum.QuantumGlobalScriptableObject`1.GetGlobalAsyncInternal">
+            <summary>
+            Loads or returns the current global instance asynchronously. Returns <see langword="null"/> if loading an instance failed.
+            </summary>
             <returns></returns>
         </member>
         <member name="M:Quantum.QuantumGlobalScriptableObject`1.UnloadGlobalInternal">
@@ -4237,6 +4309,13 @@
             Attempt to load the object of the specified type. Return <see langword="default"/> if the object cannot be loaded.
             </summary>
             <param name="type">The requested type</param>
+        </member>
+        <member name="M:Quantum.QuantumGlobalScriptableObjectSourceAttribute.LoadAsync(System.Type)">
+            <summary>
+            
+            </summary>
+            <param name="type"></param>
+            <returns></returns>
         </member>
         <member name="T:Quantum.QuantumGlobalScriptableObjectUnloadDelegate">
             <summary>
@@ -4870,13 +4949,14 @@
             <param name="rotation">The rotation of the box. Defaults to identity rotation if not provided.</param>
             <param name="style">The style of the gizmo. Defaults to default style if not provided.</param>
         </member>
-        <member name="M:Quantum.GizmoUtils.DrawGizmosCapsule2D(UnityEngine.Vector3,System.Single,System.Single,UnityEngine.Color,System.Nullable{UnityEngine.Quaternion},Quantum.QuantumGizmoStyle)">
+        <member name="M:Quantum.GizmoUtils.DrawGizmosCapsule2D(UnityEngine.Vector3,System.Single,System.Single,System.Single,UnityEngine.Color,System.Nullable{UnityEngine.Quaternion},Quantum.QuantumGizmoStyle)">
             <summary>
             Draws a 2D capsule gizmo.
             </summary>
             <param name="center">The center of the capsule.</param>
             <param name="radius">The radius of the capsule.</param>
             <param name="height">The height of the capsule.</param>
+            <param name="tHeight">The height of the vertical transform</param>
             <param name="color">The color of the gizmo.</param>
             <param name="rotation">The rotation of the capsule. If null, identity rotation is used.</param>
             <param name="style">The style of the gizmo. If not provided, default style is used.</param>
@@ -5470,6 +5550,21 @@
             Quantum utilities to work with Unity serialized objects.
             </summary>
         </member>
+        <member name="M:Quantum.SerializedObjectExtensions.GetArrayIndex(UnityEditor.SerializedProperty)">
+            <summary>
+            Get the index this element is at.
+            </summary>
+            <param name="element"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Quantum.SerializedObjectExtensions.GetTargetObject(UnityEditor.SerializedProperty,System.Reflection.FieldInfo@,System.Object@)">
+            <summary>
+            Gets the object the property represents.
+            </summary>
+            <param name="property">Serialized property to get the target object from</param>
+            <param name="fieldInfo">The field containing the object</param>
+            <returns>The target object or null if not found</returns>
+        </member>
         <member name="M:Quantum.SerializedObjectExtensions.FindPropertyOrThrow(UnityEditor.SerializedObject,System.String)">
             <summary>
             Find a property in the serialized object or throw an exception if not found.
@@ -5529,7 +5624,13 @@
         </member>
         <member name="M:Quantum.FPMathUtils.LoadLookupTables(System.Boolean)">
             <summary>
-            Load the lookup tables from the resources folders.
+            Load the lookup tables. By default, loaded from Resources.
+            </summary>
+            <param name="force">Will reload the table if set to true</param>
+        </member>
+        <member name="M:Quantum.FPMathUtils.LoadLookupTablesAsync(System.Boolean)">
+            <summary>
+            Load the lookup tables asynchronously. By default, loaded from Resources.
             </summary>
             <param name="force">Will reload the table if set to true</param>
         </member>
@@ -6076,6 +6177,59 @@
         <member name="T:Quantum.QuantumUnityExtensions">
             <summary>
             Provides backwards compatibility for Unity API.
+            </summary>
+        </member>
+        <member name="T:Quantum.QuantumUnitySceneManagerUtils">
+            <summary>
+            Exension and utility methods for <see cref="T:UnityEngine.SceneManagement.SceneManager"/> and <see cref="T:UnityEngine.SceneManagement.Scene"/> types.
+            </summary>
+        </member>
+        <member name="T:Quantum.QuantumUnitySceneManagerUtils.SceneEqualityComparer">
+            <summary>
+            A comparer that can be used when scenes need to be comparable, like when being as keys in a dictionary.
+            </summary>
+        </member>
+        <member name="M:Quantum.QuantumUnitySceneManagerUtils.SceneEqualityComparer.Equals(UnityEngine.SceneManagement.Scene,UnityEngine.SceneManagement.Scene)">
+            <summary>
+            Compares scenes by their <see cref="P:UnityEngine.SceneManagement.Scene.handle"/>
+            </summary>
+        </member>
+        <member name="M:Quantum.QuantumUnitySceneManagerUtils.SceneEqualityComparer.GetHashCode(UnityEngine.SceneManagement.Scene)">
+            <summary>
+            Returns <see cref="P:UnityEngine.SceneManagement.Scene.handle"/>
+            </summary>
+        </member>
+        <member name="M:Quantum.QuantumUnitySceneManagerUtils.IsAddedToBuildSettings(UnityEngine.SceneManagement.Scene)">
+            <summary>
+            Returns true if <paramref name="scene"/> is in the build settings. Note that just checking <see cref="P:UnityEngine.SceneManagement.Scene.buildIndex"/> is not enough.
+            </summary>
+        </member>
+        <member name="M:Quantum.QuantumUnitySceneManagerUtils.AddToBuildSettings(UnityEngine.SceneManagement.Scene)">
+            <summary>
+            Editor-only. Adds scene to the build settings.
+            </summary>
+            <returns>False if the scene is already added</returns>
+        </member>
+        <member name="M:Quantum.QuantumUnitySceneManagerUtils.CanBeUnloaded(UnityEngine.SceneManagement.Scene)">
+            <summary>
+            Returns true if <paramref name="scene"/> can be unloaded.
+            </summary>
+            <param name="scene"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Quantum.QuantumUnitySceneManagerUtils.Dump(UnityEngine.SceneManagement.Scene)">
+            <summary>
+            Converts <paramref name="scene"/> into string, dumping all its fields and properties.
+            </summary>
+        </member>
+        <member name="M:Quantum.QuantumUnitySceneManagerUtils.Dump(UnityEngine.SceneManagement.LoadSceneParameters)">
+            <summary>
+            Converts <paramref name="loadSceneParameters"/> to string.
+            </summary>
+        </member>
+        <member name="M:Quantum.QuantumUnitySceneManagerUtils.GetSceneBuildIndex(System.String)">
+            <summary>
+            Gets scene's build index based on its name or path.
             </summary>
         </member>
         <member name="T:Quantum.QuantumEntityViewBindBehaviour">
@@ -7187,6 +7341,27 @@
             The current vertical position of offset of the component.
             </summary>
         </member>
+        <member name="T:Quantum.QuantumEntityPrototype.SourceShapeGenericSettings">
+            <summary>
+            Extra settings for shapes
+            </summary>
+        </member>
+        <member name="F:Quantum.QuantumEntityPrototype.SourceShapeGenericSettings.IsScaledBySource">
+            <summary>
+            If the settings baked from a source collider are already scaled by the source GameObject.
+            This can be used to avoid scaling the settings multiple times when the source is a child of the prototype.
+            </summary>
+        </member>
+        <member name="F:Quantum.QuantumEntityPrototype.SourceShapeGenericSettings.CapsuleDirection2D">
+            <summary>
+            The world axis that define the direction of the capsule in 2D.
+            </summary>
+        </member>
+        <member name="F:Quantum.QuantumEntityPrototype.SourceShapeGenericSettings.CapsuleDirection3D">
+            <summary>
+            The world axis that define the direction of the capsule in 3D.
+            </summary>
+        </member>
         <member name="T:Quantum.QuantumEntityPrototype.PhysicsColliderGeneric">
             <summary>
             A all-purpose physics collider info.
@@ -7210,6 +7385,11 @@
         <member name="F:Quantum.QuantumEntityPrototype.PhysicsColliderGeneric.SourceCollider">
             <summary>
             The source collider to be used for the shape.
+            </summary>
+        </member>
+        <member name="F:Quantum.QuantumEntityPrototype.PhysicsColliderGeneric.SourceShapeSettings">
+            <summary>
+            Specific settings for the any type of shape
             </summary>
         </member>
         <member name="F:Quantum.QuantumEntityPrototype.PhysicsColliderGeneric.Shape2D">
@@ -7777,6 +7957,11 @@
             Get or set the EntityViewPool. If not set, the EntityViewUpdater will use the first found pool in the hierarchy.
             </summary>
         </member>
+        <member name="P:Quantum.QuantumEntityViewUpdater.Culling">
+            <summary>
+            Get or set the EntityViewCulling. If not set, the EntityViewUpdater will use the first found culling class in the hierarchy.
+            </summary>
+        </member>
         <member name="P:Quantum.QuantumEntityViewUpdater.Context">
             <summary>
             Access all view contexts that could be loaded in the scene as children of the EntityViewUpdater.
@@ -7804,10 +7989,12 @@
             Set all entity views to teleport on the next update.
             </summary>
         </member>
-        <member name="M:Quantum.QuantumEntityViewUpdater.SetCurrentGame(Quantum.QuantumGame)">
+        <member name="M:Quantum.QuantumEntityViewUpdater.SetCurrentGame(Quantum.QuantumGame,System.Boolean)">
             <summary>
             Set the current observed game.
             </summary>
+            <param name="game">The game to observe.</param>
+            <param name="updateGizmoContext">Register this EntityViewUpdate with the game gizmos.</param>
         </member>
         <member name="M:Quantum.QuantumEntityViewUpdater.Awake">
             <summary>
@@ -8895,6 +9082,22 @@
         <member name="M:Quantum.QuantumNavMesh.Vector3Double.ClosestDistanceToTriangle(Quantum.QuantumNavMesh.Vector3Double,Quantum.QuantumNavMesh.Vector3Double,Quantum.QuantumNavMesh.Vector3Double,Quantum.QuantumNavMesh.Vector3Double,Quantum.QuantumNavMesh.Vector3Double@)">
             <summary>
             Calculates the closest distance from point <paramref name="p"/> to the triangle defined by <paramref name="v0"/>, <paramref name="v1"/> and <paramref name="v2"/>.
+            </summary>
+        </member>
+        <member name="T:Quantum.IQuantumEntityViewCulling">
+            <summary>
+            Interface to control entity view instantiation and to add custom culling.
+            </summary>
+        </member>
+        <member name="M:Quantum.IQuantumEntityViewCulling.DynamicEntityIterator(Quantum.QuantumGame,Quantum.Frame,Quantum.QuantumEntityViewBindBehaviour)">
+            <summary>
+            Create an iterator for all dynamic entities.
+            </summary>
+        </member>
+        <member name="M:Quantum.IQuantumEntityViewCulling.MapEntityIterator(Quantum.QuantumGame,Quantum.Frame,Quantum.QuantumEntityViewBindBehaviour)">
+            <summary>
+            Create an iterator for all map entities.
+            By default all components that have a <see cref="T:Quantum.MapEntityLink"/> are returned.
             </summary>
         </member>
         <member name="T:Quantum.QuantumDeterministicSessionConfigAsset">

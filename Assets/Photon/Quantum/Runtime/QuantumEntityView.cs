@@ -456,7 +456,8 @@ namespace Quantum {
       if ((ViewFlags & QuantumEntityViewFlags.DisableSearchChildrenForEntityViewComponents) > 0) {
         _viewComponents = GetComponents<IQuantumViewComponent>();
       } else {
-        _viewComponents = GetComponentsInChildren<IQuantumViewComponent>();
+        _viewComponents = GetComponentsInChildren<IQuantumViewComponent>(
+          includeInactive: (ViewFlags & QuantumEntityViewFlags.DisableSearchInactiveForEntityViewComponents) == 0);
       }
 
       EntityViewUpdater = entityViewUpdater;

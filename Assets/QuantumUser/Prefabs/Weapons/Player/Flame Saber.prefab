@@ -5032,11 +5032,15 @@ MonoBehaviour:
       RawValue: 0
   PhysicsCollider:
     IsEnabled: 1
-    IsTrigger: 0
+    IsTrigger: 1
     Material:
       Id:
         Value: 2301746459976711362
     SourceCollider: {fileID: 0}
+    SourceShapeSettings:
+      IsScaledBySource: 0
+      CapsuleDirection2D: 0
+      CapsuleDirection3D: 0
     Shape2D:
       ShapeType: 0
       PolygonCollider:
@@ -5073,7 +5077,7 @@ MonoBehaviour:
       CapsuleRadius:
         RawValue: 22938
       CapsuleHeight:
-        RawValue: -17695
+        RawValue: 0
       PositionOffset:
         X:
           RawValue: 0
@@ -5101,7 +5105,7 @@ MonoBehaviour:
     LayerSource: 0
     Layer: 9
     CallbackFlags:
-      Value: 3
+      Value: 192
   PhysicsBody:
     IsEnabled: 1
     Config2D: 116

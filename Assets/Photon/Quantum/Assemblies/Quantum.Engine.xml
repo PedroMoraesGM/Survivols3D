@@ -1671,7 +1671,7 @@
         </member>
         <member name="F:Quantum.Map.NavMeshLinks">
             <summary>
-            The list not navmesh assets baked into this map.
+            The list of navmesh assets baked into this map.
             </summary>
         </member>
         <member name="F:Quantum.Map.Regions">
@@ -1957,10 +1957,10 @@
             <param name="v0">Point in triangle</param>
             <returns>Height at point in triangle as raw value.</returns>
         </member>
-        <member name="M:Quantum.NavMesh.FindClosestTriangle(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Quantum.NavMeshRegionMask,System.Int32@,Photon.Deterministic.FPVector3@)">
+        <member name="M:Quantum.NavMesh.FindClosestTriangle(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Quantum.NavMeshRegionMask@,System.Int32@,Photon.Deterministic.FPVector3@)">
             <summary>
             Finds the closest navmesh triangle at the position plus radius. Works in 2D and 3D. 
-            This method sets the mailboxing optimization internally which requires the frame object. Otherwise it's identical to <see cref="M:Quantum.NavMesh.FindClosestTriangle(Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Quantum.NavMeshRegionMask,System.Int32@,Photon.Deterministic.FPVector3@,Quantum.MailboxSet8)"/>.
+            This method sets the mailboxing optimization internally which requires the frame object. Otherwise it's identical to <see cref="M:Quantum.NavMesh.FindClosestTriangle(Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Quantum.NavMeshRegionMask@,System.Int32@,Photon.Deterministic.FPVector3@,Quantum.MailboxSet8)"/>.
             Caveat: The result is only a heuristic and not 100% accurate due to simplified calculations to reduce precision issues. 
             For example: in 3D the input position is projected down instead of finding the correct closest position.
             The search can be performance heavy so carefully choose the radius.
@@ -1973,10 +1973,10 @@
             <param name="closestPosition">The corrected source position on the navmesh</param>
             <returns><see langword="true"/> when a triangle was found</returns>
         </member>
-        <member name="M:Quantum.NavMesh.FindClosestTriangle(Quantum.Core.FrameBase,Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Quantum.NavMeshRegionMask,System.Int32@,Photon.Deterministic.FPVector3@)">
+        <member name="M:Quantum.NavMesh.FindClosestTriangle(Quantum.Core.FrameBase,Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Quantum.NavMeshRegionMask@,System.Int32@,Photon.Deterministic.FPVector3@)">
             <summary>
             Finds the closest navmesh triangle at the position plus radius. Works in 2D and 3D. 
-            This method sets the mailboxing optimization internally which requires the frame object. Otherwise it's identical to <see cref="M:Quantum.NavMesh.FindClosestTriangle(Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Quantum.NavMeshRegionMask,System.Int32@,Photon.Deterministic.FPVector3@,Quantum.MailboxSet8)"/>.
+            This method sets the mailboxing optimization internally which requires the frame object. Otherwise it's identical to <see cref="M:Quantum.NavMesh.FindClosestTriangle(Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Quantum.NavMeshRegionMask@,System.Int32@,Photon.Deterministic.FPVector3@,Quantum.MailboxSet8)"/>.
             Caveat: The result is only a heuristic and not 100% accurate due to simplified calculations to reduce precision issues. 
             For example: in 3D the input position is projected down instead of finding the correct closest position.
             The search can be performance heavy so carefully choose the radius.
@@ -1989,7 +1989,7 @@
             <param name="closestPosition">The corrected source position on the navmesh</param>
             <returns><see langword="true"/> when a triangle was found</returns>
         </member>
-        <member name="M:Quantum.NavMesh.FindClosestTriangle(Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Quantum.NavMeshRegionMask,System.Int32@,Photon.Deterministic.FPVector3@,Quantum.MailboxSet8)">
+        <member name="M:Quantum.NavMesh.FindClosestTriangle(Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Quantum.NavMeshRegionMask@,System.Int32@,Photon.Deterministic.FPVector3@,Quantum.MailboxSet8)">
             <summary>
             Finds the closest navmesh triangle at the position plus radius. Works in 2D and 3D.
             Caveat: The result is only a heuristic and not 100% accurate due to simplified calculations to reduce precision issues. 
@@ -2004,7 +2004,7 @@
             <param name="mailbox">Optionally add a mailbox data structure to optimize the performance of search by filtering out already checked triangles.</param>
             <returns><see langword="true"/> when a triangle was found</returns>
         </member>
-        <member name="M:Quantum.NavMesh.FindTriangle2D(Photon.Deterministic.FPVector3,Quantum.NavMeshRegionMask,System.Boolean)">
+        <member name="M:Quantum.NavMesh.FindTriangle2D(Photon.Deterministic.FPVector3,Quantum.NavMeshRegionMask@,System.Boolean)">
             <summary>
             Finds the triangle at position (X,Z). This will not work in 3D as overlapping triangles may occur. Always use FindClosestTriangle() in 3D.
             </summary>
@@ -2013,7 +2013,7 @@
             <param name="inclusive">Use inclusive <see langword="true"/> when you want include the border and the vertices of the triangle</param>
             <returns>Triangle id or -1</returns>
         </member>
-        <member name="M:Quantum.NavMesh.FindClosestTriangleFast(Photon.Deterministic.FPVector3,Quantum.NavMeshRegionMask)">
+        <member name="M:Quantum.NavMesh.FindClosestTriangleFast(Photon.Deterministic.FPVector3,Quantum.NavMeshRegionMask@)">
             <summary>
             Searches the closest triangle to the input position by using the fallback triangle saved for each grid cell. Result is quite inaccurate.
             To use this API the navmesh generation must generate fallback triangles enabled by setting to something else than <see cref="F:Quantum.NavMeshBakeDataFindClosestTriangle.None"/>.
@@ -2031,22 +2031,68 @@
             <param name="rngSession">Random number generator usually f->RNG.</param>
             <param name="result">Random position on the triangle or Zero if the triangle does not exists.</param>
         </member>
-        <member name="M:Quantum.NavMesh.FindRandomPointOnNavmesh(Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Photon.Deterministic.RNGSession*,Quantum.NavMeshRegionMask,Photon.Deterministic.FPVector3@)">
+        <member name="M:Quantum.NavMesh.FindRandomPointOnNavmesh(Quantum.Core.FrameBase,Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Photon.Deterministic.RNGSession*,Quantum.NavMeshRegionMask@,Photon.Deterministic.FPVector3@)">
             <summary>
             Tries to find a random position on the navmesh using the input position and radius. This can fail when there is no navmesh in range.
+            Using this method instead of <see cref="M:Quantum.NavMesh.FindRandomPointOnNavmesh(Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Photon.Deterministic.RNGSession*,Quantum.NavMeshRegionMask@,Photon.Deterministic.FPVector3@,Quantum.MailboxSet8)"/>
+            will be more costly, but the result is more reliable as it checks more triangles.
+            </summary>
+            <param name="frame">Frame object to use the multi-threaded mailbox optimization</param>
+            <param name="position">Center of random position circle</param>
+            <param name="radius">Search a random position inside this radius</param>
+            <param name="rngSession">The randomization session</param>
+            <param name="regionMask">The region mask to check</param>
+            <param name="result">The resulting randomized position</param>
+            <returns><see langword="true"/> if a position has been found, <see langword="false"/> if the search failed.</returns>
+            <remarks>Creates a randomized position first, then tries validate it by finding the closest triangle around the random position, then tries to find any valid near position inside the radius</remarks>
+            <remarks>Creating random points during edit more leads to more efficient and reliable results.</remarks>
+        </member>
+        <member name="M:Quantum.NavMesh.FindRandomPointOnNavmesh(Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Photon.Deterministic.RNGSession*,Quantum.NavMeshRegionMask@,Photon.Deterministic.FPVector3@,Quantum.MailboxSet8)">
+            <summary>
+            Tries to find a random position on the navmesh using the input position and radius.
+            This can fail when there is no navmesh in range.
+            Consider using <see cref="M:Quantum.NavMesh.FindRandomPointOnNavmesh(Quantum.Core.FrameBase,Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Photon.Deterministic.RNGSession*,Quantum.NavMeshRegionMask@,Photon.Deterministic.FPVector3@)"/> for more reliable results but less performant.
             </summary>
             <param name="position">Center of random position circle</param>
             <param name="radius">Search a random position inside this radius</param>
             <param name="rngSession">The randomization session</param>
             <param name="regionMask">The region mask to check</param>
-            <param name="result">The resulting randomized position.</param>
-            <returns><see langword="true"/> if a position has been found.</returns>
-            <remarks>Creates a randomized position first, then tries validate it by finding a triangle at the random position (FindClosestTriangle). 
-            If all fail, <see langword="false"/> is returned.
-            </remarks>
-            <remarks>Processing this offline and saving a custom data structure will probably result in more reliable and appealing results.</remarks>
+            <param name="result">The resulting randomized position</param>
+            <param name="mailbox">Mailbox to improve reliability while adding performance overhead</param>
+            <returns><see langword="true"/> if a position has been found, <see langword="false"/> if the search failed.</returns>
+            <remarks>Creates a randomized position first, then tries validate it by finding the closest triangle around the random position.</remarks>
+            <remarks>Creating random points during edit more leads to more efficient and reliable results.</remarks>
         </member>
-        <member name="M:Quantum.NavMesh.IsBorderActive(System.Int32,Quantum.NavMeshRegionMask)">
+        <member name="M:Quantum.NavMesh.FindAnyRandomPointOnNavmesh(Quantum.Core.FrameBase,Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Photon.Deterministic.RNGSession*,Quantum.NavMeshRegionMask@,Photon.Deterministic.FPVector3@)">
+            <summary>
+            Will return a random point on the navmesh on any of the triangles that intersect the circle weighted by the triangle area.
+            The point can be outside of the radius.
+            It's a good choice to find any point on the navmesh, when it's not important that the point is inside the defined circle.
+            </summary>
+            <param name="frame">Frame object to use the multi-threaded mailbox optimization</param>
+            <param name="position">Circle position</param>
+            <param name="radius">Circle radius</param>
+            <param name="rngSession">Rng session from Frame</param>
+            <param name="regionMask">Regions to ignore</param>
+            <param name="result">Resulting position</param>
+            <returns>Returns <see langword="true"/> when a random position was found, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Quantum.NavMesh.FindAnyRandomPointOnNavmesh(Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Photon.Deterministic.RNGSession*,Quantum.NavMeshRegionMask@,Photon.Deterministic.FPVector3@,Quantum.MailboxSet8)">
+            <summary>
+            Will return a random point on the navmesh on any of the triangles that intersect the circle weighted by the triangle area.
+            The point can be outside of the radius.
+            It's a good choice to find any point on the navmesh, when it's not important that the point is inside the defined circle.
+            Becomes more accurate (uniform) and performant when setting a mailbox.
+            </summary>
+            <param name="position">Circle position</param>
+            <param name="radius">Circle radius</param>
+            <param name="rngSession">Rng session from Frame</param>
+            <param name="regionMask">Regions to ignore</param>
+            <param name="result">Resulting position</param>
+            <param name="mailbox">Mailbox to improve performance</param>
+            <returns>Returns <see langword="true"/> when a random position was found, otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="M:Quantum.NavMesh.IsBorderActive(System.Int32,Quantum.NavMeshRegionMask@)">
             <summary>
             Test if the region of the border at index is enabled.
             </summary>
@@ -2054,7 +2100,7 @@
             <param name="regionMask">Region mask</param>
             <returns><see langword="true"/> if region that the border belongs to is active</returns>
         </member>
-        <member name="M:Quantum.NavMesh.Contains(Photon.Deterministic.FPVector3,Quantum.NavMeshRegionMask,System.Boolean)">
+        <member name="M:Quantum.NavMesh.Contains(Photon.Deterministic.FPVector3,Quantum.NavMeshRegionMask@,System.Boolean)">
             <summary>
             Checks if the position is on a navmesh triangle. Does only check the 2D coordinates.
             </summary>
@@ -2063,7 +2109,7 @@
             <param name="inclusive">Set to <see langword="true"/> if positions exactly on a triangle edge or border are considered to be inside (default is <see langword="false"/>)</param>
             <returns><see langword="true"/> if the position is on the navmesh</returns>
         </member>
-        <member name="M:Quantum.NavMesh.LineOfSight(Photon.Deterministic.FPVector3,Photon.Deterministic.FPVector3,Quantum.NavMeshRegionMask,System.Int32,System.Int32,System.Boolean)">
+        <member name="M:Quantum.NavMesh.LineOfSight(Photon.Deterministic.FPVector3,Photon.Deterministic.FPVector3,Quantum.NavMeshRegionMask@,System.Int32,System.Int32,System.Boolean)">
             <summary>
             Check line of sight inside the navmesh. This also works in 3D and creates a funnel through the navmesh triangles. Start and destination must be inside the navmesh.
             </summary>
@@ -2075,7 +2121,7 @@
             <param name="considerCost">If the cost changes from triangle to triangle consider this non-line of sight</param>
             <returns><see langword="true"/> if there is a unobstructed line of sight on the navmesh</returns>
         </member>
-        <member name="M:Quantum.NavMesh.Raycast2D(Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Photon.Deterministic.FP,Quantum.NavMeshRegionMask,Quantum.MailboxSet8,Photon.Deterministic.FPVector2@,System.Int32@)">
+        <member name="M:Quantum.NavMesh.Raycast2D(Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Photon.Deterministic.FP,Quantum.NavMeshRegionMask@,Quantum.MailboxSet8,Photon.Deterministic.FPVector2@,System.Int32@)">
             <summary>
             Raycast through the navmesh. Only works 2D, even when the navmesh is 3D. The ray is tested against navmesh borders.
             </summary>
@@ -2088,7 +2134,7 @@
             <param name="borderIndex">The index of the border that was hit</param>
             <returns><see langword="true"/> is a hit was generated.</returns>
         </member>
-        <member name="M:Quantum.NavMesh.MovePositionIntoNavmesh(Quantum.Core.FrameBase,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Photon.Deterministic.FP,Quantum.NavMeshRegionMask)">
+        <member name="M:Quantum.NavMesh.MovePositionIntoNavmesh(Quantum.Core.FrameBase,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Photon.Deterministic.FP,Quantum.NavMeshRegionMask@)">
             <summary>
             This performs a correction of the agent movement against the navmesh borders much like solving physics contacts. This works only in 2D for now.
             Used internally if <see cref="F:Quantum.NavMeshAgentConfig.ClampAgentToNavmesh"/> is set.
@@ -2100,7 +2146,7 @@
             <param name="regionMask">Region mask to check for active borders</param>
             <returns>Corrected position</returns>
         </member>
-        <member name="M:Quantum.NavMesh.MovePositionIntoNavmesh(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Photon.Deterministic.FP,Quantum.NavMeshRegionMask)">
+        <member name="M:Quantum.NavMesh.MovePositionIntoNavmesh(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Photon.Deterministic.FP,Quantum.NavMeshRegionMask@)">
             <summary>
             This performs a correction of the agent movement against the navmesh borders much like solving physics contacts. This works only in 2D for now.
             Used internally if <see cref="F:Quantum.NavMeshAgentConfig.ClampAgentToNavmesh"/> is set.
@@ -3794,7 +3840,7 @@
             If the <see cref="P:Quantum.Core.FrameBase.CommitCommandsMode"/> is set to <see cref="F:Quantum.CommitCommandsModes.OnFrameSimulationEnd"/>, this method commits all commands.
             </remarks>
         </member>
-        <member name="M:Quantum.Core.FrameBase.Culled(Quantum.EntityRef)">
+        <member name="M:Quantum.Core.FrameBase.IsPredictionCulled(Quantum.EntityRef)">
             <summary>
             If the entity is prediction-culled.
             </summary>
@@ -8289,7 +8335,7 @@
         </member>
         <member name="P:Quantum.ComponentFilter`1.UseCulling">
             <summary>
-            Include culled entities in the filter.
+            (Prediction-) Culled entities are removed from the filter.
             </summary>
         </member>
         <member name="M:Quantum.ComponentFilter`1.Next(Quantum.EntityRef@,`0@)">
@@ -9516,6 +9562,14 @@
             <inheritdoc cref="M:Quantum.EntityPrototypeRef.FromPrototypeAsset(Quantum.EntityPrototype)"/>
         </member>
         <member name="M:Quantum.EntityPrototypeRef.FromMasterAsset(Quantum.Map,System.Int32)">
+            <summary>
+            Creates a new entity prototype reference from an entity in a map asset.
+            </summary>
+            <param name="asset">Map asset</param>
+            <param name="internalAssetId">Index of the entity prototype</param>
+            <returns></returns>
+        </member>
+        <member name="M:Quantum.EntityPrototypeRef.FromMasterAsset(Quantum.AssetRef{Quantum.Map},System.Int32)">
             <summary>
             Creates a new entity prototype reference from an entity in a map asset.
             </summary>
@@ -11921,7 +11975,7 @@
             <param name="meshes">The dictionary from collider index to triangle references.</param>
             <param name="allocator">The allocator for this asset.</param>
         </member>
-        <member name="M:Quantum.DynamicMap.ReserveMeshColliders(Quantum.Core.FrameBase,System.Int32,System.Int32,System.Nullable{Quantum.StaticColliderData},System.Boolean)">
+        <member name="M:Quantum.DynamicMap.ReserveMeshColliders(Quantum.Core.FrameBase,System.Int32,System.Int32,System.Nullable{Quantum.StaticColliderData}@,System.Boolean)">
             <summary>
             Pre-allocates space for a specified number of mesh colliders.
             </summary>
@@ -11939,7 +11993,7 @@
             </code>
             </example>
         </member>
-        <member name="M:Quantum.DynamicMap.AddMeshCollider(Quantum.Core.FrameBase,System.Collections.Generic.IList{Photon.Deterministic.FPVector3},System.Collections.Generic.IList{System.Int32},System.Int32,System.Nullable{Quantum.StaticColliderData},System.Boolean,System.Nullable{Photon.Deterministic.FPVector3},System.Nullable{Photon.Deterministic.FPQuaternion},System.Nullable{Quantum.AssetRef{Quantum.PhysicsMaterial}},System.Boolean)">
+        <member name="M:Quantum.DynamicMap.AddMeshCollider(Quantum.Core.FrameBase,System.Collections.Generic.IList{Photon.Deterministic.FPVector3},System.Collections.Generic.IList{System.Int32},System.Int32,System.Nullable{Quantum.StaticColliderData}@,System.Boolean,System.Nullable{Photon.Deterministic.FPVector3},System.Nullable{Photon.Deterministic.FPQuaternion},System.Nullable{Quantum.AssetRef{Quantum.PhysicsMaterial}},System.Boolean)">
              <summary>
              Adds a mesh collider to the map.
              </summary>
@@ -12640,7 +12694,7 @@
         <member name="F:Quantum.NavMeshBakeDataFindClosestTriangle.None">
             <summary>
             No fallback triangle search. 
-            Will speed up navmesh baking considerably but make <see cref="M:Quantum.NavMesh.FindClosestTriangleFast(Photon.Deterministic.FPVector3,Quantum.NavMeshRegionMask)"/> be not usable.
+            Will speed up navmesh baking considerably but make <see cref="M:Quantum.NavMesh.FindClosestTriangleFast(Photon.Deterministic.FPVector3,Quantum.NavMeshRegionMask@)"/> be not usable.
             </summary>
         </member>
         <member name="T:Quantum.NavMeshBakeDataLink">
@@ -13264,7 +13318,7 @@
             <param name="handle">The task handle to add tasks to</param>
             <returns>Update handle.</returns>
         </member>
-        <member name="M:Quantum.Navigation.FindPath(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector3,Photon.Deterministic.FPVector3,Quantum.NavMesh,Quantum.NavMeshRegionMask)">
+        <member name="M:Quantum.Navigation.FindPath(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector3,Photon.Deterministic.FPVector3,Quantum.NavMesh,Quantum.NavMeshRegionMask@)">
             <summary>
             Find a path (thread-safe). Uses automatic target correction with radius 1 and PathQuality Good.
             </summary>
@@ -13276,7 +13330,7 @@
             <returns>The corrected start position</returns>
             \ingroup NavigationApi
         </member>
-        <member name="M:Quantum.Navigation.FindPath(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector3,Photon.Deterministic.FPVector3,Quantum.NavMesh,Quantum.NavMeshRegionMask,System.Boolean,Photon.Deterministic.FP,Quantum.Navigation.PathQuality)">
+        <member name="M:Quantum.Navigation.FindPath(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector3,Photon.Deterministic.FPVector3,Quantum.NavMesh,Quantum.NavMeshRegionMask@,System.Boolean,Photon.Deterministic.FP,Quantum.Navigation.PathQuality)">
             <summary>
             Find a path (thread-safe). 
             </summary>
@@ -13291,7 +13345,7 @@
             <returns>The corrected start position</returns>
             \ingroup NavigationApi
         </member>
-        <member name="M:Quantum.Navigation.FindPath(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Quantum.NavMesh,Quantum.NavMeshRegionMask)">
+        <member name="M:Quantum.Navigation.FindPath(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Quantum.NavMesh,Quantum.NavMeshRegionMask@)">
             <summary>
             Find a path (thread-safe). 
             </summary>
@@ -13303,7 +13357,7 @@
             <returns>The corrected start position</returns>
             \ingroup NavigationApi
         </member>
-        <member name="M:Quantum.Navigation.FindPath(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Quantum.NavMesh,Quantum.NavMeshRegionMask,System.Boolean,Photon.Deterministic.FP,Quantum.Navigation.PathQuality)">
+        <member name="M:Quantum.Navigation.FindPath(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Quantum.NavMesh,Quantum.NavMeshRegionMask@,System.Boolean,Photon.Deterministic.FP,Quantum.Navigation.PathQuality)">
             <summary>
             Find a path (thread-safe). 
             </summary>
@@ -13318,7 +13372,7 @@
             <returns>The corrected start position</returns>
             \ingroup NavigationApi
         </member>
-        <member name="M:Quantum.Navigation.LineOfSight(Photon.Deterministic.FPVector3,Photon.Deterministic.FPVector3,Quantum.NavMeshRegionMask,Quantum.NavMesh,System.Int32,System.Int32)">
+        <member name="M:Quantum.Navigation.LineOfSight(Photon.Deterministic.FPVector3,Photon.Deterministic.FPVector3,Quantum.NavMeshRegionMask@,Quantum.NavMesh,System.Int32,System.Int32)">
             <summary>
             Check line of sight inside the navmesh. This also works in 3D and creates a funnel through the navmesh triangles. Start and destination must be inside the navmesh.
             </summary>
@@ -13331,7 +13385,7 @@
             <returns><see langword="true"/> if there is an unobstructed line of sight on the navmesh</returns>
             \ingroup NavigationApi
         </member>
-        <member name="M:Quantum.Navigation.LineOfSight(Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Quantum.NavMeshRegionMask,Quantum.NavMesh,System.Int32,System.Int32)">
+        <member name="M:Quantum.Navigation.LineOfSight(Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Quantum.NavMeshRegionMask@,Quantum.NavMesh,System.Int32,System.Int32)">
             <summary>
             Check line of sight inside the navmesh. This also works in 3D and creates a funnel through the navmesh triangles. Start and destination must be inside the navmesh.
             </summary>
@@ -13344,7 +13398,7 @@
             <returns><see langword="true"/> if there is a unobstructed line of sight on the navmesh</returns>
             \ingroup NavigationApi
         </member>
-        <member name="M:Quantum.Navigation.Raycast2D(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector3,Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Quantum.NavMeshRegionMask,Quantum.NavMesh,Photon.Deterministic.FPVector2@,System.Int32@)">
+        <member name="M:Quantum.Navigation.Raycast2D(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector3,Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Quantum.NavMeshRegionMask@,Quantum.NavMesh,Photon.Deterministic.FPVector2@,System.Int32@)">
             <summary>
             Raycast through the navmesh. Only works 2D, even when the navmesh is 3D. The ray is tested against navmesh borders.
             </summary>
@@ -13358,7 +13412,7 @@
             <param name="borderIndex">Index of the border that was hit (Navmesh.Borders[i])</param>
             <returns><see langword="true"/> is a hit was generated.</returns>
         </member>
-        <member name="M:Quantum.Navigation.Raycast2D(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Photon.Deterministic.FP,Quantum.NavMeshRegionMask,Quantum.NavMesh,Photon.Deterministic.FPVector2@,System.Int32@)">
+        <member name="M:Quantum.Navigation.Raycast2D(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Photon.Deterministic.FP,Quantum.NavMeshRegionMask@,Quantum.NavMesh,Photon.Deterministic.FPVector2@,System.Int32@)">
             <summary>
             Raycast through the navmesh. Only works 2D, even when the navmesh is 3D. The ray is tested against navmesh borders.
             </summary>
@@ -13372,12 +13426,12 @@
             <param name="borderIndex">Index of the border that was hit (Navmesh.Borders[i])</param>
             <returns><see langword="true"/> is a hit was generated.</returns>
         </member>
-        <member name="M:Quantum.Navigation.Raycast2D(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector3,Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Quantum.NavMeshRegionMask,Quantum.NavMesh,Photon.Deterministic.FPVector2@)">
+        <member name="M:Quantum.Navigation.Raycast2D(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector3,Photon.Deterministic.FPVector3,Photon.Deterministic.FP,Quantum.NavMeshRegionMask@,Quantum.NavMesh,Photon.Deterministic.FPVector2@)">
             <summary>
             Obsolete method.
             </summary>
         </member>
-        <member name="M:Quantum.Navigation.Raycast2D(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Photon.Deterministic.FP,Quantum.NavMeshRegionMask,Quantum.NavMesh,Photon.Deterministic.FPVector2@)">
+        <member name="M:Quantum.Navigation.Raycast2D(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,Photon.Deterministic.FP,Quantum.NavMeshRegionMask@,Quantum.NavMesh,Photon.Deterministic.FPVector2@)">
             <summary>
             Obsolete method.
             </summary>
@@ -13522,7 +13576,7 @@
             Dispose the pathfinder object.
             </summary>
         </member>
-        <member name="M:Quantum.Navigation.PathFinder.FindPath(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,System.Boolean,Photon.Deterministic.FP,Quantum.NavMeshRegionMask,Quantum.Navigation.PathQuality,Quantum.NavMesh)">
+        <member name="M:Quantum.Navigation.PathFinder.FindPath(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,System.Boolean,Photon.Deterministic.FP,Quantum.NavMeshRegionMask@,Quantum.Navigation.PathQuality,Quantum.NavMesh)">
             <summary>
             Find path.
             </summary>
@@ -13536,9 +13590,9 @@
             <param name="navmesh">The navmesh to operate on</param>
             <returns>The corrected end position</returns>
         </member>
-        <member name="M:Quantum.Navigation.PathFinder.FindPath(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector3,Photon.Deterministic.FPVector3,System.Boolean,Photon.Deterministic.FP,Quantum.NavMeshRegionMask,Quantum.Navigation.PathQuality,Quantum.NavMesh)">
+        <member name="M:Quantum.Navigation.PathFinder.FindPath(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector3,Photon.Deterministic.FPVector3,System.Boolean,Photon.Deterministic.FP,Quantum.NavMeshRegionMask@,Quantum.Navigation.PathQuality,Quantum.NavMesh)">
             <summary>
-            See <see cref="M:Quantum.Navigation.PathFinder.FindPath(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,System.Boolean,Photon.Deterministic.FP,Quantum.NavMeshRegionMask,Quantum.Navigation.PathQuality,Quantum.NavMesh)"/>
+            See <see cref="M:Quantum.Navigation.PathFinder.FindPath(Quantum.FrameThreadSafe,Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,System.Boolean,Photon.Deterministic.FP,Quantum.NavMeshRegionMask@,Quantum.Navigation.PathQuality,Quantum.NavMesh)"/>
             </summary>
         </member>
         <member name="P:Quantum.Navigation.PathFinder.PathSize">
@@ -13942,7 +13996,7 @@
             <param name="stream">Stream</param>
             <param name="write">Write or read</param>
         </member>
-        <member name="M:Quantum.NavMeshVertex.CalculateNormal(System.Int32,Quantum.NavMesh,Quantum.NavMeshRegionMask)">
+        <member name="M:Quantum.NavMeshVertex.CalculateNormal(System.Int32,Quantum.NavMesh,Quantum.NavMeshRegionMask@)">
             <summary>
             Computes the normal of the vertex against all adjacent borders.
             </summary>
@@ -14115,6 +14169,11 @@
             The maximum number of regions.
             </summary>
         </member>
+        <member name="F:Quantum.NavMeshRegionMask.BLOCK_COUNT">
+            <summary>
+            The number of 4 byte blocks that the mask uses.
+            </summary>
+        </member>
         <member name="P:Quantum.NavMeshRegionMask.Default">
             <summary>
             Default mask with all regions toggled on.
@@ -14151,12 +14210,6 @@
             </summary>
             <param name="ptr">The component pointer</param>
             <param name="printer">The printer</param>
-        </member>
-        <member name="M:Quantum.NavMeshRegionMask.#ctor(System.UInt64)">
-            <summary>
-            Constructor.
-            </summary>
-            <param name="regions">Raw region mask</param>
         </member>
         <member name="M:Quantum.NavMeshRegionMask.#ctor(System.UInt64,System.UInt64,System.UInt64,System.UInt64,System.UInt64,System.UInt64,System.UInt64,System.UInt64)">
             <summary>
@@ -14206,11 +14259,6 @@
         <member name="P:Quantum.NavMeshRegionMask.IsMainArea">
             <summary>
             Checks if the mask only contains the main area
-            </summary>
-        </member>
-        <member name="P:Quantum.NavMeshRegionMask.Mask">
-            <summary>
-            Access to underlying bit mask.
             </summary>
         </member>
         <member name="M:Quantum.NavMeshRegionMask.ToggleRegion(System.Int32,System.Boolean)">
@@ -14272,6 +14320,13 @@
             <param name="other">Other mask</param>
             <returns><see langword="true"/>, if both masks are equal.</returns>
         </member>
+        <member name="M:Quantum.NavMeshRegionMask.Equals(Quantum.NavMeshRegionMask@)">
+            <summary>
+            Equality check.
+            </summary>
+            <param name="other">Other mask</param>
+            <returns><see langword="true"/>, if both masks are equal.</returns>
+        </member>
         <member name="M:Quantum.NavMeshRegionMask.Equals(System.Object)">
             <summary>
             Equality check.
@@ -14298,6 +14353,17 @@
             <param name="stream">Stream object.</param>
             <param name="write">Write or read.</param>
             <param name="blockCount">Optionally customize block count.</param>
+        </member>
+        <member name="M:Quantum.NavMeshRegionMask.#ctor(System.UInt64)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="regions">Raw region mask</param>
+        </member>
+        <member name="P:Quantum.NavMeshRegionMask.Mask">
+            <summary>
+            Access to underlying bit mask.
+            </summary>
         </member>
         <member name="T:Quantum.NavMeshSerializeType">
             <summary>
@@ -22372,6 +22438,11 @@
             To filter some of these options out, combine specific flags instead.
             </summary>
         </member>
+        <member name="F:Quantum.QueryOptions.HitSolids">
+            <summary>
+            The query checks all non-trigger colliders: statics, kinematics and dynamics.
+            </summary>
+        </member>
         <member name="F:Quantum.QueryOptions.ComputeDetailedInfo">
             <summary>
             Detailed info (e.g. contact point, normal, penetration) will be computed for the query hits.
@@ -25259,7 +25330,7 @@
             Issues a debug shape to be drawn in Unity. 
             The shape drawing is based on the DEBUG define which is enabled in UnityEditor and development builds.
             Can be globally toggled of by using DebugDraw.IsEnabled in Unity.
-            Different implementation can be attached using <see cref="M:Quantum.Draw.Init(System.Action{Quantum.Draw.DebugRay},System.Action{Quantum.Draw.DebugLine},System.Action{Quantum.Draw.DebugCircle},System.Action{Quantum.Draw.DebugSphere},System.Action{Quantum.Draw.DebugRectangle},System.Action{Quantum.Draw.DebugBox},System.Action{Quantum.Draw.DebugCapsule},System.Action)"/>.
+            Different implementation can be attached using <see cref="M:Quantum.Draw.Init(System.Action{Quantum.Draw.DebugRay},System.Action{Quantum.Draw.DebugLine},System.Action{Quantum.Draw.DebugCircle},System.Action{Quantum.Draw.DebugSphere},System.Action{Quantum.Draw.DebugRectangle},System.Action{Quantum.Draw.DebugBox},System.Action{Quantum.Draw.DebugCapsule},System.Action{Quantum.Draw.DebugText},System.Action)"/>.
             </summary>
         </member>
         <member name="T:Quantum.Draw.DebugLine">
@@ -25300,6 +25371,46 @@
         <member name="F:Quantum.Draw.DebugRay.Color">
             <summary>
             Ray color.
+            </summary>
+        </member>
+        <member name="F:Quantum.Draw.DebugText.Scaling.Fixed">
+            <summary>
+            Scale does not change based on distance.
+            </summary>
+        </member>
+        <member name="F:Quantum.Draw.DebugText.Scaling.World">
+            <summary>
+            Scale changes depending on distance from camera.
+            </summary>
+        </member>
+        <member name="F:Quantum.Draw.DebugText.Position">
+            <summary>
+            World position of the text
+            </summary>
+        </member>
+        <member name="F:Quantum.Draw.DebugText.Text">
+            <summary>
+            The text to display.
+            </summary>
+        </member>
+        <member name="F:Quantum.Draw.DebugText.Size">
+            <summary>
+            The font size
+            </summary>
+        </member>
+        <member name="F:Quantum.Draw.DebugText.Color">
+            <summary>
+            The primary color of the text.
+            </summary>
+        </member>
+        <member name="F:Quantum.Draw.DebugText.BackgroundColor">
+            <summary>
+            The optional background color of the text.
+            </summary>
+        </member>
+        <member name="F:Quantum.Draw.DebugText.DrawScaling">
+            <summary>
+            The scaling mode to use for the text.
             </summary>
         </member>
         <member name="T:Quantum.Draw.DebugCircle">
@@ -25477,7 +25588,7 @@
             Calculate the diameter of the capsule.
             </summary>
         </member>
-        <member name="M:Quantum.Draw.Init(System.Action{Quantum.Draw.DebugRay},System.Action{Quantum.Draw.DebugLine},System.Action{Quantum.Draw.DebugCircle},System.Action{Quantum.Draw.DebugSphere},System.Action{Quantum.Draw.DebugRectangle},System.Action{Quantum.Draw.DebugBox},System.Action{Quantum.Draw.DebugCapsule},System.Action)">
+        <member name="M:Quantum.Draw.Init(System.Action{Quantum.Draw.DebugRay},System.Action{Quantum.Draw.DebugLine},System.Action{Quantum.Draw.DebugCircle},System.Action{Quantum.Draw.DebugSphere},System.Action{Quantum.Draw.DebugRectangle},System.Action{Quantum.Draw.DebugBox},System.Action{Quantum.Draw.DebugCapsule},System.Action{Quantum.Draw.DebugText},System.Action)">
             <summary>
             Initializes the debug draw system with the given draw functions.
             </summary>
@@ -25488,7 +25599,13 @@
             <param name="drawRectangle">Draw rectangle method</param>
             <param name="drawBox">Draw box method</param>
             <param name="drawCapsule">Draw capsule method</param>
+            <param name="drawText">Draw text method</param>
             <param name="clear">Clear all queued debug shapes</param>
+        </member>
+        <member name="M:Quantum.Draw.Init(System.Action{Quantum.Draw.DebugRay},System.Action{Quantum.Draw.DebugLine},System.Action{Quantum.Draw.DebugCircle},System.Action{Quantum.Draw.DebugSphere},System.Action{Quantum.Draw.DebugRectangle},System.Action{Quantum.Draw.DebugBox},System.Action{Quantum.Draw.DebugCapsule},System.Action)">
+            <summary>
+            Obsolete. Use the Init method with the text drawer.
+            </summary>
         </member>
         <member name="M:Quantum.Draw.Init(System.Action{Quantum.Draw.DebugRay},System.Action{Quantum.Draw.DebugLine},System.Action{Quantum.Draw.DebugCircle},System.Action{Quantum.Draw.DebugSphere},System.Action{Quantum.Draw.DebugRectangle},System.Action{Quantum.Draw.DebugBox},System.Action)">
             <summary>
@@ -25528,6 +25645,17 @@
             <param name="rotation">The rotation of the shape, can be <see langword="null"/></param>
             <param name="color">The color, can be <see langword="null"/></param>
             <param name="wire">Draw the shape as wireframe</param>
+        </member>
+        <member name="M:Quantum.Draw.Text(System.String,Photon.Deterministic.FPVector3,System.Int32,System.Nullable{Quantum.ColorRGBA},System.Nullable{Quantum.ColorRGBA},Quantum.Draw.DebugText.Scaling)">
+            <summary>
+            Draw a text box at the given position
+            </summary>
+            <param name="text"></param>
+            <param name="position"></param>
+            <param name="fontSize"></param>
+            <param name="color"></param>
+            <param name="backgroundColor"></param>
+            <param name="drawScaling"></param>
         </member>
         <member name="M:Quantum.Draw.Ray(Photon.Deterministic.FPVector2,Photon.Deterministic.FPVector2,System.Nullable{Quantum.ColorRGBA})">
             <summary>
@@ -26522,6 +26650,85 @@
             Overrides the hash code generation of this type.
             </summary>
             <returns>A hash code of the current state of this instance.</returns>
+        </member>
+        <member name="T:Quantum.RNGExtensions">
+            <summary>
+            Extension methods for the RNGSession struct to provide additional random number generation functionality
+            for quaternions, colors, and vectors in various geometric distributions.
+            </summary>
+        </member>
+        <member name="M:Quantum.RNGExtensions.Rotation(Photon.Deterministic.RNGSession@)">
+            <summary>
+            Generates a random quaternion with each component in the range [0,1].
+            </summary>
+            <param name="rng">The random number generator session.</param>
+            <returns>A randomly generated quaternion.</returns>
+        </member>
+        <member name="M:Quantum.RNGExtensions.ColorHSV(Photon.Deterministic.RNGSession@)">
+            <summary>
+            Generates a random color using HSV values, converted to RGB.
+            </summary>
+            <param name="rng">The random number generator session.</param>
+            <returns>A randomly generated color in RGBA format.</returns>
+        </member>
+        <member name="M:Quantum.RNGExtensions.InUnitCircle(Photon.Deterministic.RNGSession@,System.Boolean)">
+            <summary>
+            Returns a random 2D vector inside the unit circle.
+            </summary>
+            <param name="rng">The random number generator session.</param>
+            <param name="uniform">If true, distribution is uniform over the area. Note: This requires an additional
+            square root operation which has a minor performance cost but provides better distribution.</param>
+            <returns>A random 2D vector inside the unit circle.</returns>
+        </member>
+        <member name="M:Quantum.RNGExtensions.OnUnitCircle(Photon.Deterministic.RNGSession@)">
+            <summary>
+            Returns a random point on the perimeter of the unit circle.
+            </summary>
+            <param name="rng">The random number generator session.</param>
+            <returns>A random point on the unit circle perimeter.</returns>
+        </member>
+        <member name="M:Quantum.RNGExtensions.InUnitSphere(Photon.Deterministic.RNGSession@,System.Boolean)">
+            <summary>
+            Returns a random point inside the unit sphere.
+            </summary>
+            <param name="rng">The random number generator session.</param>
+            <param name="uniform">If true, distribution is uniform over the volume. Note: This requires
+            an additional cube root calculation which has a higher performance cost but provides a statistically
+            correct distribution of points throughout the volume.</param>
+            <returns>A random point inside the unit sphere.</returns>
+        </member>
+        <member name="M:Quantum.RNGExtensions.OnUnitSphere(Photon.Deterministic.RNGSession@,System.Boolean)">
+            <summary>
+            Returns a random point on the surface of the unit sphere.
+            </summary>
+            <param name="rng">The random number generator session.</param>
+            <param name="uniform">If true, points are uniformly distributed over the surface. Note: The uniform
+            distribution uses a different algorithm which has a minor performance impact but ensures points
+            are not clustered at the poles of the sphere.</param>
+            <returns>A random point on the unit sphere surface.</returns>
+        </member>
+        <member name="M:Quantum.RNGExtensions.ConvertToByte(Photon.Deterministic.FP)">
+            <summary>
+            Converts a floating-point value in range [0,1] to a byte value in range [0,255].
+            </summary>
+            <param name="value">The floating-point value to convert.</param>
+            <returns>The value converted to a byte in range [0,255].</returns>
+        </member>
+        <member name="M:Quantum.RNGExtensions.HSV2RGB(Photon.Deterministic.FP,Photon.Deterministic.FP,Photon.Deterministic.FP)">
+            <summary>
+            Converts HSV color values to an RGB color.
+            </summary>
+            <param name="hue">The hue component [0,1].</param>
+            <param name="saturation">The saturation component [0,1].</param>
+            <param name="value">The value component [0,1].</param>
+            <returns>A color in RGBA format.</returns>
+        </member>
+        <member name="M:Quantum.RNGExtensions.CubeRootRaw(Photon.Deterministic.FP)">
+            <summary>
+            Calculates the cube root of a value using Newton's method.
+            </summary>
+            <param name="value">The value to calculate the cube root of.</param>
+            <returns>The approximate cube root of the input value.</returns>
         </member>
         <member name="T:Quantum.TypeRegistry">
             <summary>

@@ -2756,6 +2756,11 @@
             </summary>
             <param name="lutProvider"></param>
         </member>
+        <member name="M:Photon.Deterministic.FPLut.Init(System.Byte[],System.Byte[],System.Byte[],System.Byte[],System.Byte[],System.Byte[])">
+            <summary>
+            Initialize LUT using using byte arrays.
+            </summary>
+        </member>
         <member name="M:Photon.Deterministic.FPLut.GenerateTables(System.String)">
             <summary>
             Generate lookup tables in <paramref name="directoryPath"/>.
@@ -6899,6 +6904,11 @@
             This room property can be controlled through Photon dashboard settings.
             </summary>
         </member>
+        <member name="F:Photon.Deterministic.RoomProperties.WebHookBaseUrl">
+            <summary>
+            User can set this during CreateGame to change the webhook base url provided by an allow list.
+            </summary>
+        </member>
         <member name="T:Photon.Deterministic.Protocol.AddPlayer">
             <summary>
             This messages is send from the client to reserve a player slot.
@@ -8563,7 +8573,7 @@
             Stats: Number of predicted frames simulated during the last call to Update().
             </summary>
         </member>
-        <member name="P:Photon.Deterministic.DeterministicSession.SimulationTimeElasped">
+        <member name="P:Photon.Deterministic.DeterministicSession.SimulationTimeElapsed">
             <summary>
             Stats: Precise time in seconds used by the last call to Update(). Includes all session internal input handling, rollbacks, verified and predicted frames simulation.
             </summary>

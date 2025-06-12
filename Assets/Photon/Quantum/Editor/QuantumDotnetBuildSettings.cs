@@ -234,14 +234,14 @@ namespace Quantum.Editor {
         return;
       }
 
-      var arguments = $" build {Path.GetFullPath(settings.ProjectBasePath)}/Quantum.Simulation.Dotnet/Quantum.Simulation.Dotnet.csproj";
+      var arguments = $" build \"{Path.GetFullPath(settings.ProjectBasePath)}/Quantum.Simulation.Dotnet/Quantum.Simulation.Dotnet.csproj\"";
       arguments += $" --configuration {settings.TargetConfiguration}";
       arguments += $" --property:TargetPlatform={settings.TargetPlatform}";
-      arguments += $" --property:OutputPath={settings.BinOutputPath}/";
+      arguments += $" --property:OutputPath=\"{settings.BinOutputPath}/\"";
 
       if (string.IsNullOrEmpty(copyOutputDir) == false) {
         arguments += $" --property:CopyOutput=true";
-        arguments += $" --property:CopyOutputDir={copyOutputDir}";
+        arguments += $" --property:CopyOutputDir=\"{copyOutputDir}\"";
       }
 
       if (RunDotnetCommand(arguments, settings.DotnetCommandPath)) {
@@ -353,21 +353,15 @@ namespace Quantum.Editor {
       var assetPath = assetDirectory.FullName;
 
       // copy lut files
-      var lutAssetDirectory = Directory.CreateDirectory($"{assetPath}/LUT");
-      var lutAssetPath = lutAssetDirectory.FullName;
-      string[] lutFiles = { "FPAcos", "FPAsin", "FPAtan", "FPCos", "FPSin", "FPSinCos", "FPSqrt", "FPTan" };
-      foreach (var file in lutFiles) {
-        var guids = AssetDatabase.FindAssets(file);
-        foreach (var guid in guids) {
-          var path = AssetDatabase.GUIDToAssetPath(guid);
-          try {
-            File.Copy(Path.GetFullPath($"{path}"), $"{lutAssetPath}/{Path.GetFileName(path)}", true);
-          } catch (IOException e) {
-            QuantumEditorLog.Exception(e);
-          }
-
-          break;
-        }
+      if (QuantumLookupTables.TryGetGlobal(out var lut)) {
+        var lutAssetDirectory = Directory.CreateDirectory($"{assetPath}/LUT");
+        var lutAssetPath = lutAssetDirectory.FullName;
+        File.Copy(Path.GetFullPath($"{AssetDatabase.GetAssetPath(lut.TableAcos)}"), $"{lutAssetPath}/{Path.GetFileName(AssetDatabase.GetAssetPath(lut.TableAcos))}", true);
+        File.Copy(Path.GetFullPath($"{AssetDatabase.GetAssetPath(lut.TableAsin)}"), $"{lutAssetPath}/{Path.GetFileName(AssetDatabase.GetAssetPath(lut.TableAsin))}", true);
+        File.Copy(Path.GetFullPath($"{AssetDatabase.GetAssetPath(lut.TableAtan)}"), $"{lutAssetPath}/{Path.GetFileName(AssetDatabase.GetAssetPath(lut.TableAtan))}", true);
+        File.Copy(Path.GetFullPath($"{AssetDatabase.GetAssetPath(lut.TableSinCos)}"), $"{lutAssetPath}/{Path.GetFileName(AssetDatabase.GetAssetPath(lut.TableSinCos))}", true);
+        File.Copy(Path.GetFullPath($"{AssetDatabase.GetAssetPath(lut.TableSqrt)}"), $"{lutAssetPath}/{Path.GetFileName(AssetDatabase.GetAssetPath(lut.TableSqrt))}", true);
+        File.Copy(Path.GetFullPath($"{AssetDatabase.GetAssetPath(lut.TableTan)}"), $"{lutAssetPath}/{Path.GetFileName(AssetDatabase.GetAssetPath(lut.TableTan))}", true);
       }
     }
 

@@ -6,6 +6,7 @@
 // <author>developer@photonengine.com</author>
 // -----------------------------------------------------------------------------
 
+
 #if UNITY_2017_4_OR_NEWER
 #define SUPPORTED_UNITY
 #endif
@@ -220,7 +221,7 @@ namespace Photon.Realtime
                     return Task.CompletedTask;
                 }
 
-                if (client.State == ClientState.Disconnected || client.State == ClientState.Disconnecting || client.State == ClientState.PeerCreated)
+                if (client.State == ClientState.Disconnected || client.State == ClientState.PeerCreated)
                 {
                     return Task.CompletedTask;
                 }
@@ -265,7 +266,8 @@ namespace Photon.Realtime
         /// <exception cref="OperationCanceledException">Is thrown when the operation have been canceled (AsyncConfig.CancellationSource).</exception>
         public static Task<RegionHandler> ConnectToNameserverAndWaitForRegionsAsync(this RealtimeClient client, AppSettings appSettings, AsyncConfig config = null)
         {
-            return config.Resolve().TaskFactory.StartNew(() =>
+            var asyncConfig = config.Resolve();
+            return asyncConfig.TaskFactory.StartNew(() =>
             {
                 // connected // connecting
                 if (client.State == ClientState.ConnectedToNameServer || client.State == ClientState.ConnectingToNameServer)
@@ -299,8 +301,8 @@ namespace Photon.Realtime
 #endif
                     // Because we set PingAvailableRegions ourselves the connection logic started by ConnectUsingSettings is canceled.
                     client.CallbackMessage.ListenManual<OnRegionListReceivedMsg>(m => m.regionHandler.PingAvailableRegions(r => handler.SetResult(ErrorCode.Ok)));
-                    var result = handler.Task.ContinueWith(c => client.RegionHandler);
-                    result.ContinueWith(c => client.DisconnectAsync());
+                    var result = handler.Task.ContinueWith(c => client.RegionHandler, asyncConfig.TaskScheduler);
+                    result.ContinueWith(c => client.DisconnectAsync(), asyncConfig.TaskScheduler);
                     return result;
                 }
                 return Task.FromResult(client.RegionHandler);

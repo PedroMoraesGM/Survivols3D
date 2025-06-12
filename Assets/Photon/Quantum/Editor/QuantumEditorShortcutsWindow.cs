@@ -114,6 +114,9 @@ namespace Quantum.Editor {
         if (GUI.Button(DrawIcon(QuantumEditorSkin.QuantumIcon), "Simulation Configs", EditorStyles.miniButton)) SearchAndSelect<Quantum.SimulationConfig>(selectMode: SelectMode.Steps);
       }
       using (new GridScope(columnCount, ref currentColumn)) {
+        if (GUI.Button(DrawIcon(QuantumEditorSkin.QuantumIcon), "Systems Config", EditorStyles.miniButton)) SearchAndSelect<SystemsConfig>(selectMode: SelectMode.Steps);
+      }
+      using (new GridScope(columnCount, ref currentColumn)) {
         if (GUI.Button(DrawIcon("BuildSettings.Editor.Small", false), "Editor Settings", EditorStyles.miniButton) && QuantumEditorSettings.TryGetGlobal(out var settings)) Selection.activeObject = settings;
       }
       using (new GridScope(columnCount, ref currentColumn)) {

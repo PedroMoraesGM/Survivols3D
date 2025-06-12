@@ -823,7 +823,7 @@ MonoBehaviour:
     LayerSource: 0
     Layer: 6
     CallbackFlags:
-      Value: 64
+      Value: 4095
   PhysicsBody:
     IsEnabled: 1
     Config2D: 116

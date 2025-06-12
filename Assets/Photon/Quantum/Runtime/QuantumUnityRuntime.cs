@@ -11,6 +11,24 @@ namespace Quantum {
   using UnityEngine;
   using UnityEngine.Serialization;
 
+  /// <summary>
+  /// The Quantum's representation for the capsule shape 3D world axis direction. 
+  /// </summary>
+  // Warning: Unity represents the capsule axis in 3D as an integer, where the X-axis is assigned the number 0.
+  // In Quantum, the Y-axis is assigned the value 0 to ensure it is the default axis in serialization process.
+  public enum CapsuleDirection3D {
+    /// <summary>
+    /// The Y axis has the 
+    /// </summary>
+    Y = 0,
+    /// <summary>
+    /// </summary>
+    X = 1,
+    /// <summary>
+    /// </summary>
+    Z = 2
+  }
+
   public partial class QPrototypeNavMeshPathfinder {
     [LocalReference]
     [DrawIf("Prototype.InitialTargetNavMesh.Id.Value", 0)]
@@ -49,28 +67,28 @@ namespace Quantum {
     }
 
     public static bool TrySetShapeConfigFromSourceCollider(Shape2DConfig config, Transform reference, Component collider, out bool isTrigger) {
+      QuantumEntityPrototype.SourceShapeGenericSettings settings = default;
+      return TrySetShapeConfigFromSourceCollider(config, ref settings, reference, collider, out isTrigger);
+    }
+
+    public static bool TrySetShapeConfigFromSourceCollider(Shape2DConfig config, ref QuantumEntityPrototype.SourceShapeGenericSettings settings, Transform reference, Component collider, out bool isTrigger) {
       if (collider == null) {
         isTrigger = false;
+        settings = default;
         return false;
       }
 
       // if the source collider is child (same object, immediate- or deep-child),
-      // avoid using the source's scale in order to not scale the settings twice
-      Vector2 sourceScale2D;
-      Vector3 sourceScale3D;
-      if (collider.transform.IsChildOf(reference)) {
-        sourceScale2D = Vector2.one;
-        sourceScale3D = Vector3.one;
-      } else {
-        sourceScale2D = collider.transform.lossyScale.ToFPVector2().ToUnityVector2();
-        sourceScale3D = collider.transform.lossyScale;
-      }
+      // pre-scale settings and avoid scaling it twice
+      settings.IsScaledBySource = collider.transform.IsChildOf(reference);
+      var sourceScale = collider.transform.lossyScale;
+      var sourceScale2D = collider.transform.lossyScale.ToFPVector2().ToUnityVector2();
 
       switch (collider) {
 #if QUANTUM_ENABLE_PHYSICS3D && !QUANTUM_DISABLE_PHYSICS3D
         case BoxCollider box:
           config.ShapeType      = Shape2DType.Box;
-          config.BoxExtents     = Vector3.Scale(box.size / 2, sourceScale3D).ToFPVector2();
+          config.BoxExtents     = Vector3.Scale(box.size / 2, sourceScale).ToFPVector2();
           config.PositionOffset = reference.transform.InverseTransformPoint(box.transform.TransformPoint(box.center)).ToFPVector2();
           config.RotationOffset = (Quaternion.Inverse(reference.transform.rotation) * box.transform.rotation).ToFPRotation2DDegrees();
           isTrigger             = box.isTrigger;
@@ -78,7 +96,11 @@ namespace Quantum {
 
         case SphereCollider sphere:
           config.ShapeType      = Shape2DType.Circle;
-          config.CircleRadius   = (Math.Max(Math.Max(Math.Abs(sourceScale3D.x), Math.Abs(sourceScale3D.y)), Math.Abs(sourceScale3D.z)) * sphere.radius).ToFP();
+          if (settings.IsScaledBySource) {
+            config.CircleRadius = ((Math.Max(Math.Abs(sourceScale2D.x), Math.Abs(sourceScale2D.y))) * sphere.radius).ToFP();
+          } else {
+            config.CircleRadius = (Math.Max(Math.Max(Math.Abs(sourceScale.x), Math.Abs(sourceScale.y)), Math.Abs(sourceScale.z)) * sphere.radius).ToFP();
+          }
           config.PositionOffset = reference.transform.InverseTransformPoint(sphere.transform.TransformPoint(sphere.center)).ToFPVector2();
           config.RotationOffset = (Quaternion.Inverse(reference.transform.rotation) * sphere.transform.rotation).ToFPRotation2DDegrees();
           isTrigger             = sphere.isTrigger;
@@ -110,13 +132,22 @@ namespace Quantum {
 
         case CapsuleCollider2D capsule:
           config.ShapeType      = Shape2DType.Capsule;
-          config.CapsuleSize.X   = (Math.Abs(sourceScale2D.x) * capsule.size.x).ToFP();
-          config.CapsuleSize.Y   = (Math.Abs(sourceScale2D.y) * capsule.size.y).ToFP();
+          settings.CapsuleDirection2D = capsule.direction;
+          FP upRotation = default;
+          if (capsule.direction == CapsuleDirection2D.Horizontal) {
+            config.CapsuleSize.X = (Math.Abs(sourceScale2D.y) * capsule.size.y).ToFP();
+            config.CapsuleSize.Y = (Math.Abs(sourceScale2D.x) * capsule.size.x).ToFP();
+            upRotation = 90;
+          } else {
+            config.CapsuleSize.X = (Math.Abs(sourceScale2D.x) * capsule.size.x).ToFP();
+            config.CapsuleSize.Y = (Math.Abs(sourceScale2D.y) * capsule.size.y).ToFP();
+            upRotation = default;
+          }
+          
           config.PositionOffset = reference.transform.InverseTransformPoint(capsule.transform.TransformPoint(capsule.offset.ToFPVector2().ToUnityVector3())).ToFPVector2();
-
           var refCapsuleTransform2D = Transform2D.Create(reference.transform.position.ToFPVector2(), reference.transform.rotation.ToFPRotation2D());
           var capsuleTransform2D    = Transform2D.Create(capsule.transform.position.ToFPVector2(), capsule.transform.rotation.ToFPRotation2D());
-          config.RotationOffset = (capsuleTransform2D.Rotation - refCapsuleTransform2D.Rotation) * FP.Rad2Deg;
+          config.RotationOffset = upRotation + (capsuleTransform2D.Rotation - refCapsuleTransform2D.Rotation) * FP.Rad2Deg;
           isTrigger             = capsule.isTrigger;
           break;
 #endif
@@ -158,14 +189,21 @@ namespace Quantum {
 #endif
     
     public static bool TrySetShapeConfigFromSourceCollider(Shape3DConfig config, Transform reference, Component collider, out bool isTrigger) {
+      QuantumEntityPrototype.SourceShapeGenericSettings settings = default;
+      return TrySetShapeConfigFromSourceCollider(config, ref settings, reference, collider, out isTrigger);
+    }
+
+    public static bool TrySetShapeConfigFromSourceCollider(Shape3DConfig config, ref QuantumEntityPrototype.SourceShapeGenericSettings settings, Transform reference, Component collider, out bool isTrigger) {
       if (collider == null) {
         isTrigger = false;
+        settings = default;
         return false;
       }
 
       // if the source collider is child (same object, immediate- or deep-child),
-      // avoid using the source's scale in order to not scale the settings twice
-      var sourceScale = collider.transform.IsChildOf(reference) ? Vector3.one : collider.transform.lossyScale;
+      // pre-scale settings and avoid scaling it twice
+      settings.IsScaledBySource = collider.transform.IsChildOf(reference);
+      Vector3 sourceScale = collider.transform.lossyScale;
 
       switch (collider) {
 #if QUANTUM_ENABLE_PHYSICS3D && !QUANTUM_DISABLE_PHYSICS3D
@@ -186,11 +224,35 @@ namespace Quantum {
           break;
 
         case CapsuleCollider capsule:
+          FPVector3 upRotation = default;
+          float capsuleRadiusScale = 1;
+          float capsuleHeightScale = 1;
+          switch (capsule.direction) {
+            case 0: // x-axis
+              settings.CapsuleDirection3D = CapsuleDirection3D.X;
+              upRotation = new FPVector3(0, 0, 90);
+              capsuleRadiusScale *= Math.Max(sourceScale.y, sourceScale.z);
+              capsuleHeightScale *= Math.Abs(sourceScale.x);
+              break;
+            case 1: // y-axis
+              settings.CapsuleDirection3D = CapsuleDirection3D.Y;
+              upRotation = default;
+              capsuleRadiusScale *= Math.Max(sourceScale.x, sourceScale.z);
+              capsuleHeightScale *= Math.Abs(sourceScale.y);
+              break;
+            case 2: // z-axis
+              settings.CapsuleDirection3D = CapsuleDirection3D.Z;
+              upRotation = new FPVector3(90, 0, 0);
+              capsuleRadiusScale *= Math.Max(sourceScale.x, sourceScale.y);
+              capsuleHeightScale *= Math.Abs(sourceScale.z);
+              break;
+          }
+
           config.ShapeType      = Shape3DType.Capsule;
-          config.CapsuleRadius   = (Math.Max(Math.Max(Math.Abs(sourceScale.x), Math.Abs(sourceScale.y)), Math.Abs(sourceScale.z)) * capsule.radius).ToFP();
-          config.CapsuleHeight  =  (Math.Abs(sourceScale.y) * capsule.height).ToFP();
+          config.CapsuleRadius  = Math.Abs(capsuleRadiusScale * capsule.radius).ToFP();
+          config.CapsuleHeight  = Math.Abs(capsuleHeightScale * capsule.height).ToFP();
           config.PositionOffset = reference.transform.InverseTransformPoint(capsule.transform.TransformPoint(capsule.center)).ToFPVector3();
-          config.RotationOffset = (Quaternion.Inverse(reference.transform.rotation) * capsule.transform.rotation).eulerAngles.ToFPVector3();
+          config.RotationOffset = upRotation + (Quaternion.Inverse(reference.transform.rotation) * capsule.transform.rotation).eulerAngles.ToFPVector3();
           isTrigger             = capsule.isTrigger;
           break;
 #endif
@@ -1143,11 +1205,14 @@ namespace Quantum {
 
     private object LoadSceneAsync(string sceneName, LoadSceneMode loadSceneMode) {
 #if QUANTUM_ENABLE_ADDRESSABLES && !QUANTUM_DISABLE_ADDRESSABLES
-      if (TryGetAddressableScenes(out var addressableScenes)) {
-        foreach (var (name, path) in addressableScenes) {
-          if (string.Equals(name, sceneName, StringComparison.OrdinalIgnoreCase)) {
-            VerboseLog($"Loading addressable scene {sceneName} ({path})");
-            return Addressables.LoadSceneAsync(path, loadSceneMode);
+      var buildIndex = QuantumUnitySceneManagerUtils.GetSceneBuildIndex(sceneName);
+      if (buildIndex < 0) {
+        if (TryGetAddressableScenes(out var addressableScenes)) {
+          foreach (var (name, path) in addressableScenes) {
+            if (string.Equals(name, sceneName, StringComparison.OrdinalIgnoreCase)) {
+              VerboseLog($"Loading addressable scene {sceneName} ({path})");
+              return Addressables.LoadSceneAsync(path, loadSceneMode);
+            }
           }
         }
       }
@@ -1836,6 +1901,33 @@ namespace Quantum {
 #endregion
 
 
+#region Assets/Photon/Quantum/Runtime/Entity/IQuantumEntityViewCulling.cs
+
+namespace Quantum {
+  using System.Collections.Generic;
+
+  /// <summary>
+  /// Interface to control entity view instantiation and to add custom culling.
+  /// </summary>
+  public interface IQuantumEntityViewCulling {
+    /// <summary>
+    /// Create an iterator for all dynamic entities.
+    /// </summary>
+    public IEnumerable<(EntityRef, View)> DynamicEntityIterator(QuantumGame game, Frame frame, QuantumEntityViewBindBehaviour createBehaviour);
+
+    /// <summary>
+    /// Create an iterator for all map entities.
+    /// By default all components that have a <see cref="MapEntityLink"/> are returned.
+    /// </summary>
+    public IEnumerable<(EntityRef, MapEntityLink)> MapEntityIterator(QuantumGame game, Frame frame, QuantumEntityViewBindBehaviour createBehaviour);
+
+  }
+}
+
+
+#endregion
+
+
 #region Assets/Photon/Quantum/Runtime/Entity/IQuantumEntityViewPool.cs
 
 namespace Quantum {
@@ -2094,12 +2186,12 @@ namespace Quantum {
     public void Convert(QUnityEntityPrototypeRef unityEntityPrototype, out EntityPrototypeRef result) {
       var sceneReference = unityEntityPrototype.ScenePrototype;
       if (sceneReference != null && sceneReference.gameObject.scene.IsValid()) {
-        Debug.Assert(Map != null);
-        Debug.Assert(Map.gameObject.scene == sceneReference.gameObject.scene);
+        Assert.Check(Map != null);
+        Assert.Check(Map.gameObject.scene == sceneReference.gameObject.scene);
 
         var index = Array.IndexOf(OrderedMapPrototypes, sceneReference);
         if (index >= 0) {
-          result = EntityPrototypeRef.FromMasterAsset(Map.Asset, index);
+          result = EntityPrototypeRef.FromMasterAsset(Map.AssetRef, index);
         } else {
           result = EntityPrototypeRef.Invalid;
         }
@@ -2324,6 +2416,10 @@ namespace Quantum {
     /// Turning this on only prepares the buffers and callbacks. Switching the interpolation mode is controlled with a separate toggle on the QuantumEntityView.
     /// </summary>
     EnableSnapshotInterpolation = 1 << 5,
+    /// <summary>
+    /// Disable searching the inactive entity view game object children for entity view components.
+    /// </summary>
+    DisableSearchInactiveForEntityViewComponents = 1 << 6,
   }
   
   /// <summary>
@@ -2979,12 +3075,12 @@ namespace Quantum {
     /// <summary>
     /// Draw the NavMesh area. The QuantumMap game object will trigger DrawOnlySelected.
     /// </summary>
-    public QuantumGizmoEntry NavMeshArea = new QuantumGizmoEntry(QuantumGizmoColors.TransparentLightBlue) { OnlyDrawSelected = true };
+    public QuantumGizmoEntry NavMeshArea = new QuantumGizmoEntry(QuantumGizmoColors.TransparentLightBlue.Alpha(0.25f)) { OnlyDrawSelected = true, DisableFill = false };
 
     /// <summary>
     /// Draw the NavMesh grid. The QuantumMap game object will trigger DrawOnlySelected.
     /// </summary>
-    public QuantumGizmoEntry NavMeshGrid = new QuantumGizmoEntry(QuantumGizmoColors.TransparentLightGreen) { OnlyDrawSelected = true };
+    public QuantumGizmoEntry NavMeshGrid = new QuantumGizmoEntry(QuantumGizmoColors.TransparentLightGreen.Alpha(0.25f)) { OnlyDrawSelected = true, DisableFill = true };
 
     /// <summary>
     /// Draw the NavMesh links.
@@ -3477,27 +3573,15 @@ namespace Quantum {
 
     [StaticField] private static UserGizmoCallback[] _userCallbacks;
 
-    private static QuantumEntityViewUpdater _evu;
-    private static QuantumMapData _mapData;
-
     static QuantumGameGizmos() {
-      SceneManager.sceneLoaded += (arg0, mode) => {
-        InvalidatePhysicsGizmos();
-      };
-
-      EditorApplication.update += InvokeGizmoUser;
+      SceneManager.sceneLoaded += (arg0, mode) => InvalidateGizmos();      
+      SceneView.duringSceneGui += InvokeGizmoUser;
     }
-
-    [StaticFieldResetMethod]
-    private static void InvokeGizmoUser() {
+    
+    private static void InvokeGizmoUser(SceneView sceneView) {
       var callbacks = GetUserCallbacks();
-      var evu = GetEntityViewUpdater();
 
       var settings = QuantumGameGizmosSettingsScriptableObject.Global.Settings;
-
-      if (evu == null) {
-        return;
-      }
 
       foreach (var callback in callbacks) {
         bool runtimeOnly = callback.Attribute.RuntimeOnly;
@@ -3554,33 +3638,10 @@ namespace Quantum {
     /// Invalidates the navmesh gizmos.
     /// </summary>
     [StaticFieldResetMethod]
-    public static void InvalidateNavMeshGizmos() {
+    public static void InvalidateGizmos() {
       _navmeshGizmoMap?.Clear();
-    }
-
-    /// <summary>
-    /// Invalidates the physics gizmos.
-    /// </summary>
-    [StaticFieldResetMethod]
-    public static void InvalidatePhysicsGizmos() {
       _meshGizmoData.Clear();
-      _mapData = null;
-    }
-
-    private static QuantumEntityViewUpdater GetEntityViewUpdater() {
-      if (_evu == null) {
-        _evu = FindFirstObjectByType<QuantumEntityViewUpdater>();
-      }
-
-      return _evu;
-    }
-
-    private static QuantumMapData GetMapData() {
-      if (_mapData == null) {
-        _mapData = FindFirstObjectByType<QuantumMapData>();
-      }
-
-      return _mapData;
+      GameContext.Clear();
     }
 
     private static bool ShouldDraw(QuantumGizmoEntry entry, bool selected, bool hasStateDrawer = true) {
@@ -3603,6 +3664,24 @@ namespace Quantum {
       return true;
     }
 
+    internal static void RegisterEntityViewUpdater(QuantumEntityViewUpdater entityViewUpdater) {
+      if (entityViewUpdater == null || entityViewUpdater.ObservedGame == null) {
+        return;
+      }
+
+      GameContext[entityViewUpdater.ObservedGame] = entityViewUpdater;
+    }
+
+    internal static void UnregisterEntityViewUpdater(QuantumEntityViewUpdater entityViewUpdater) {
+      if (entityViewUpdater == null || entityViewUpdater.ObservedGame == null) {
+        return;
+      }
+
+      GameContext.Remove(entityViewUpdater.ObservedGame);
+    }
+
+    static Dictionary<QuantumGame, QuantumEntityViewUpdater> GameContext = new Dictionary<QuantumGame, QuantumEntityViewUpdater>();
+
     [DrawGizmo(GizmoType.Selected | GizmoType.Active | GizmoType.NonSelected)]
     static void DrawGizmos(QuantumRunnerBehaviour behaviour, GizmoType gizmoType) {
       if (behaviour.Runner?.Session == null) {
@@ -3617,24 +3696,27 @@ namespace Quantum {
         return;
       }
 
+      GameContext.TryGetValue(game, out var entityViewUpdater);
+
       OnDrawGizmosInternal(
         game,
         gizmoType,
-        behaviour.Runner.GizmoSettings ?? QuantumGameGizmosSettingsScriptableObject.Global.Settings
-      );
+        behaviour.Runner.GizmoSettings ?? QuantumGameGizmosSettingsScriptableObject.Global.Settings,
+        entityViewUpdater);      
     }
 
     static void OnDrawGizmosInternal(
       QuantumGame game,
       GizmoType type,
-      QuantumGameGizmosSettings gizmosSettings) {
+      QuantumGameGizmosSettings gizmosSettings, 
+      QuantumEntityViewUpdater entityViewUpdater) {
       var frame = game.Frames.Predicted;
 
       if (frame != null) {
-        DrawMapGizmos(frame.Map, frame);
+        DrawMapGizmos(frame.Map, frame, entityViewUpdater?.MapData);
 
 #if QUANTUM_ENABLE_AI && !QUANTUM_DISABLE_AI
-        OnDrawGizmos_NavMesh(frame, gizmosSettings, type);
+        OnDrawGizmos_NavMesh(frame, entityViewUpdater, gizmosSettings, type);
 #endif
 
 #if QUANTUM_ENABLE_PHYSICS3D && !QUANTUM_DISABLE_PHYSICS3D
@@ -3653,6 +3735,7 @@ namespace Quantum {
     /// On BeforeBake override, empty.
     /// </summary>
     public override void OnBeforeBake(QuantumMapData data) {
+      _meshGizmoData.Clear();
     }
 
     /// <summary>
@@ -3888,7 +3971,7 @@ namespace Quantum {
 
       if (behaviour.PhysicsCollider.IsEnabled) {
         if (behaviour.TransformMode == QuantumEntityPrototypeTransformMode.Transform2D) {
-          config2D = behaviour.GetScaledShape2DConfig(physicsCollider.Shape2D);
+          config2D = behaviour.GetScaledShape2DConfig(ref physicsCollider);
           isDynamic2D = physicsBody.IsEnabled && !physicsCollider.IsTrigger &&
                         (physicsBody.Config2D & PhysicsBody2D.ConfigFlags.IsKinematic) == default;
           
@@ -3897,7 +3980,7 @@ namespace Quantum {
             : null;
 
         } else if (transformMode == QuantumEntityPrototypeTransformMode.Transform3D) {
-          config3D = behaviour.GetScaledShape3DConfig(physicsCollider.Shape3D);
+          config3D = behaviour.GetScaledShape3DConfig(ref physicsCollider);
           isDynamic3D = physicsBody.IsEnabled && !physicsCollider.IsTrigger &&
                         (physicsBody.Config3D & PhysicsBody3D.ConfigFlags.IsKinematic) == default;
 
@@ -3909,11 +3992,11 @@ namespace Quantum {
 
       if (behaviour.Transform2DVertical.IsEnabled) {
 #if QUANTUM_XY
-        var verticalScale = transform.lossyScale.z;
+        var verticalScale = Mathf.Abs(transform.lossyScale.z);
         height = -behaviour.Transform2DVertical.Height.AsFloat * verticalScale;
         position2D.z -= behaviour.Transform2DVertical.PositionOffset.AsFloat * verticalScale;
 #else
-        var verticalScale = transform.lossyScale.y;
+        var verticalScale = Mathf.Abs(transform.lossyScale.y);
         height = behaviour.Transform2DVertical.Height.AsFloat * verticalScale;
         position2D.y += behaviour.Transform2DVertical.PositionOffset.AsFloat * verticalScale;
 #endif
@@ -4031,6 +4114,8 @@ namespace Quantum {
       }
 #endif
     }
+    
+#if QUANTUM_ENABLE_PHYSICS2D && !QUANTUM_DISABLE_PHYSICS2D
 
     public static void DrawShape2DConfigGizmo(Shape2DConfig config2D, Vector3 position2D, FP rotation2DDeg, float height, QuantumGizmoEntry entrySettings) {
       if (config2D.ShapeType == Shape2DType.Polygon) {
@@ -4082,7 +4167,9 @@ namespace Quantum {
           style: entrySettings.Style);
       }
     }
-
+#endif
+    
+#if QUANTUM_ENABLE_PHYSICS3D && !QUANTUM_DISABLE_PHYSICS3D
     public static void DrawShape3DConfigGizmo(Shape3DConfig config3D, Vector3 position3D, Quaternion rotation3D, QuantumGizmoEntry entrySettings) {
       if (config3D.ShapeType == Shape3DType.Compound) {
         foreach (var shape in config3D.CompoundShapes) {
@@ -4097,6 +4184,7 @@ namespace Quantum {
         DrawShape3DGizmo(config3D.CreateShape(null), position3D, rotation3D, entrySettings.Color, style: entrySettings.Style);
       }
     }
+#endif
 
     private static T SafeGetPrototype<T>(Behaviour behaviour) where T : ComponentPrototype, new() {
       var component = behaviour.GetComponent<QuantumUnityComponentPrototype<T>>();
@@ -4130,22 +4218,28 @@ namespace Quantum {
         return;
       }
 
-      if (behaviour.Asset == null) {
+      if (behaviour.AssetRef == default) {
         return;
       }
 
       FPMathUtils.LoadLookupTables();
-      DrawMapGizmos(behaviour.Asset, null);
+
+      var map = behaviour.GetAsset(false);
+      if (!map) {
+        return;
+      }
+      
+      DrawMapGizmos(map, null, behaviour);
 
       var navmeshList = new List<NavMesh>();
 
-      foreach (var navmeshLink in behaviour.Asset.NavMeshLinks) {
+      foreach (var navmeshLink in map.NavMeshLinks) {
         if (navmeshLink.IsValid) {
           navmeshList.Add(QuantumUnityDB.GetGlobalAsset(navmeshLink));
         }
       }
 
-      DrawMapNavMesh(behaviour.Asset, navmeshList, NavMeshRegionMask.Default, _settings);
+      DrawMapNavMesh(map, navmeshList, NavMeshRegionMask.Default, _settings, behaviour);
     }
 
     private static void DrawManyNonDynamicMapColliders(List<MonoBehaviour> list) {
@@ -4158,6 +4252,7 @@ namespace Quantum {
       if (qmb is QuantumStaticMeshCollider3D or QuantumStaticTerrainCollider3D) {
         bool shouldDraw = ShouldDraw(_settings.StaticMeshTriangles, isSelected, false);
 
+#if QUANTUM_ENABLE_PHYSICS3D && !QUANTUM_DISABLE_PHYSICS3D          
 #if !QUANTUM_ENABLE_TERRAIN || QUANTUM_DISABLE_TERRAIN
         if (qmb is QuantumStaticTerrainCollider3D) {
           shouldDraw = false;
@@ -4166,12 +4261,14 @@ namespace Quantum {
         if (shouldDraw) {
           DrawStaticMeshCollider(qmb, isSelected ? GizmoType.Selected : GizmoType.Active);
         }
+#endif
 
         return;
       }
       
       if (ShouldDraw(_settings.StaticColliders, isSelected, false)) {
         switch (qmb) {
+#if QUANTUM_ENABLE_PHYSICS3D && !QUANTUM_DISABLE_PHYSICS3D
           case QuantumStaticSphereCollider3D sphereCollider3D:
             if (Application.isPlaying == false) {
               sphereCollider3D.UpdateFromSourceCollider();
@@ -4197,6 +4294,8 @@ namespace Quantum {
           case QuantumStaticCapsuleCollider3D cc3d:
             DrawStaticCapsuleCollider3D(cc3d, isSelected);
             break;
+#endif
+#if QUANTUM_ENABLE_PHYSICS2D && !QUANTUM_DISABLE_PHYSICS2D
           case QuantumStaticBoxCollider2D box2d:
             DrawBoxStaticCollider2D(box2d, isSelected);
             break;
@@ -4216,11 +4315,12 @@ namespace Quantum {
           case QuantumStaticPolygonCollider2D polygon2d:
             DrawPolygonStaticCollider2D(polygon2d, isSelected);
             break;
+#endif
         }
       }
     }
 
-    private static unsafe void DrawMapGizmos(Map map, Frame frame) {
+    private static unsafe void DrawMapGizmos(Map map, Frame frame, QuantumMapData mapData) {
       if (map) {
         bool mapIsDynamic = map is DynamicMap;
 
@@ -4277,8 +4377,6 @@ namespace Quantum {
 
         bool selected = false;
 
-        var mapData = GetMapData();
-
         if (mapData) {
           selected = Selection.activeGameObject == mapData.gameObject;
         }
@@ -4297,7 +4395,9 @@ namespace Quantum {
           // dynamic map colliders have no gameobject, so just use map data selected
           if (ShouldDraw(_settings.StaticMeshTriangles, selected, false)) {
             foreach (var kvp in dynamicMeshes) {
+#if QUANTUM_ENABLE_PHYSICS3D && !QUANTUM_DISABLE_PHYSICS3D    
               DrawStaticMeshCollider(kvp.Value, GizmoType.Active);
+#endif
             }
           }
 
@@ -4305,14 +4405,17 @@ namespace Quantum {
             foreach (var dc3d in map.StaticColliders3D) {
               switch (dc3d.ShapeType) {
                 case Shape3DType.Sphere:
+#if QUANTUM_ENABLE_PHYSICS3D && !QUANTUM_DISABLE_PHYSICS3D    
                   DrawStaticSphereCollider3D(
                     selected,
                     dc3d.Position.ToUnityVector3(),
                     Vector3.one,
                     dc3d.SphereRadius.AsFloat
                   );
+#endif
                   break;
                 case Shape3DType.Box:
+#if QUANTUM_ENABLE_PHYSICS3D && !QUANTUM_DISABLE_PHYSICS3D    
                   DrawStaticBoxCollider3D(
                     selected,
                     dc3d.Position.ToUnityVector3(),
@@ -4320,6 +4423,7 @@ namespace Quantum {
                     Vector3.one,
                     dc3d.BoxExtents.ToUnityVector3() * 2.0f
                   );
+#endif
                   break;
                 case Shape3DType.Capsule:
                   var matrix = Matrix4x4.TRS(
@@ -4348,6 +4452,7 @@ namespace Quantum {
                   GizmoUtils.DrawGizmosCapsule2D(
                     dc2d.Position.ToUnityVector3(),
                     dc2d.CapsuleRadius.AsFloat,
+                    dc2d.CapsuleExtent.AsFloat,
                     dc2d.Height.AsFloat,
                     _settings.GetSelectedColor(_settings.StaticColliders.Color, selected),
                     rotation: dc2d.Rotation.ToUnityQuaternion(),
@@ -4399,54 +4504,37 @@ namespace Quantum {
               }
             }
           }
+        }
 
-          if (ShouldDraw(_settings.NavMeshGrid, selected, false)) {
-            GizmoUtils.DrawGizmosBox(
-              center.ToUnityVector3(),
-              new FPVector2(map.WorldSizeX, map.WorldSizeY).ToUnityVector3(),
-              _settings.NavMeshGrid.Color
-            );
+        if (frame is { Physics3D: { SceneMesh: not null } }) {
+          var mesh = frame.Physics3D.SceneMesh;
+          if (mesh != null) {
+            if (_settings.SceneMeshCells.Enabled) {
+              mesh.VisitCells((x, y, z, tris, count) => {
+                if (count > 0) {
+                  var c = mesh.GetNodeCenter(x, y, z).ToUnityVector3();
+                  var s = mesh.CellSize.AsFloat * Vector3.one;
 
-            var bottomLeft = center.ToUnityVector3() - (-map.WorldOffset).ToUnityVector3();
-            GizmoUtils.DrawGizmoGrid(
-              bottomLeft,
-              map.GridSizeX,
-              map.GridSizeY,
-              map.GridNodeSize,
-              _settings.NavMeshGrid.Color
-            );
-          }
+                  GizmoUtils.DrawGizmosBox(
+                    c,
+                    s,
+                    _settings.SceneMeshCells.Color,
+                    style: QuantumGizmoStyle.FillDisabled
+                  );
+                }
+              });
+            }
 
-          if (frame is { Physics3D: { SceneMesh: not null } }) {
-            var mesh = frame.Physics3D.SceneMesh;
-            if (mesh != null) {
-              if (_settings.SceneMeshCells.Enabled) {
-                mesh.VisitCells((x, y, z, tris, count) => {
-                  if (count > 0) {
-                    var c = mesh.GetNodeCenter(x, y, z).ToUnityVector3();
-                    var s = mesh.CellSize.AsFloat * Vector3.one;
-
-                    GizmoUtils.DrawGizmosBox(
-                      c,
-                      s,
-                      _settings.SceneMeshCells.Color,
-                      style: QuantumGizmoStyle.FillDisabled
-                    );
-                  }
-                });
-              }
-
-              if (_settings.SceneMeshTriangles.Enabled) {
-                mesh.VisitCells((x, y, z, tris, count) => {
-                  for (int i = 0; i < count; ++i) {
-                    var t = mesh.GetTriangle(tris[i]);
-                    Gizmos.color = _settings.SceneMeshTriangles.Color;
-                    Gizmos.DrawLine(t->A.ToUnityVector3(), t->B.ToUnityVector3());
-                    Gizmos.DrawLine(t->B.ToUnityVector3(), t->C.ToUnityVector3());
-                    Gizmos.DrawLine(t->C.ToUnityVector3(), t->A.ToUnityVector3());
-                  }
-                });
-              }
+            if (_settings.SceneMeshTriangles.Enabled) {
+              mesh.VisitCells((x, y, z, tris, count) => {
+                for (int i = 0; i < count; ++i) {
+                  var t = mesh.GetTriangle(tris[i]);
+                  Gizmos.color = _settings.SceneMeshTriangles.Color;
+                  Gizmos.DrawLine(t->A.ToUnityVector3(), t->B.ToUnityVector3());
+                  Gizmos.DrawLine(t->B.ToUnityVector3(), t->C.ToUnityVector3());
+                  Gizmos.DrawLine(t->C.ToUnityVector3(), t->A.ToUnityVector3());
+                }
+              });
             }
           }
         }
@@ -4456,25 +4544,49 @@ namespace Quantum {
     [DrawGizmo(GizmoType.Selected | GizmoType.Active | GizmoType.NonSelected)]
     static void DrawGizmos_QuantumMonoBehaviour(QuantumMonoBehaviour qmb, GizmoType gizmoType) {
       if (Application.isPlaying) {
+        // If the game is running, static colliders are drawn from the map.
         return;
       }
 
       DrawNonDynamicMapCollider(qmb, gizmoType.HasFlag(GizmoType.Selected));
     }
 
+#if QUANTUM_ENABLE_PHYSICS3D && !QUANTUM_DISABLE_PHYSICS3D    
     private static void DrawStaticCapsuleCollider3D(QuantumStaticCapsuleCollider3D cc3d, bool isSelected) {
       if (Application.isPlaying == false) {
         cc3d.UpdateFromSourceCollider();
       }
 
       var t = cc3d.transform;
-      var scale = t.lossyScale;
-      var radiusScale = Mathf.Max(scale.x, scale.z);
-      var extentScale = scale.y;
+      var absScale = t.lossyScale;
+      absScale.x = Math.Abs(absScale.x);
+      absScale.y = Math.Abs(absScale.y);
+      absScale.z = Math.Abs(absScale.z);
+      var radiusScale = Mathf.Max(absScale.x, absScale.z);
+      var extentScale = 0.0f;
+      var axisRotation = Vector3.zero;
+
+      switch (cc3d.Direction) {
+        case CapsuleDirection3D.X: // X
+          axisRotation = new Vector3(0, 0, 90);
+          extentScale = absScale.x;
+          radiusScale = Mathf.Max(absScale.y, absScale.z);
+          break;
+        case CapsuleDirection3D.Y: // Y
+          axisRotation = new Vector3(0, 0, 0);
+          extentScale = absScale.y;
+          radiusScale = Mathf.Max(absScale.x, absScale.z);
+          break;
+        case CapsuleDirection3D.Z: // Z
+          axisRotation = new Vector3(90, 0, 0);
+          extentScale = absScale.z;
+          radiusScale = Mathf.Max(absScale.x, absScale.y);
+          break;
+      }
 
       var matrix = Matrix4x4.TRS(
         t.TransformPoint(cc3d.PositionOffset.ToUnityVector3()),
-        Quaternion.Euler(t.rotation.eulerAngles + cc3d.RotationOffset.ToUnityVector3()),
+        Quaternion.Euler(t.rotation.eulerAngles + cc3d.RotationOffset.ToUnityVector3() + axisRotation),
         Vector3.one);
 
       var radius = Math.Max(cc3d.Radius.AsFloat * radiusScale, 0);
@@ -4488,7 +4600,9 @@ namespace Quantum {
         style: _settings.StaticColliders.DisableFill ? QuantumGizmoStyle.FillDisabled : default
       );
     }
+#endif
 
+#if QUANTUM_ENABLE_PHYSICS2D && !QUANTUM_DISABLE_PHYSICS2D
     private static void DrawBoxStaticCollider2D(QuantumStaticBoxCollider2D box2d, bool isSelected) {
       if (Application.isPlaying == false) {
         box2d.UpdateFromSourceCollider();
@@ -4499,15 +4613,18 @@ namespace Quantum {
       var offset = Vector3.zero;
 
 #if QUANTUM_XY
-                size.z = -height.AsFloat;
-                offset.z = size.z / 2.0f;
+      size.z = -height.AsFloat;
+      offset.z = size.z / 2.0f;
 #else
       size.y = height.AsFloat;
       offset.y = size.y / 2.0f;
 #endif
 
       var tBox = box2d.transform;
-      var tLossyScale = tBox.lossyScale;
+      var absScale = tBox.lossyScale;
+      absScale.x = Mathf.Abs(tBox.lossyScale.x);
+      absScale.y = Mathf.Abs(tBox.lossyScale.y);
+      absScale.z = Mathf.Abs(tBox.lossyScale.z);
 
       var rotation = tBox.rotation * box2d.RotationOffset.FlipRotation().ToUnityQuaternionDegrees();
 
@@ -4516,7 +4633,7 @@ namespace Quantum {
       var boxMatrix = Matrix4x4.TRS(
         tBox.TransformPoint(box2d.PositionOffset.ToUnityVector3()),
         rotation,
-        tLossyScale) * Matrix4x4.Translate(offset);
+        absScale) * Matrix4x4.Translate(offset);
 
       GizmoUtils.DrawGizmosBox(
         boxMatrix,
@@ -4536,13 +4653,13 @@ namespace Quantum {
       var lossyScale2D = lossyScale.ToFPVector2();
 
 #if QUANTUM_XY
-                var heightScale = -lossyScale.z;
+      var heightScale = -Mathf.Abs(lossyScale.z);
 #else
-      var heightScale = lossyScale.y;
+      var heightScale = Mathf.Abs(lossyScale.y);
 #endif
 
       var heightScaled = circle2d.Height.AsFloat * heightScale;
-      var radiusScaled = (circle2d.Radius * FPMath.Max(lossyScale2D.X, lossyScale2D.Y)).AsFloat;
+      var radiusScaled = (circle2d.Radius * FPMath.Max(FPMath.Abs(lossyScale2D.X), FPMath.Abs(lossyScale2D.Y))).AsFloat;
 
       GizmoUtils.DrawGizmosCircle(
         circleTransform.TransformPoint(circle2d.PositionOffset.ToUnityVector3()),
@@ -4560,34 +4677,49 @@ namespace Quantum {
 
       var capsTransform = capsule2d.transform;
       var capsScale = capsTransform.lossyScale;
+      var rotationAxis = Quaternion.identity;
+      var capsuleSize = capsule2d.Size;
+
+      if (capsule2d.Direction == CapsuleDirection2D.Horizontal) {
+        capsuleSize.Y = capsule2d.Size.X;
+        capsuleSize.X = capsule2d.Size.Y;
 
 #if QUANTUM_XY
-      var radius = (capsule2d.Size.X / FP._2) * capsScale.x.ToFP();
-      radius = FPMath.Clamp(radius, 0, radius);
-
-      var height = (capsule2d.Size.Y / FP._2 - radius) * capsScale.y.ToFP();
-      height = FPMath.Clamp(height, FP._0, height);
-
-      var radius2d = radius.AsFloat;
-      var capsHeight = height.AsFloat;
+        rotationAxis = Quaternion.Euler(0, 0, 90);
+        var tempY = capsScale.y;
+        capsScale.y = capsScale.x;
+        capsScale.x = tempY;
 #else
-      var radius = capsule2d.Size.X * capsScale.x.ToFP() / FP._2;
-      radius = FPMath.Clamp(radius, 0, radius);
+        rotationAxis = Quaternion.Euler(0, 90, 0);
+        var tempZ = capsScale.z;
+        capsScale.z = capsScale.x;
+        capsScale.x = tempZ;
+#endif
+      }
 
-      var height = (capsule2d.Size.Y * capsScale.z.ToFP() / FP._2) - radius;
-      height = FPMath.Clamp(height, FP._0, height);
+      var radius = capsuleSize.X.AsFloat * capsScale.x / 2;
+      radius = Mathf.Abs(radius);
 
-      var radius2d = radius.AsFloat;
-      var capsHeight = height.AsFloat;
+#if QUANTUM_XY
+      var height = Math.Abs(capsuleSize.Y.AsFloat * capsScale.y /2) - radius;
+      var transformHeight = capsule2d.Height.AsFloat * capsScale.z;
+#else
+      var height = Math.Abs(capsuleSize.Y.AsFloat * capsScale.z /2) - radius;
+      var transformHeight = capsule2d.Height.AsFloat * capsScale.y;
 #endif
 
+      height = Mathf.Clamp(height, 0, height);
+      transformHeight = Mathf.Abs(transformHeight);
+
       var rot = capsule2d.transform.rotation * capsule2d.RotationOffset.FlipRotation().ToUnityQuaternionDegrees();
+      rot *= rotationAxis;
       rot = rot.ToFPRotation2DDegrees().ToUnityQuaternionDegrees();
 
       GizmoUtils.DrawGizmosCapsule2D(
         capsTransform.TransformPoint(capsule2d.PositionOffset.ToUnityVector3()),
-        radius2d,
-        capsHeight,
+        radius,
+        height,
+        transformHeight,
         _settings.GetSelectedColor(_settings.StaticColliders.Color, isSelected),
         rotation: rot,
         style: _settings.StaticColliders.DisableFill ? QuantumGizmoStyle.FillDisabled : default
@@ -4627,13 +4759,18 @@ namespace Quantum {
       } else {
         var polyTransform = polygon2d.transform;
 
+        var polyAbsScaled = polyTransform.lossyScale;
+
 #if QUANTUM_XY
-                  var polyVerticalScale = -polyTransform.lossyScale.z;
+        polyAbsScaled.z = Mathf.Abs(polyAbsScaled.z);
+        var polyVerticalScale = -polyAbsScaled.z;
 #else
-        var polyVerticalScale = polyTransform.lossyScale.y;
+        polyAbsScaled.y = Mathf.Abs(polyAbsScaled.y);
+        var polyVerticalScale = polyAbsScaled.y;
 #endif
 
         var rotation = polyTransform.rotation * polygon2d.RotationOffset.FlipRotation().ToUnityQuaternionDegrees();
+        
 
         rotation = rotation.ToFPRotation2DDegrees().ToUnityQuaternionDegrees();
 
@@ -4641,7 +4778,7 @@ namespace Quantum {
         var polyMatrix = Matrix4x4.TRS(
           polyTransform.TransformPoint(polygon2d.PositionOffset.ToUnityVector3()),
           rotation,
-          polyTransform.lossyScale);
+          polyAbsScaled);
 
         GizmoUtils.DrawGizmoPolygon2D(
           polyMatrix,
@@ -4678,35 +4815,41 @@ namespace Quantum {
         style: _settings.StaticColliders.DisableFill ? QuantumGizmoStyle.FillDisabled : default
       );
     }
+#endif
 
     static void DrawMapNavMesh(
       Map map,
       List<NavMesh> navmeshList,
       NavMeshRegionMask mask,
-      QuantumGameGizmosSettings gizmosSettings) {
+      QuantumGameGizmosSettings gizmosSettings, 
+      QuantumMapData mapData) {
 #if QUANTUM_ENABLE_AI && !QUANTUM_DISABLE_AI
 
       var navMeshRegionMask = mask;
 
-      bool selected = false;
-
-      var mapData = GetMapData();
-
-      if (mapData) {
-        selected = Selection.activeGameObject == mapData.gameObject;
+      bool mapSelected = false;
+      if (mapData != null) {
+        mapSelected = Selection.activeGameObject == mapData.gameObject;
       }
 
-      if (ShouldDraw(_settings.NavMeshArea, selected, false)) {
-        GizmoUtils.DrawGizmosBox(
-          Vector3.zero,
-          new FPVector2(map.WorldSizeX, map.WorldSizeY).ToUnityVector3(),
-          _settings.NavMeshArea.Color
-        );
+      if (Application.isPlaying == false) {
+        // Case Grid 1: draw from map on edit mode
+        DrawNavMeshAreaAndGrid(mapSelected || IsNavMeshScriptSelected(mapData), navmesh: null, map, _settings);
       }
 
       foreach (var navmesh in navmeshList) {
+        var navmeshSelected = mapSelected;
+
+        // Use the selected QuantumMapNavMeshUnity to only draw the selected navmesh
+        navmeshSelected = mapSelected || IsNavMeshSelected(mapData, navmesh);
+
+        if (Application.isPlaying) {
+          // Case Grid 2: draw from for each navmesh during runtime
+          DrawNavMeshAreaAndGrid(navmeshSelected, navmesh, map, _settings);
+        }
+
         if (_settings.NavMesh.Enabled) {
-          CreateAndDrawNavMeshGizmo(navmesh, navMeshRegionMask);
+          CreateAndDrawNavMeshGizmo(navmeshSelected, navmesh, in navMeshRegionMask);
         }
 
         if (_settings.NavMeshRegionIds.Enabled ||
@@ -4716,14 +4859,14 @@ namespace Quantum {
 
             // ################## NavMesh Triangle Ids ##################
 
-            if (ShouldDraw(_settings.NavMeshTriangleIds, selected, false)) {
+            if (ShouldDraw(_settings.NavMeshTriangleIds, navmeshSelected, false)) {
               Handles.color = _settings.NavMeshTriangleIds.Color;
               Handles.Label(t.Center.ToUnityVector3(true), i.ToString());
             }
 
             // ################## NavMesh Triangle Region Ids ##################
 
-            if (ShouldDraw(_settings.NavMeshRegionIds, selected, false)) {
+            if (ShouldDraw(_settings.NavMeshRegionIds, navmeshSelected, false)) {
               if (t.Regions.HasValidRegions) {
                 var s = string.Empty;
                 for (int r = 0; r < map.Regions.Length; r++) {
@@ -4746,16 +4889,16 @@ namespace Quantum {
           for (Int32 v = 0; v < navmesh.Vertices.Length; ++v) {
             // ################## NavMesh Vertex Ids ##################
 
-            if (ShouldDraw(_settings.NavMeshVertexIds, selected, false)) {
+            if (ShouldDraw(_settings.NavMeshVertexIds, navmeshSelected, false)) {
               Handles.color = _settings.NavMeshVertexIds.Color;
               Handles.Label(navmesh.Vertices[v].Point.ToUnityVector3(true), v.ToString());
             }
 
             // ################## NavMesh Vertex Normals ##################
 
-            if (ShouldDraw(_settings.NavMeshVertexNormals, selected, false)) {
+            if (ShouldDraw(_settings.NavMeshVertexNormals, navmeshSelected, false)) {
               if (navmesh.Vertices[v].Borders.Length >= 2) {
-                var normal = NavMeshVertex.CalculateNormal(v, navmesh, navMeshRegionMask);
+                var normal = NavMeshVertex.CalculateNormal(v, navmesh, in navMeshRegionMask);
                 if (normal != FPVector3.Zero) {
                   Gizmos.color = _settings.NavMeshVertexNormals.Color;
                   GizmoUtils.DrawGizmoVector(
@@ -4771,10 +4914,10 @@ namespace Quantum {
 
         // ################## NavMesh Links ##################
 
-        if (ShouldDraw(_settings.NavMeshLinks, selected, false)) {
+        if (ShouldDraw(_settings.NavMeshLinks, navmeshSelected, false)) {
           for (Int32 i = 0; i < navmesh.Links.Length; i++) {
             var color = _settings.NavMeshLinks.Color;
-            if (navmesh.Links[i].Region.Overlaps(navMeshRegionMask) == false) {
+            if (navmesh.Links[i].Region.Overlaps(in navMeshRegionMask) == false) {
               color = Color.gray;
             }
 
@@ -4792,11 +4935,11 @@ namespace Quantum {
 
         // ################## NavMesh Borders ##################
 
-        if (ShouldDraw(_settings.NavMeshBorders, selected, false)) {
+        if (ShouldDraw(_settings.NavMeshBorders, navmeshSelected, false)) {
           for (Int32 i = 0; i < navmesh.Borders.Length; i++) {
             Gizmos.color = _settings.NavMeshBorders.Color;
             var b = navmesh.Borders[i];
-            if (navmesh.IsBorderActive(i, navMeshRegionMask) == false) {
+            if (navmesh.IsBorderActive(i, in navMeshRegionMask) == false) {
               // grayed out?
               continue;
             }
@@ -4839,19 +4982,21 @@ namespace Quantum {
   using UnityEngine;
 
   public partial class QuantumGameGizmos {
-    static unsafe void OnDrawGizmos_NavMesh(Frame frame, QuantumGameGizmosSettings gizmosSettings, GizmoType type) {
+    static List<NavMesh> _cachedNavMeshes = new List<NavMesh>();
+
+    static unsafe void OnDrawGizmos_NavMesh(Frame frame, QuantumEntityViewUpdater entityViewUpdater, QuantumGameGizmosSettings gizmosSettings, GizmoType type) {
       if (frame.MapAssetRef == default) {
         return;
       }
-      
-      var navmeshList = new List<NavMesh>();
-      navmeshList.AddRange(frame.Map.NavMeshes.Values);
+
+      _cachedNavMeshes.Clear();
+      _cachedNavMeshes.AddRange(frame.Map.NavMeshes.Values);
 
       if (frame.DynamicAssetDB.IsEmpty == false) {
-        navmeshList.AddRange(frame.DynamicAssetDB.Assets.OfType<NavMesh>().ToList());
+        _cachedNavMeshes.AddRange(frame.DynamicAssetDB.Assets.OfType<NavMesh>().ToList());
       }
 
-      DrawMapNavMesh(frame.Map, navmeshList, *frame.NavMeshRegionMask, gizmosSettings);
+      DrawMapNavMesh(frame.Map, _cachedNavMeshes, *frame.NavMeshRegionMask, gizmosSettings, entityViewUpdater?.MapData);
       DrawNavigationPaths(frame, gizmosSettings);
 
       bool tryDrawComponents = _settings.NavMeshPathfinder.Enabled ||
@@ -4859,7 +5004,7 @@ namespace Quantum {
                                _settings.NavMeshAvoidanceAgent.Enabled;
 
       if (tryDrawComponents) {
-        DrawRuntimeNavMeshComponents(frame, gizmosSettings);
+        DrawRuntimeNavMeshComponents(frame, entityViewUpdater, gizmosSettings);
       }
 
       if (_settings.NavMeshAvoidanceObstacles.Enabled) {
@@ -5040,16 +5185,18 @@ namespace Quantum {
     ///   manually.
     ///   New meshes are created when the region mask changed.
     /// </summary>
-    public static void CreateAndDrawNavMeshGizmo(NavMesh navmesh, NavMeshRegionMask regionMask) {
-      var mesh = CreateGizmoMesh(navmesh, regionMask);
+    private static void CreateAndDrawNavMeshGizmo(bool selected, NavMesh navmesh, in NavMeshRegionMask regionMask) {
+      var mesh = CreateGizmoMesh(navmesh, in regionMask);
 
-      DrawNavMeshGizmoMesh(mesh,
+      DrawNavMeshGizmoMesh(
+        selected,
+        mesh,
         _settings.NavMesh.Color,
         _settings.NavMesh.RegionColor
       );
     }
 
-    private static Mesh CreateGizmoMesh(NavMesh navmesh, NavMeshRegionMask regionMask) {
+    private static Mesh CreateGizmoMesh(NavMesh navmesh, in NavMeshRegionMask regionMask) {
       _navmeshGizmoMap ??= new Dictionary<string, GizmoNavmeshData>();
 
       if (!_navmeshGizmoMap.TryGetValue(navmesh.Name, out GizmoNavmeshData gizmoNavmeshData) ||
@@ -5063,19 +5210,21 @@ namespace Quantum {
         mesh.vertices = navmesh.Vertices.Select(x => x.Point.ToUnityVector3()).ToArray();
 #endif
 
+        var regionMaskCopy = regionMask;
+
         mesh.SetTriangles(
           navmesh.Triangles.SelectMany(x =>
-            x.Regions.IsMainArea && x.Regions.Overlaps(regionMask)
+            x.Regions.IsMainArea && x.Regions.Overlaps(in regionMaskCopy)
               ? new int[] { x.Vertex0, x.Vertex1, x.Vertex2 }
               : Array.Empty<int>()).ToArray(), 0);
         mesh.SetTriangles(
           navmesh.Triangles.SelectMany(x =>
-            x.Regions.HasValidNoneMainRegion && x.Regions.Overlaps(regionMask)
+            x.Regions.HasValidNoneMainRegion && x.Regions.Overlaps(in regionMaskCopy)
               ? new int[] { x.Vertex0, x.Vertex1, x.Vertex2 }
               : Array.Empty<int>()).ToArray(), 1);
         mesh.SetTriangles(
           navmesh.Triangles.SelectMany(x =>
-              !x.Regions.Overlaps(regionMask) ? new int[] { x.Vertex0, x.Vertex1, x.Vertex2 } : Array.Empty<int>())
+              !x.Regions.Overlaps(in regionMaskCopy) ? new int[] { x.Vertex0, x.Vertex1, x.Vertex2 } : Array.Empty<int>())
             .ToArray(), 2);
         mesh.RecalculateNormals();
 
@@ -5086,16 +5235,8 @@ namespace Quantum {
       return gizmoNavmeshData.GizmoMesh;
     }
 
-    private static void DrawNavMeshGizmoMesh(Mesh mesh, Color color, Color regionColor) {
+    private static void DrawNavMeshGizmoMesh(bool selected, Mesh mesh, Color color, Color regionColor) {
       var originalColor = Gizmos.color;
-
-      bool selected = false;
-
-      var mapData = GetMapData();
-
-      if (mapData != null) {
-        selected = Selection.activeGameObject == _mapData.gameObject;
-      }
 
       bool shouldDraw = ShouldDraw(_settings.NavMesh, selected, false);
 
@@ -5128,10 +5269,9 @@ namespace Quantum {
 
     private static unsafe void DrawRuntimeNavMeshComponents(
       Frame frame,
+      QuantumEntityViewUpdater entityViewUpdater,
       QuantumGameGizmosSettings gizmosSettings) {
       NavMesh current = null;
-
-      var evu = GetEntityViewUpdater();
 
       foreach (var (entity, agent) in frame.GetComponentIterator<NavMeshPathfinder>()) {
         var position = Vector3.zero;
@@ -5155,8 +5295,8 @@ namespace Quantum {
 
         bool selected = false;
 
-        if (evu != null) {
-          var view = evu.GetView(entity);
+        if (entityViewUpdater != null) {
+          var view = entityViewUpdater.GetView(entity);
 
           if (view != null) {
             selected = Selection.activeGameObject == view.gameObject;
@@ -5216,7 +5356,7 @@ namespace Quantum {
               style: _settings.NavMeshAvoidanceAgent.Style
             );
 
-            var avoidanceRange = frame.SimulationConfig.Navigation.AvoidanceRange;
+            var avoidanceRange = frame.SimulationConfig.Navigation.AvoidanceRange + config.AvoidanceRadius;
 
             GizmoUtils.DrawGizmosCircle(
               position,
@@ -5226,6 +5366,52 @@ namespace Quantum {
             );
           }
         }
+      }
+    }
+
+    private static int GetNavMeshGridSizeX(Map map, NavMesh navmesh) => navmesh != null ? navmesh.GridSizeX : map.GridSizeX;
+    private static int GetNavMeshGridSizeY(Map map, NavMesh navmesh) => navmesh != null ? navmesh.GridSizeY : map.GridSizeY;
+    private static int GetNavMeshGridNodeSize(Map map, NavMesh navmesh) => navmesh != null ? navmesh.GridNodeSize : map.GridNodeSize;
+    private static FPVector2 GetNavMeshWorldOffset(Map map, NavMesh navmesh) => navmesh != null ? navmesh.WorldOffset : map.WorldOffset;
+    private static FPVector2 GetNavMeshWorldSize(Map map, NavMesh navmesh) => navmesh != null ? navmesh.WorldOffset * 2: new FPVector2(map.WorldSizeX, map.WorldSizeY);
+
+    // Return is any navmesh script child of map is selected.
+    private static bool IsNavMeshScriptSelected(QuantumMapData mapData) {
+      return mapData != null
+        && Selection.activeGameObject != null
+        && Selection.activeGameObject.GetComponent<QuantumMapNavMeshUnity>() != null
+        && Selection.activeGameObject.transform.parent == mapData.gameObject.transform;
+    }
+
+    // Return is a matching navmesh script is selected.
+    private static bool IsNavMeshSelected(QuantumMapData mapData, NavMesh navmesh) {
+      return IsNavMeshScriptSelected(mapData) && string.Equals(Selection.activeGameObject.name, navmesh.Name, StringComparison.Ordinal);
+    }
+
+    // Draw the navmesh area box and grid lines
+    private static void DrawNavMeshAreaAndGrid(bool selected, NavMesh navmesh, Map map, QuantumGameGizmosSettings gizmosSettings) {
+      if (ShouldDraw(_settings.NavMeshArea, selected, false)) {
+        GizmoUtils.DrawGizmosBox(
+          Vector3.zero,
+          GetNavMeshWorldSize(map, navmesh).ToUnityVector3(),
+          _settings.NavMeshArea.Color,
+          style: _settings.NavMeshArea.Style);
+      }
+
+      if (ShouldDraw(_settings.NavMeshGrid, selected, false)) {
+        GizmoUtils.DrawGizmosBox(
+          Vector3.zero,
+          GetNavMeshWorldSize(map, navmesh).ToUnityVector3(),
+          _settings.NavMeshGrid.Color, 
+          style: _settings.NavMeshGrid.Style);
+
+        GizmoUtils.DrawGizmoGrid(
+          GetNavMeshWorldOffset(map, navmesh).ToUnityVector3(),
+          GetNavMeshGridSizeX(map, navmesh),
+          GetNavMeshGridSizeY(map, navmesh),
+          GetNavMeshGridNodeSize(map, navmesh),
+          _settings.NavMeshGrid.Color
+        );
       }
     }
   }
@@ -5392,7 +5578,7 @@ namespace Quantum {
 
         //TODO: check for the height
         case Shape2DType.Capsule:
-          GizmoUtils.DrawGizmosCapsule2D(pos, s.Capsule.Radius.AsFloat, s.Capsule.Extent.AsFloat, color, rotation: rot,
+          GizmoUtils.DrawGizmosCapsule2D(pos, s.Capsule.Radius.AsFloat, s.Capsule.Extent.AsFloat, height, color, rotation: rot,
             style: style);
           break;
 
@@ -5608,20 +5794,6 @@ namespace Quantum {
 
       MeshTriangleVerticesCcw meshTriangles = null;
 
-      if (obj is MonoBehaviour mb) {
-        var mapData = GetMapData();
-
-        if (mapData == null) {
-          return;
-        }
-
-        if (mapData.StaticCollider3DReferences.Contains(mb) == false) {
-          // don't draw gizmo if the collider has not been baked into the map
-          _meshGizmoData.Remove(obj);
-          return;
-        }
-      }
-
       // just read current mesh data, don't bake it
       switch (obj) {
         case QuantumStaticMeshCollider3D collider3D:
@@ -5772,7 +5944,11 @@ namespace Quantum {
       }
 
       // the radius with which the sphere with be baked into the map
+      scale.x = Mathf.Abs(scale.x);
+      scale.y = Mathf.Abs(scale.y);
+      scale.z = Mathf.Abs(scale.z);
       var radiusScale = Mathf.Max(Mathf.Max(scale.x, scale.y), scale.z);
+
       radius *= radiusScale;
 
       GizmoUtils.DrawGizmosSphere(
@@ -7371,6 +7547,7 @@ namespace Quantum {
 
 namespace Quantum {
   using System;
+  using System.Threading.Tasks;
   using UnityEngine.Scripting;
 #if (QUANTUM_ADDRESSABLES || QUANTUM_ENABLE_ADDRESSABLES) && !QUANTUM_DISABLE_ADDRESSABLES 
   using UnityEngine.AddressableAssets;
@@ -7417,6 +7594,31 @@ namespace Quantum {
       return default;
 #endif
     }
+
+    /// <summary>
+    /// Loads the asset from the <see cref="Address"/>.
+    /// </summary>
+    public override Task<QuantumGlobalScriptableObjectLoadResult> LoadAsync(Type type) {
+#if (QUANTUM_ADDRESSABLES || QUANTUM_ENABLE_ADDRESSABLES) && !QUANTUM_DISABLE_ADDRESSABLES
+      Assert.Check(!string.IsNullOrEmpty(Address));
+      
+      var tcs = new TaskCompletionSource<QuantumGlobalScriptableObjectLoadResult>();
+      
+      var op = Addressables.LoadAssetAsync<QuantumGlobalScriptableObject>(Address);
+      op.Completed += _op => {
+        if (_op.Status == AsyncOperationStatus.Succeeded) {
+          tcs.SetResult(new(_op.Result, _ => Addressables.Release(_op)));
+        } else {
+          LogTrace?.Log($"Failed to load addressable at address {Address} for type {type.FullName}: {op.OperationException}");
+          tcs.SetException(_op.OperationException);
+        }
+      };
+      return tcs.Task;
+#else
+      LogTrace?.Log($"Addressables are not enabled. Unable to load addressable for {type.FullName}");
+      return default;
+#endif
+    }
   }
 }
 
@@ -7429,6 +7631,7 @@ namespace Quantum {
   using System;
   using System.IO;
   using System.Reflection;
+  using System.Threading.Tasks;
   using UnityEngine;
   using UnityEngine.Scripting;
   using Object = UnityEngine.Object;
@@ -7465,24 +7668,9 @@ namespace Quantum {
       var attribute = type.GetCustomAttribute<QuantumGlobalScriptableObjectAttribute>();
       Assert.Check(attribute != null);
 
-      string resourcePath;
-      if (string.IsNullOrEmpty(ResourcePath)) {
-        string defaultAssetPath = attribute.DefaultPath;
-        var indexOfResources = defaultAssetPath.LastIndexOf("/Resources/", StringComparison.OrdinalIgnoreCase);
-        if (indexOfResources < 0) {
-          LogTrace?.Log($"The default path {defaultAssetPath} does not contain a /Resources/ folder. Unable to load resource for {type.FullName}.");
-          return default;
-        }
-
-        // try to load from resources, maybe?
-        resourcePath = defaultAssetPath.Substring(indexOfResources + "/Resources/".Length);
-
-        // drop the extension
-        if (Path.HasExtension(resourcePath)) {
-          resourcePath = resourcePath.Substring(0, resourcePath.LastIndexOf('.'));
-        }
-      } else {
-        resourcePath = ResourcePath;
+      var resourcePath = GetResourcePath(type, attribute); 
+      if (resourcePath == null) {
+        return default;
       }
 
       var instance = UnityEngine.Resources.Load(resourcePath, type);
@@ -7491,11 +7679,71 @@ namespace Quantum {
         return default;
       }
 
+      return HandleInstance(instance);
+    }
+
+    /// <summary>
+    /// Loads the asset from Resources asynchronously.
+    /// </summary>
+    public override System.Threading.Tasks.Task<QuantumGlobalScriptableObjectLoadResult> LoadAsync(Type type) {
+      var attribute = type.GetCustomAttribute<QuantumGlobalScriptableObjectAttribute>();
+      Assert.Check(attribute != null);
+
+      var tcs = new TaskCompletionSource<QuantumGlobalScriptableObjectLoadResult>();
+      
+      var resourcePath = GetResourcePath(type, attribute); 
+      if (resourcePath == null) {
+        tcs.SetResult(default);
+      } else {
+        var request = UnityEngine.Resources.LoadAsync(resourcePath, type);
+        if (request == null) {
+          LogTrace?.Log($"Unable to load resource at path {resourcePath} for type {type.FullName}");
+          tcs.SetResult(default);
+        } else {
+          request.completed += op => {
+            var instance = ((ResourceRequest)op).asset;
+            if (instance) {
+              tcs.SetResult(HandleInstance(instance));  
+            } else {
+              LogTrace?.Log($"Unable to load resource at path {resourcePath} for type {type.FullName}");
+              tcs.SetResult(default);
+            }
+          };
+        }
+      }
+
+      return tcs.Task;
+    }
+
+    string GetResourcePath(Type type, QuantumGlobalScriptableObjectAttribute attribute) {
+      if (string.IsNullOrEmpty(ResourcePath)) {
+        string defaultAssetPath = attribute.DefaultPath;
+        var indexOfResources = defaultAssetPath.LastIndexOf("/Resources/", StringComparison.OrdinalIgnoreCase);
+        if (indexOfResources < 0) {
+          LogTrace?.Log($"The default path {defaultAssetPath} does not contain a /Resources/ folder. Unable to load resource for {type.FullName}.");
+          return null;
+        }
+
+        // try to load from resources, maybe?
+        var resourcePath = defaultAssetPath.Substring(indexOfResources + "/Resources/".Length);
+
+        // drop the extension
+        if (Path.HasExtension(resourcePath)) {
+          return resourcePath.Substring(0, resourcePath.LastIndexOf('.'));
+        } else {
+          return resourcePath;
+        }
+      } else {
+        return ResourcePath;
+      }
+    }
+    
+    QuantumGlobalScriptableObjectLoadResult HandleInstance(Object instance) {
       if (InstantiateIfLoadedInEditor && Application.isEditor) {
         var clone = Object.Instantiate(instance);
         return new((QuantumGlobalScriptableObject)clone, x => Object.Destroy(clone));
       } else {
-        return new((QuantumGlobalScriptableObject)instance, x => UnityEngine.Resources.UnloadAsset(instance));  
+        return new((QuantumGlobalScriptableObject)instance, x => UnityEngine.Resources.UnloadAsset(instance));
       }
     }
   }
@@ -7510,6 +7758,7 @@ namespace Quantum {
 
 #region Assets/Photon/Quantum/Runtime/QuantumAsyncOperationExtension.cs
 
+#if !UNITY_6000_0_OR_NEWER
 namespace Quantum {
   using System;
   using System.Runtime.CompilerServices;
@@ -7535,6 +7784,7 @@ namespace Quantum {
     }
   }
 }
+#endif
 
 #endregion
 
@@ -19079,26 +19329,36 @@ namespace Quantum {
         FPMathUtils.LoadLookupTables();
       }
 
-      if (inEditor == false && !data.Asset) {
-        data.Asset = AssetObject.Create<Map>();
+      Map asset = data.GetAsset(inEditor);
+      if (asset == null) {
+        if (inEditor) {
+          Log.Error($"Failed to bake map {data.name}. Asset {data.AssetRef} not found in QuantumEditorSettings.AssetSearchPaths or DB not ready.");
+          return;
+        } else {
+          asset = AssetObject.Create<Map>();
+          asset.name = data.gameObject.scene.name;
+          asset.Guid = QuantumUnityDB.CreateRuntimeDeterministicGuid(asset);
+          QuantumUnityDB.Global.AddAsset(asset);
+          data.AssetRef = asset;
+        }
       }
 
 #if UNITY_EDITOR
       if (inEditor) {
         // set scene name
-        data.Asset.Scene = data.gameObject.scene.name;
+        asset.Scene = data.gameObject.scene.name;
 
         var path = data.gameObject.scene.path;
-        data.Asset.ScenePath = path;
+        asset.ScenePath = path;
         if (string.IsNullOrEmpty(path)) {
-          data.Asset.SceneGuid = string.Empty;
+          asset.SceneGuid = string.Empty;
         } else {
-          data.Asset.SceneGuid = AssetDatabase.AssetPathToGUID(path);
+          asset.SceneGuid = AssetDatabase.AssetPathToGUID(path);
         }
         
         // map needs to be unloaded before it is modified; otherwise,
         // memory leaks might occur
-        QuantumUnityDB.DisposeGlobalAsset(data.Asset.Guid, immediate: true);
+        QuantumUnityDB.DisposeGlobalAsset(asset.Guid, immediate: true);
       }
 #endif
 
@@ -19118,7 +19378,7 @@ namespace Quantum {
 
       if (bakePrototypes) {
         using (TraceScope("BakingPrototypes")) {
-          BakePrototypes(data);
+          BakePrototypes(data, inEditor);
         }
       }
 
@@ -19131,8 +19391,10 @@ namespace Quantum {
     public static void BakeMeshes(QuantumMapData data, Boolean inEditor) {
       if (inEditor) {
 #if UNITY_EDITOR
-        var dirPath   = Path.GetDirectoryName(AssetDatabase.GetAssetPath(data.Asset));
-        var assetPath = Path.Combine(dirPath, data.Asset.name + "_mesh.asset");
+        var asset = data.GetAsset(true);
+        
+        var dirPath   = Path.GetDirectoryName(AssetDatabase.GetAssetPath(asset));
+        var assetPath = Path.Combine(dirPath, asset.name + "_mesh.asset");
 
         var binaryDataAsset = AssetDatabase.LoadAssetAtPath<Quantum.BinaryData>(assetPath);
         if (binaryDataAsset == null) {
@@ -19141,13 +19403,13 @@ namespace Quantum {
         }
 
         // Serialize to binary some of the data (max 20 megabytes for now)
-        var bytestream = new ByteStream(new Byte[data.Asset.GetStaticColliderTrianglesSerializedSize(isWriting: true)]);
-        data.Asset.SerializeStaticColliderTriangles(bytestream, allocator: null, true);
+        var bytestream = new ByteStream(new Byte[asset.GetStaticColliderTrianglesSerializedSize(isWriting: true)]);
+        asset.SerializeStaticColliderTriangles(bytestream, allocator: null, true);
 
         binaryDataAsset.SetData(bytestream.ToArray(), binaryDataAsset.IsCompressed);
         EditorUtility.SetDirty(binaryDataAsset);
 
-        data.Asset.StaticColliders3DTrianglesData = binaryDataAsset;
+        asset.StaticColliders3DTrianglesData = binaryDataAsset;
 #endif
       }
     }
@@ -19157,24 +19419,25 @@ namespace Quantum {
     public static IEnumerable<Quantum.NavMesh> BakeNavMeshes(QuantumMapData data, Boolean inEditor) {
       FPMathUtils.LoadLookupTables();
 
-      data.Asset.NavMeshLinks = new AssetRef<NavMesh>[0];
-      data.Asset.Regions      = new string[0];
+      var asset = data.GetAsset(inEditor);
+      asset.NavMeshLinks = new AssetRef<NavMesh>[0];
+      asset.Regions      = new string[0];
 
       InvokeCallbacks("OnBeforeBakeNavMesh", data);
 
-      var navmeshes = BakeNavMeshesLoop(data).ToList();
+      var navmeshes = BakeNavMeshesLoop(data, asset).ToList();
 
       InvokeCallbacks("OnCollectNavMeshes", data, navmeshes);
 
       if (inEditor) {
 #if UNITY_EDITOR
-        var        dirPath    = Path.GetDirectoryName(AssetDatabase.GetAssetPath(data.Asset));
+        var        dirPath    = Path.GetDirectoryName(AssetDatabase.GetAssetPath(asset));
         ByteStream bytestream = null;
         foreach (var navmesh in navmeshes) {
 
           // create and write navmesh (binary) _data asset
           {
-            var navmeshBinaryFilename = Path.Combine(dirPath, $"{data.Asset.name}_{navmesh.Name}_data.asset");
+            var navmeshBinaryFilename = Path.Combine(dirPath, $"{asset.name}_{navmesh.Name}_data.asset");
             var binaryDataAsset = AssetDatabase.LoadAssetAtPath<Quantum.BinaryData>(navmeshBinaryFilename);
             if (binaryDataAsset == null) {
               binaryDataAsset = ScriptableObject.CreateInstance<Quantum.BinaryData>();
@@ -19198,7 +19461,7 @@ namespace Quantum {
 
           // create and write navmesh Quantum asset
           {
-            var navmeshAssetPath = Path.Combine(dirPath, $"{data.Asset.name}_{navmesh.Name}.asset");
+            var navmeshAssetPath = Path.Combine(dirPath, $"{asset.name}_{navmesh.Name}.asset");
             var navMeshAsset = AssetDatabase.LoadAssetAtPath<Quantum.NavMesh>(navmeshAssetPath);
             if (navMeshAsset == null) {
               navMeshAsset = ScriptableObject.CreateInstance<Quantum.NavMesh>();
@@ -19216,8 +19479,8 @@ namespace Quantum {
             EditorUtility.CopySerialized(navmesh, navMeshAsset);
             EditorUtility.SetDirty(navMeshAsset);
 
-            ArrayUtils.Add(ref data.Asset.NavMeshLinks, (Quantum.AssetRef<Quantum.NavMesh>)navMeshAsset);
-            EditorUtility.SetDirty(data.Asset);
+            ArrayUtils.Add(ref asset.NavMeshLinks, (Quantum.AssetRef<Quantum.NavMesh>)navMeshAsset);
+            EditorUtility.SetDirty(asset);
           }
         }
 #endif
@@ -19228,8 +19491,8 @@ namespace Quantum {
         // A) overwriting the navmesh inside an already existing QAssetNavMesh ScriptableObject or
         // B) Creating new QAssetNavMesh ScriptableObjects (see above) and inject them into the DB (use UnityDB.OnAssetLoad callback).
         foreach (var navmesh in navmeshes) {
-          navmesh.Path = data.Asset.name + "_" + navmesh.Name;
-          ArrayUtils.Add(ref data.Asset.NavMeshLinks, (Quantum.AssetRef<Quantum.NavMesh>)navmesh);
+          navmesh.Path = asset.name + "_" + navmesh.Name;
+          ArrayUtils.Add(ref asset.NavMeshLinks, (Quantum.AssetRef<Quantum.NavMesh>)navmesh);
         }
       }
 
@@ -19264,8 +19527,10 @@ namespace Quantum {
       data.StaticCollider2DReferences = new List<MonoBehaviour>();
       data.StaticCollider3DReferences = new List<MonoBehaviour>();
 
+      var asset = data.GetAsset(inEditor);
+      
       // 2D
-      data.Asset.StaticColliders2D = new MapStaticCollider2D[0];
+      asset.StaticColliders2D = new MapStaticCollider2D[0];
       var staticCollider2DList = new List<MapStaticCollider2D>();
 
 #if QUANTUM_ENABLE_PHYSICS2D && !QUANTUM_DISABLE_PHYSICS2D
@@ -19281,10 +19546,10 @@ namespace Quantum {
           Rotation = collider.transform.rotation.ToFPRotation2D(),
 #if QUANTUM_XY
           VerticalOffset = -collider.transform.position.z.ToFP(),
-          Height         = collider.Height * scale.z.ToFP(),
+          Height         = collider.Height * Mathf.Abs(scale.z).ToFP(),
 #else
           VerticalOffset = collider.transform.position.y.ToFP(),
-          Height         = collider.Height * scale.y.ToFP(),
+          Height         = collider.Height * Mathf.Abs(scale.y).ToFP(),
 #endif
           PhysicsMaterial = collider.Settings.PhysicsMaterial,
           StaticData      = GetStaticData(collider.gameObject, collider.Settings, staticCollider2DList.Count),
@@ -19292,7 +19557,7 @@ namespace Quantum {
 
           // circle
           ShapeType    = Shape2DType.Circle,
-          CircleRadius = collider.Radius * FPMath.Max(scale2D.X, scale2D.Y),
+          CircleRadius = collider.Radius * FPMath.Max(FPMath.Abs(scale2D.X), FPMath.Abs(scale2D.Y)),
         });
 
         data.StaticCollider2DReferences.Add(collider);
@@ -19303,23 +19568,37 @@ namespace Quantum {
         collider.BeforeBake();
 
         var scale = collider.transform.lossyScale;
-        
+        var scale2D = scale.ToFPVector2();
+        var directionRotation = FP._0;
+
+        var capsuleSize = collider.Size;
+        if(collider.Direction == CapsuleDirection2D.Horizontal) {
+          directionRotation = FP.Rad_90;
+          capsuleSize.Y = collider.Size.X;
+          capsuleSize.X = collider.Size.Y;
+
+          var tempY = scale2D.Y;
+          scale2D.Y = scale2D.X;
+          scale2D.X = tempY;
+        }
 
         staticCollider2DList.Add(new MapStaticCollider2D {
           Position        = collider.transform.TransformPoint(collider.PositionOffset.ToUnityVector2()).ToFPVector2(),
-          Rotation        = collider.transform.rotation.ToFPRotation2D() + collider.RotationOffset.FlipRotation() * FP.Deg2Rad,
+          Rotation        = collider.transform.rotation.ToFPRotation2D() + directionRotation + collider.RotationOffset.FlipRotation() * FP.Deg2Rad,
+#if QUANTUM_XY
+          VerticalOffset = -collider.transform.position.z.ToFP(),
+          Height         = collider.Height * Math.Abs(scale.z).ToFP(),
+#else
+          VerticalOffset = collider.transform.position.y.ToFP(),
+          Height         = collider.Height * Math.Abs(scale.y).ToFP(),
+#endif
 
           PhysicsMaterial = collider.Settings.PhysicsMaterial,
           StaticData      = GetStaticData(collider.gameObject, collider.Settings, staticCollider2DList.Count),
 
           // capsule
           ShapeType    = Shape2DType.Capsule,
-#if QUANTUM_XY
-          CapsuleSize  = new FPVector2(FP.FromFloat_UNSAFE(collider.Size.X.AsFloat * scale.x),FP.FromFloat_UNSAFE(collider.Size.Y.AsFloat * scale.y))
-#else
-          CapsuleSize  = new FPVector2(FP.FromFloat_UNSAFE(collider.Size.X.AsFloat * scale.x),FP.FromFloat_UNSAFE(collider.Size.Y.AsFloat * scale.z))
-#endif
-
+          CapsuleSize  = new FPVector2(capsuleSize.X * FPMath.Abs(scale2D.X), capsuleSize.Y * FPMath.Abs(scale2D.Y))
         });
 
         data.StaticCollider2DReferences.Add(collider);
@@ -19339,7 +19618,7 @@ namespace Quantum {
           continue;
         }
 
-        var s = c.transform.localScale;
+        var s = c.transform.lossyScale;
         var vertices = c.Vertices.Select(x => {
           var v = x.ToUnityVector3();
           return new Vector3(v.x * s.x, v.y * s.y, v.z * s.z);
@@ -19358,10 +19637,10 @@ namespace Quantum {
           Rotation = rotation,
 #if QUANTUM_XY
           VerticalOffset = -c.transform.position.z.ToFP(),
-          Height         = c.Height * s.z.ToFP(),
+          Height         = c.Height * Mathf.Abs(s.z).ToFP(),
 #else
           VerticalOffset = c.transform.position.y.ToFP(),
-          Height         = c.Height * s.y.ToFP(),
+          Height         = c.Height * Mathf.Abs(s.y).ToFP(),
 #endif
           PhysicsMaterial = c.Settings.PhysicsMaterial,
           StaticData      = GetStaticData(c.gameObject, c.Settings, staticCollider2DList.Count),
@@ -19393,19 +19672,19 @@ namespace Quantum {
         var e = collider.Size.ToUnityVector3();
         var s = collider.transform.lossyScale;
 
-        e.x *= s.x;
-        e.y *= s.y;
-        e.z *= s.z;
+        e.x *= Mathf.Abs(s.x);
+        e.y *= Mathf.Abs(s.y);
+        e.z *= Mathf.Abs(s.z);
 
         staticCollider2DList.Add(new MapStaticCollider2D {
           Position = collider.transform.TransformPoint(collider.PositionOffset.ToUnityVector3()).ToFPVector2(),
           Rotation = collider.transform.rotation.ToFPRotation2D() + collider.RotationOffset.FlipRotation() * FP.Deg2Rad,
 #if QUANTUM_XY
           VerticalOffset = -collider.transform.position.z.ToFP(),
-          Height         = collider.Height * s.z.ToFP(),
+          Height         = collider.Height * Mathf.Abs(s.z).ToFP(),
 #else
           VerticalOffset = collider.transform.position.y.ToFP(),
-          Height         = collider.Height * s.y.ToFP(),
+          Height         = collider.Height * Mathf.Abs(s.y).ToFP(),
 #endif
           PhysicsMaterial = collider.Settings.PhysicsMaterial,
           StaticData      = GetStaticData(collider.gameObject, collider.Settings, staticCollider2DList.Count),
@@ -19419,7 +19698,7 @@ namespace Quantum {
         data.StaticCollider2DReferences.Add(collider);
       }
 
-      data.Asset.StaticColliders2D = staticCollider2DList.ToArray();
+      asset.StaticColliders2D = staticCollider2DList.ToArray();
 #endif
 
       // 3D statics
@@ -19428,8 +19707,8 @@ namespace Quantum {
       var staticCollider3DList = new List<MapStaticCollider3D>();
 
       // clear on mono behaviour and assets
-      data.Asset.CollidersManagedTriangles = new SortedDictionary<int, MeshTriangleVerticesCcw>();
-      data.Asset.StaticColliders3D = Array.Empty<MapStaticCollider3D>();
+      asset.CollidersManagedTriangles = new SortedDictionary<int, MeshTriangleVerticesCcw>();
+      asset.StaticColliders3D = Array.Empty<MapStaticCollider3D>();
 
       // initialize collider references, add default null on offset 0
       data.StaticCollider3DReferences = new List<MonoBehaviour>();
@@ -19440,8 +19719,12 @@ namespace Quantum {
       foreach (var collider in FindLocalObjects<QuantumStaticSphereCollider3D>(scene)) {
         collider.BeforeBake();
 
-        var scale = collider.transform.lossyScale;
-        var radiusScale = Mathf.Max(Mathf.Max(scale.x, scale.y), scale.z);
+        var absScale = collider.transform.lossyScale;
+        absScale.x = Mathf.Abs(absScale.x);
+        absScale.y = Mathf.Abs(absScale.y);
+        absScale.z = Mathf.Abs(absScale.z);
+
+        var radiusScale = Mathf.Max(Mathf.Max(absScale.x, absScale.y), absScale.z);
 
         var rot = collider.transform.rotation.ToFPQuaternion();
         staticCollider3DList.Add(new MapStaticCollider3D {
@@ -19452,7 +19735,7 @@ namespace Quantum {
 
           // circle
           ShapeType    = Shape3DType.Sphere,
-          SphereRadius = FP.FromFloat_UNSAFE(collider.Radius.AsFloat * radiusScale)
+          SphereRadius = FPMath.Abs(FP.FromFloat_UNSAFE(collider.Radius.AsFloat * radiusScale))
         });
 
         data.StaticCollider3DReferences.Add(collider);
@@ -19462,14 +19745,36 @@ namespace Quantum {
       foreach (var collider in FindLocalObjects<QuantumStaticCapsuleCollider3D>(scene)) {
         collider.BeforeBake();
 
-        var scale = collider.transform.lossyScale;
-        float radiusScale = Mathf.Max(scale.x, scale.z);
-        float heightScale = scale.y;
+        var absScale = collider.transform.lossyScale;
+        absScale.x = Mathf.Abs(absScale.x);
+        absScale.y = Mathf.Abs(absScale.y);
+        absScale.z = Mathf.Abs(absScale.z);
+        float radiusScale = Mathf.Max(absScale.x, absScale.z);
+        float heightScale = absScale.y;
+        var axisRotation = Vector3.zero;
+
+        switch (collider.Direction) {
+          case CapsuleDirection3D.X: // X
+            axisRotation = new Vector3(0, 0, 90);
+            heightScale = absScale.x;
+            radiusScale = Mathf.Max(absScale.y, absScale.z);
+            break;
+          case CapsuleDirection3D.Y: // Y
+            axisRotation = new Vector3(0, 0, 0);
+            heightScale = absScale.y;
+            radiusScale = Mathf.Max(absScale.x, absScale.z);
+            break;
+          case CapsuleDirection3D.Z: // Z
+            axisRotation = new Vector3(90, 0, 0);
+            heightScale = absScale.z;
+            radiusScale = Mathf.Max(absScale.x, absScale.y);
+            break;
+        }
         
 
         staticCollider3DList.Add(new MapStaticCollider3D {
           Position        = collider.transform.TransformPoint(collider.PositionOffset.ToUnityVector3()).ToFPVector3(),
-          Rotation        = FPQuaternion.Euler(collider.transform.rotation.eulerAngles.ToFPVector3() + collider.RotationOffset),
+          Rotation        = FPQuaternion.Euler(axisRotation.ToFPVector3() + collider.transform.rotation.eulerAngles.ToFPVector3() + collider.RotationOffset),
 
           PhysicsMaterial = collider.Settings.PhysicsMaterial,
           StaticData      = GetStaticData(collider.gameObject, collider.Settings, staticCollider3DList.Count),
@@ -19488,11 +19793,14 @@ namespace Quantum {
         collider.BeforeBake();
 
         var e = collider.Size.ToUnityVector3();
-        var s = collider.transform.lossyScale;
+        var absScale = collider.transform.lossyScale;
+        absScale.x = Mathf.Abs(absScale.x);
+        absScale.y = Mathf.Abs(absScale.y);
+        absScale.z = Mathf.Abs(absScale.z);
 
-        e.x *= s.x;
-        e.y *= s.y;
-        e.z *= s.z;
+        e.x *= absScale.x;
+        e.y *= absScale.y;
+        e.z *= absScale.z;
 
         staticCollider3DList.Add(new MapStaticCollider3D {
           Position        = collider.transform.TransformPoint(collider.PositionOffset.ToUnityVector3()).ToFPVector3(),
@@ -19535,7 +19843,7 @@ namespace Quantum {
           data.StaticCollider3DReferences.Add(collider);
 
           // add to static collider data
-          data.Asset.CollidersManagedTriangles.Add(staticColliderIndex, collider.MeshTriangles);
+          asset.CollidersManagedTriangles.Add(staticColliderIndex, collider.MeshTriangles);
         }
       }
 
@@ -19572,14 +19880,14 @@ namespace Quantum {
         terrain.Asset.Bake(staticColliderIndex);
 
         // add to static collider data
-        data.Asset.CollidersManagedTriangles.Add(staticColliderIndex, terrain.Asset.MeshTriangles);
+        asset.CollidersManagedTriangles.Add(staticColliderIndex, terrain.Asset.MeshTriangles);
       }
 
       // this has to hold
       Assert.Check(staticCollider3DList.Count == data.StaticCollider3DReferences.Count);
 
       // assign collider 3d array
-      data.Asset.StaticColliders3D = staticCollider3DList.ToArray();
+      asset.StaticColliders3D = staticCollider3DList.ToArray();
 
       // clear this so it's not re-used by accident
       staticCollider3DList = null;
@@ -19587,13 +19895,13 @@ namespace Quantum {
       BakeMeshes(data, inEditor);
 
       if (inEditor) {
-        QuantumEditorLog.LogImport($"Baked {data.Asset.StaticColliders2D.Length} 2D static colliders");
-        QuantumEditorLog.LogImport($"Baked {data.Asset.StaticColliders3D.Length} 3D static primitive colliders");
-        QuantumEditorLog.LogImport($"Baked {data.Asset.CollidersManagedTriangles.Select(x => x.Value.Triangles.Length).Sum()} 3D static triangles");
+        QuantumEditorLog.LogImport($"Baked {asset.StaticColliders2D.Length} 2D static colliders");
+        QuantumEditorLog.LogImport($"Baked {asset.StaticColliders3D.Length} 3D static primitive colliders");
+        QuantumEditorLog.LogImport($"Baked {asset.CollidersManagedTriangles.Select(x => x.Value.Triangles.Length).Sum()} 3D static triangles");
       }
     }
 
-    public static void BakePrototypes(QuantumMapData data) {
+    public static void BakePrototypes(QuantumMapData data, bool inEditor) {
       var scene = data.gameObject.scene;
       Assert.Check(scene.IsValid(), "Scene is invalid");
 
@@ -19605,14 +19913,15 @@ namespace Quantum {
 
       var converter = new QuantumEntityPrototypeConverter(data, prototypes);
       var buffer    = new List<ComponentPrototype>();
-      
-      ref var mapEntities = ref data.Asset.MapEntities;
+
+      var asset = data.GetAsset(inEditor);
+      ref var mapEntities = ref asset.MapEntities;
       Array.Resize(ref mapEntities, prototypes.Length);
       Array.Clear(mapEntities, 0, mapEntities.Length);
       
 #if UNITY_EDITOR
       // this is needed to clear up managed references
-      using var so = new SerializedObject(data.Asset);
+      using var so = new SerializedObject(asset);
       so.Update();
 #endif
 
@@ -19635,7 +19944,7 @@ namespace Quantum {
         buffer.Clear();
         
 #if UNITY_EDITOR
-        UpdateManagedReferenceIds(data.Asset, prototype, mapEntities[i].Components);
+        UpdateManagedReferenceIds(asset, prototype, mapEntities[i].Components);
 #endif
       }
       
@@ -19771,10 +20080,10 @@ namespace Quantum {
 
 #if QUANTUM_ENABLE_AI && !QUANTUM_DISABLE_AI
 
-    static IEnumerable<Quantum.NavMesh> BakeNavMeshesLoop(QuantumMapData data) {
+    static IEnumerable<Quantum.NavMesh> BakeNavMeshesLoop(QuantumMapData data, Map asset) {
 
 #if UNITY_EDITOR
-      QuantumGameGizmos.InvalidateNavMeshGizmos();
+      QuantumGameGizmos.InvalidateGizmos();
 #endif
       
       var scene = data.gameObject.scene;
@@ -19847,7 +20156,7 @@ namespace Quantum {
             p = new NavMeshBakerBenchmarkerProgressBar($"Baking {bakeData.Name}");
           }
           
-          navmesh = NavMeshBaker.BakeNavMesh(data.Asset, bakeData, progressBar: p);
+          navmesh = NavMeshBaker.BakeNavMesh(asset, bakeData, progressBar: p);
           navmesh.SerializeType = data.NavMeshSerializeType;
           Log.Debug($"Baking Quantum NavMesh '{bakeData.Name}' complete ({i + 1}/{allBakeData.Count})");
         } catch (Exception exn) {
@@ -20742,7 +21051,7 @@ namespace Quantum {
               continue;
             }
 
-            var regionId = string.Empty;
+            var regionId = "MainArea";
             switch (settings.ImportRegionMode) {
               case NavmeshRegionImportMode.Simple:
                 if (unityNavmeshAreaMap.TryGetValue(links[l].Area, out var areaName)) {
@@ -20751,7 +21060,9 @@ namespace Quantum {
                 break;
               case NavmeshRegionImportMode.Advanced:
                 var navMeshRegion = links[l].Object.GetComponent<QuantumNavMeshRegion>();
-                regionId = navMeshRegion != null && string.IsNullOrEmpty(navMeshRegion.Id) == false ? navMeshRegion.Id : string.Empty;
+                if (navMeshRegion != null && string.IsNullOrEmpty(navMeshRegion.Id) == false) {
+                  regionId = navMeshRegion.Id;
+                }
                 break;
             }
 
@@ -22693,7 +23004,11 @@ namespace Quantum {
       Native.Utils = new QuantumUnityNativeUtility();
 
       // load lookup table
+#if QUANTUM_ENABLE_ASYNC_LUT_LOADING
+      _ = FPMathUtils.LoadLookupTablesAsync(true);
+#else 
       FPMathUtils.LoadLookupTables(force);
+#endif
 
       // set runner factory and init Realtime.Async
       DefaultFactory = new QuantumRunnerUnityFactory();
@@ -22701,10 +23016,10 @@ namespace Quantum {
 #if ENABLE_PROFILER
       HostProfiler.Init(new QuantumUnityHostProfiler());
 #endif
-      
+
       // init debug draw functions
 #if QUANTUM_DRAW_SHAPES || UNITY_EDITOR
-      Draw.Init(DebugDraw.Ray, DebugDraw.Line, DebugDraw.Circle, DebugDraw.Sphere, DebugDraw.Rectangle, DebugDraw.Box, DebugDraw.Capsule, DebugDraw.Clear);
+      Draw.Init(DebugDraw.Ray, DebugDraw.Line, DebugDraw.Circle, DebugDraw.Sphere, DebugDraw.Rectangle, DebugDraw.Box, DebugDraw.Capsule, DebugDraw.Text, DebugDraw.Clear);
 #endif
     }
   }
@@ -23353,10 +23668,6 @@ namespace Quantum {
     public int SizeOf(Type type) {
       return UnsafeUtility.SizeOf(type);
     }
-
-    public bool CanResolveEnumSize {
-      get { return true; }
-    }
   }
 }
 
@@ -23569,13 +23880,6 @@ namespace Quantum {
     public bool IsGlobal { get; private set; }
     
     /// <summary>
-    /// Try get or load the global instance.
-    /// </summary>
-    /// <param name="global">Resulting global instance</param>
-    /// <returns>True if the global instance was found</returns>
-    public static bool TryGetGlobal(out T global) => TryGetGlobalInternal(out global);
-    
-    /// <summary>
     /// Invoked when the instance is loaded as global.
     /// </summary>
     protected virtual void OnLoadedAsGlobal() {
@@ -23666,6 +23970,22 @@ namespace Quantum {
     }
 
     /// <summary>
+    /// Loads or returns the current global instance asynchronously. Returns <see langword="null"/> if loading an instance failed.
+    /// </summary>
+    /// <returns></returns>
+    protected static async System.Threading.Tasks.Task<T> GetGlobalAsyncInternal() {
+      var instance = await GetOrLoadGlobalInstanceAsync();
+      
+      if (ReferenceEquals(instance, null)) {
+        throw new InvalidOperationException($"Failed to load {typeof(T).Name}. If this happens in edit mode, make sure Quantum is properly installed in the Quantum HUB. " +
+          $"Otherwise, if the default path does not exist or does not point to a Resource, you need to use " +
+          $"{nameof(QuantumGlobalScriptableObjectAttribute)} attribute to point to a method that will perform the loading.");
+      }
+
+      return instance;
+    }
+
+    /// <summary>
     /// Unloads the global instance if it is loaded.
     /// </summary>
     /// <returns><see langword="true"/> if an instance was unloaded</returns>
@@ -23704,20 +24024,6 @@ namespace Quantum {
         return s_instance;
       }
       
-      T instance = null;
-      QuantumGlobalScriptableObjectUnloadDelegate unloadHandler = null;
-      
-      instance = LoadPlayerInstance(out unloadHandler);
-
-      if (instance) {
-        SetGlobalInternal(instance, unloadHandler);
-      }
-      
-      return instance;
-    }
-    
-    private static T LoadPlayerInstance(out QuantumGlobalScriptableObjectUnloadDelegate unloadHandler) {
-      
       foreach (var sourceAttribute in SourceAttributes) {
         if (Application.isEditor) {
           if (!Application.isPlaying && !sourceAttribute.AllowEditMode) {
@@ -23730,10 +24036,19 @@ namespace Quantum {
         }
         
         var result = sourceAttribute.Load(typeof(T));
+        
+        if (s_instance) {
+          LogTrace?.Log($"Something has loaded the instance of {typeof(T).FullName} while sync load was happening. Unloading the newly loaded instance and returning the actual global.");
+          if (result.Object) {
+            result.Unloader?.Invoke(result.Object);
+          }
+          return s_instance;
+        }
+        
         if (result.Object) {
           var instance = (T)result.Object;
-          unloadHandler = result.Unloader;
-          LogTrace?.Log($"{LogPrefix} Loader {sourceAttribute} was used to load {AsId(instance)}, has unloader: {unloadHandler != null}");
+          LogTrace?.Log($"{LogPrefix} Loader {sourceAttribute} was used to load {AsId(instance)}, has unloader: {result.Unloader != null}");
+          SetGlobalInternal(instance, result.Unloader);
           return instance;
         }
 
@@ -23744,8 +24059,58 @@ namespace Quantum {
       }
 
       LogTrace?.Log($"{LogPrefix} No source attribute was able to load the global instance");
-      unloadHandler = default;
-      return default;
+      return null;
+    }
+
+    private static async System.Threading.Tasks.Task<T> GetOrLoadGlobalInstanceAsync() {
+      if (s_instance) {
+        return s_instance;
+      }
+      
+      foreach (var sourceAttribute in SourceAttributes) {
+        if (Application.isEditor) {
+          if (!Application.isPlaying && !sourceAttribute.AllowEditMode) {
+            continue;
+          }
+        }
+
+        if (sourceAttribute.ObjectType != typeof(T) && !typeof(T).IsSubclassOf(sourceAttribute.ObjectType)) {
+          continue;
+        }
+        
+        var task = sourceAttribute.LoadAsync(typeof(T));
+        if (task == null) {
+          if (!sourceAttribute.AllowFallback) {
+            break;
+          }
+          continue;
+        }
+
+        var result = await task;
+        
+        if (s_instance) {
+          LogWarn?.Log($"Something has loaded the instance of {typeof(T).FullName} while async load was happening. Unloading the newly loaded instance and returning the actual global.");
+          if (result.Object) {
+            result.Unloader?.Invoke(result.Object);
+          }
+          return s_instance;
+        }
+        
+        if (result.Object) {
+          var instance = (T)result.Object;
+          LogTrace?.Log($"{LogPrefix} Loader {sourceAttribute} was used to load async {AsId(instance)}, has unloader: {result.Unloader != null}");
+          SetGlobalInternal(instance, result.Unloader);
+          return instance;
+        }
+        
+        if (!sourceAttribute.AllowFallback) {
+          // no fallback allowed
+          break;
+        }
+      }
+
+      LogTrace?.Log($"{LogPrefix} No source attribute was able to load the global instance");
+      return null;
     }
     
     private static void SetGlobalInternal(T value, QuantumGlobalScriptableObjectUnloadDelegate unloadHandler) {
@@ -23853,6 +24218,15 @@ namespace Quantum {
     /// </summary>
     /// <param name="type">The requested type</param>
     public abstract QuantumGlobalScriptableObjectLoadResult Load(Type type);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="type"></param>
+    /// <returns></returns>
+    public virtual System.Threading.Tasks.Task<QuantumGlobalScriptableObjectLoadResult> LoadAsync(Type type) {
+      return null;
+    }
   }
   
   [Obsolete("Use one of QuantumGlobalScriptableObjectSourceAttribute-derived types instead", true)]
@@ -25052,6 +25426,169 @@ namespace Quantum {
 #endregion
 
 
+#region QuantumUnitySceneManagerUtils.cs
+
+namespace Quantum {
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Text;
+  using System.Threading.Tasks;
+  using UnityEditor;
+  using UnityEngine;
+  using UnityEngine.SceneManagement;
+
+  /// <summary>
+  /// Exension and utility methods for <see cref="SceneManager"/> and <see cref="Scene"/> types.
+  /// </summary>
+  static partial class QuantumUnitySceneManagerUtils {
+
+    /// <summary>
+    /// A comparer that can be used when scenes need to be comparable, like when being as keys in a dictionary.
+    /// </summary>
+    public class SceneEqualityComparer : IEqualityComparer<Scene> {
+      /// <summary>
+      /// Compares scenes by their <see cref="Scene.handle"/>
+      /// </summary>
+      public bool Equals(Scene x, Scene y) {
+        return x.handle == y.handle;
+      }
+
+      
+      /// <summary>
+      /// Returns <see cref="Scene.handle"/>
+      /// </summary>
+      public int GetHashCode(Scene obj) {
+        return obj.handle;
+      }
+    }
+
+    /// <summary>
+    /// Returns true if <paramref name="scene"/> is in the build settings. Note that just checking <see cref="Scene.buildIndex"/> is not enough.
+    /// </summary>
+    public static bool IsAddedToBuildSettings(this Scene scene) {
+      if (scene.buildIndex < 0) {
+        return false;
+      }
+      // yep that's a thing: https://docs.unity3d.com/ScriptReference/SceneManagement.Scene-buildIndex.html
+      if (scene.buildIndex >= SceneManager.sceneCountInBuildSettings) {
+        return false;
+      }
+      return true;
+    }
+
+#if UNITY_EDITOR
+    /// <summary>
+    /// Editor-only. Adds scene to the build settings.
+    /// </summary>
+    /// <returns>False if the scene is already added</returns>
+    public static bool AddToBuildSettings(Scene scene) {
+      if (IsAddedToBuildSettings(scene)) {
+        return false;
+      }
+
+      EditorBuildSettings.scenes =
+        new[] { new EditorBuildSettingsScene(scene.path, true) }
+        .Concat(EditorBuildSettings.scenes)
+        .ToArray();
+
+      QuantumEditorLog.Log($"Added '{scene.path}' as first entry in Build Settings.");
+      return true;
+    }
+#endif
+    
+    /// <summary>
+    /// Returns true if <paramref name="scene"/> can be unloaded.
+    /// </summary>
+    /// <param name="scene"></param>
+    /// <returns></returns>
+    public static bool CanBeUnloaded(this Scene scene) {
+      if (!scene.isLoaded) {
+        return false;
+      }
+      
+      for (int i = 0; i < SceneManager.sceneCount; ++i) {
+        var s = SceneManager.GetSceneAt(i);
+        if (s != scene && s.isLoaded) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    /// <summary>
+    /// Converts <paramref name="scene"/> into string, dumping all its fields and properties.
+    /// </summary>
+    public static string Dump(this Scene scene) {
+      StringBuilder result = new StringBuilder();
+
+      result.Append("[UnityScene:");
+      
+      if (scene.IsValid()) {
+        result.Append(scene.name);
+        result.Append(", isLoaded:").Append(scene.isLoaded);
+        result.Append(", buildIndex:").Append(scene.buildIndex);
+        result.Append(", isDirty:").Append(scene.isDirty);
+        result.Append(", path:").Append(scene.path);
+        result.Append(", rootCount:").Append(scene.rootCount);
+        result.Append(", isSubScene:").Append(scene.isSubScene);
+      } else {
+        result.Append("<Invalid>");
+      }
+
+      result.Append(", handle:").Append(scene.handle);
+      result.Append("]");
+      return result.ToString();
+    }
+
+    /// <summary>
+    /// Converts <paramref name="loadSceneParameters"/> to string.
+    /// </summary>
+    public static string Dump(this LoadSceneParameters loadSceneParameters) {
+      return $"[LoadSceneParameters: {loadSceneParameters.loadSceneMode}, localPhysicsMode:{loadSceneParameters.localPhysicsMode}]";
+    }
+    
+    /// <summary>
+    /// Gets scene's build index based on its name or path.
+    /// </summary>
+    public static int GetSceneBuildIndex(string nameOrPath) {
+      if (nameOrPath.IndexOf('/', StringComparison.Ordinal) >= 0) {
+        return SceneUtility.GetBuildIndexByScenePath(nameOrPath);
+      } else {
+        for (int i = 0; i < SceneManager.sceneCountInBuildSettings; ++i) {
+          var scenePath = SceneUtility.GetScenePathByBuildIndex(i);
+          var sceneName = GetFileNameWithoutExtension(scenePath);
+          if (sceneName.Equals(nameOrPath, StringComparison.OrdinalIgnoreCase)) {
+            return i;
+          }
+        }
+
+        return -1;
+      }
+    }
+
+    internal static ReadOnlySpan<char> GetFileNameWithoutExtension(ReadOnlySpan<char> nameOrPath) {
+      var lastSlash = nameOrPath.LastIndexOf('/');
+      int index = 0;
+      if (lastSlash >= 0) {
+        index = lastSlash + 1;
+      } else {
+        index = 0;
+      }
+
+      var lastDot = nameOrPath.LastIndexOf('.');
+      if (lastDot >= index) {
+        return nameOrPath.Slice(index, lastDot - index);
+      } else {
+        return nameOrPath.Slice(index);
+      }
+    }
+  }
+}
+
+#endregion
+
+
 
 #endregion
 
@@ -25196,6 +25733,19 @@ namespace Quantum {
     /// </summary>
     [StaticField] public static bool IsEnabled = true;
 
+    /// <summary>
+    /// The cutoff distance for rendering text.
+    /// </summary>
+    [StaticField] public static float TextDrawDistance = 1000;
+
+    /// <summary>
+    /// The style of the text in Draw.Text
+    /// </summary>
+    public static GUIStyle TextStyle {
+      get => _textStyle;
+      set => _textStyle = value;
+    }
+
     [StaticField] static Queue<Draw.DebugRay> _rays = new Queue<Draw.DebugRay>();
     [StaticField] static Queue<Draw.DebugLine> _lines = new Queue<Draw.DebugLine>();
     [StaticField] static Queue<Draw.DebugCircle> _circles = new Queue<Draw.DebugCircle>();
@@ -25203,7 +25753,8 @@ namespace Quantum {
     [StaticField] static Queue<Draw.DebugRectangle> _rectangles = new Queue<Draw.DebugRectangle>();
     [StaticField] static Queue<Draw.DebugBox> _boxes = new Queue<Draw.DebugBox>();
     [StaticField] static Queue<Draw.DebugCapsule> _capsules = new Queue<Draw.DebugCapsule>();
-    [StaticField] static Dictionary<ColorRGBA, Material> _materials = new Dictionary<ColorRGBA, Material>(ColorRGBA.EqualityComparer.Instance);
+    [StaticField] static Queue<Draw.DebugText> _texts = new Queue<Draw.DebugText>();
+    [StaticField] static Dictionary<DebugMaterial, Material> _materials = new Dictionary<DebugMaterial, Material>(DebugMaterial.Comparer);
     [StaticField] static Draw.DebugRay[] _raysArray = new Draw.DebugRay[64];
     [StaticField] static Draw.DebugLine[] _linesArray = new Draw.DebugLine[64];
     [StaticField] static Draw.DebugCircle[] _circlesArray = new Draw.DebugCircle[64];
@@ -25211,6 +25762,7 @@ namespace Quantum {
     [StaticField] static Draw.DebugRectangle[] _rectanglesArray = new Draw.DebugRectangle[64];
     [StaticField] static Draw.DebugBox[] _boxesArray = new Draw.DebugBox[64];
     [StaticField] static Draw.DebugCapsule[] _capsuleArray = new Draw.DebugCapsule[64];
+    [StaticField] static Draw.DebugText[] _textsArray = new Draw.DebugText[64];
     [StaticField] static int _raysCount;
     [StaticField] static int _linesCount;
     [StaticField] static int _circlesCount;
@@ -25218,9 +25770,16 @@ namespace Quantum {
     [StaticField] static int _rectanglesCount;
     [StaticField] static int _boxesCount;
     [StaticField] static int _capsuleCount;
+    [StaticField] static int _textsCount;
     [StaticField] static Vector3[] _circlePoints;
+    [StaticField] private static readonly GUIContent _guiContent = new GUIContent();
+    [StaticField] private static GUIStyle _textStyle = new GUIStyle { normal = new GUIStyleState { } };
+    [StaticField] private static readonly GUIStyle _bgStyle = new GUIStyle { normal = new GUIStyleState { background = Texture2D.whiteTexture } };
 
-    const int CircleResolution = 64;
+    private static readonly int ColorProperty = Shader.PropertyToID("_Color");
+    private static readonly int UseShadingProperty = Shader.PropertyToID("_UseShading");
+
+    const int CircleResolution = 32;
 
     static Vector3[] CirclePoints {
       get {
@@ -25231,6 +25790,7 @@ namespace Quantum {
             _circlePoints[i] = new Vector3(Mathf.Cos(theta), 0.0f, Mathf.Sin(theta));
           }
         }
+
         return _circlePoints;
       }
     }
@@ -25246,6 +25806,20 @@ namespace Quantum {
 
       lock (_rays) {
         _rays.Enqueue(ray);
+      }
+    }
+
+    /// <summary>
+    /// The action to call on Draw.Text.
+    /// </summary>
+    /// <param name="text">The text information to draw in the view.</param>
+    public static void Text(Draw.DebugText text) {
+      if (IsEnabled == false) {
+        return;
+      }
+
+      lock (_texts) {
+        _texts.Enqueue(text);
       }
     }
 
@@ -25338,20 +25912,25 @@ namespace Quantum {
     /// Will set the main color on the material.
     /// </summary>
     /// <param name="color">Color</param>
+    /// <param name="shaded">If the material should be shaded</param>
     /// <returns>Material</returns>
-    public static Material GetMaterial(ColorRGBA color) {
-      if (_materials.TryGetValue(color, out var mat)) {
+    public static Material GetMaterial(ColorRGBA color, bool shaded = false) {
+      var key = new DebugMaterial { Color = color, UseShading = shaded };
+
+      if (_materials.TryGetValue(key, out var mat)) {
         if (mat != null) {
           return mat;
         }
 
-        _materials.Remove(color);
+        _materials.Remove(key);
       }
 
       mat = new Material(QuantumMeshCollection.Global.DebugMaterial);
-      mat.SetColor("_Color", color.AsColor);
+      mat.SetColor(ColorProperty, color.AsColor);
+      mat.SetFloat(UseShadingProperty, shaded ? 1f : 0f);
 
-      _materials.Add(color, mat);
+      _materials.Add(key, mat);
+
       return mat;
     }
 
@@ -25367,7 +25946,9 @@ namespace Quantum {
       TakeAllFromQueueAndClearLocked(_rectangles, ref _rectanglesArray);
       TakeAllFromQueueAndClearLocked(_boxes, ref _boxesArray);
       TakeAllFromQueueAndClearLocked(_capsules, ref _capsuleArray);
+      TakeAllFromQueueAndClearLocked(_texts, ref _textsArray);
 
+      _textsCount = 0;
       _raysCount = 0;
       _linesCount = 0;
       _circlesCount = 0;
@@ -25388,6 +25969,7 @@ namespace Quantum {
       _rectanglesCount = TakeAllFromQueueAndClearLocked(_rectangles, ref _rectanglesArray);
       _boxesCount = TakeAllFromQueueAndClearLocked(_boxes, ref _boxesArray);
       _capsuleCount = TakeAllFromQueueAndClearLocked(_capsules, ref _capsuleArray);
+      _textsCount = TakeAllFromQueueAndClearLocked(_texts, ref _textsArray);
     }
 
     /// <summary>
@@ -25397,11 +25979,85 @@ namespace Quantum {
     public static void DrawAll() {
     }
 
+    internal static void OnGUI() {
+#if !UNITY_EDITOR && QUANTUM_DRAW_SHAPES
+      if (IsEnabled == false) {
+        return;
+      }
+
+      if (Camera.current != null) {
+        for (Int32 i = 0; i < _textsCount; ++i) {
+          DrawText(_textsArray[i]);
+        }
+      }
+#endif
+    }
+
+    private static void DrawText(Draw.DebugText debugText) {
+      var text = debugText.Text;
+      var backColor = debugText.BackgroundColor.AsColor;
+      var textColor = debugText.Color.AsColor;
+      var restoreTextColor = GUI.color;
+      var restoreBackColor = GUI.backgroundColor;
+
+      GUI.backgroundColor = backColor;
+
+      var camera = Camera.current;
+
+      if (camera == null) {
+        return;
+      }
+
+      var worldPos = debugText.Position.ToUnityVector3(true);
+
+      Vector3 viewPos = camera.WorldToViewportPoint(worldPos);
+      var viewVector = new Vector2(viewPos.x, 1 - viewPos.y);
+      var screenPos = new Vector2(viewVector.x * camera.pixelWidth, viewVector.y * camera.pixelHeight);
+
+      if (viewPos.z < 0) {
+        GUI.color = restoreTextColor;
+        return;
+      }
+
+      var distToCamera = Vector3.Distance(worldPos, camera.transform.position);
+
+      _guiContent.text = text;
+      _textStyle.normal.textColor = textColor;
+
+      var fontSize = debugText.Size;
+
+      if (debugText.DrawScaling == Draw.DebugText.Scaling.World) {
+        float normalizedDist = Mathf.Clamp01(distToCamera / TextDrawDistance);
+
+        float nonLinearScale = Mathf.Exp(-4f * normalizedDist);
+
+        float minScale = 0.05f;
+        float finalScale = Mathf.Max(minScale, nonLinearScale);
+
+        fontSize = Mathf.Max(1, Mathf.RoundToInt(fontSize * finalScale));
+      }
+
+      _textStyle.fontSize = fontSize;
+
+      Vector2 size = _textStyle.CalcSize(_guiContent);
+
+      var x = screenPos.x - (size.x / 2);
+
+      var r = new Rect(x, screenPos.y, size.x, size.y);
+
+      if (debugText.BackgroundColor.A > 0) {
+        GUI.Box(r, string.Empty, _bgStyle);
+      }
+
+      GUI.Label(r, _guiContent, _textStyle);
+
+      GUI.backgroundColor = restoreBackColor;
+    }
+
     /// <summary>
     /// Must be called from Unity callback OnPostRenderInternal to draw all debug shapes on top of everything else.
     /// </summary>
-    /// <param name="camera">The scene camera</param>
-    public static void OnPostRender(Camera camera) {
+    public static void OnPostRender() {
       if (IsEnabled == false) {
         return;
       }
@@ -25433,6 +26089,16 @@ namespace Quantum {
       for (Int32 i = 0; i < _capsuleCount; ++i) {
         DrawCapsule(_capsuleArray[i]);
       }
+
+#if UNITY_EDITOR
+      UnityEditor.Handles.BeginGUI();
+
+      for (Int32 i = 0; i < _textsCount; ++i) {
+        DrawText(_textsArray[i]);
+      }
+
+      UnityEditor.Handles.EndGUI();
+#endif
     }
 
     static void DrawRay(Draw.DebugRay ray) {
@@ -25456,11 +26122,36 @@ namespace Quantum {
     }
 
     static void DrawSphere(Draw.DebugSphere sphere) {
-      Matrix4x4 mat = Matrix4x4.TRS(sphere.Center.ToUnityVector3(true), Quaternion.identity, Vector3.one * (sphere.Radius.AsFloat + sphere.Radius.AsFloat));
-      GetMaterial(sphere.Color).SetPass(0);
-      GL.wireframe = sphere.Wire;
-      Graphics.DrawMeshNow(QuantumMeshCollection.Global.Sphere, mat);
-      GL.wireframe = false;
+      var radius = sphere.Radius.AsFloat;
+      var pos = sphere.Center.ToUnityVector3(true);
+
+      // wireframe, draw circles that intersect at their poles
+      if (sphere.Wire) {
+        GetMaterial(sphere.Color).SetPass(0);
+
+        GL.PushMatrix();
+        // XZ
+        var m = Matrix4x4.TRS(pos, Quaternion.identity, Vector3.one);
+        GL.MultMatrix(m);
+        Draw2DCircle(Vector3.zero, radius);
+
+        // XY
+        m = Matrix4x4.TRS(pos, Quaternion.Euler(90, 0, 0), Vector3.one);
+        GL.MultMatrix(m);
+        Draw2DCircle(Vector3.zero, radius);
+
+        // YZ
+        m = Matrix4x4.TRS(pos, Quaternion.Euler(0, 0, 90), Vector3.one);
+        GL.MultMatrix(m);
+        Draw2DCircle(Vector3.zero, radius);
+
+        GL.PopMatrix();
+      } else {
+        GetMaterial(sphere.Color, true).SetPass(0);
+
+        var m = Matrix4x4.TRS(pos, Quaternion.identity, Vector3.one * (radius + radius));
+        Graphics.DrawMeshNow(QuantumMeshCollection.Global.Sphere, m);
+      }
     }
 
     static void DrawCircle(Draw.DebugCircle circle) {
@@ -25480,6 +26171,7 @@ namespace Quantum {
         for (int i = 0; i < CirclePoints.Length; i++) {
           GL.Vertex3(CirclePoints[i].x * circle.Radius.AsFloat, 0.0f, CirclePoints[i].z * circle.Radius.AsFloat);
         }
+
         GL.Vertex3(CirclePoints[0].x * circle.Radius.AsFloat, 0.0f, CirclePoints[0].z * circle.Radius.AsFloat);
 #endif
         GL.End();
@@ -25543,11 +26235,11 @@ namespace Quantum {
     }
 
     static void DrawCube(Draw.DebugBox cube) {
-      GetMaterial(cube.Color).SetPass(0);
-
       var m = Matrix4x4.TRS(cube.Center.ToUnityVector3(true), cube.Rotation.ToUnityQuaternion(true), cube.Size.ToUnityVector3(true));
 
       if (cube.Wire) {
+        GetMaterial(cube.Color).SetPass(0);
+
         GL.PushMatrix();
         GL.MultMatrix(m);
         GL.Begin(GL.LINE_STRIP);
@@ -25576,14 +26268,16 @@ namespace Quantum {
         GL.PopMatrix();
       } else {
         // TODO: QUADS would also work
+        GetMaterial(cube.Color, true).SetPass(0);
+
         Graphics.DrawMeshNow(QuantumMeshCollection.Global.Cube, m);
       }
     }
 
     static void DrawCapsule(Draw.DebugCapsule capsule) {
-      GetMaterial(capsule.Color).SetPass(0);
-
       if (capsule.Is2D) {
+        GetMaterial(capsule.Color).SetPass(0);
+        
         var m = Matrix4x4.TRS(capsule.Center.ToUnityVector3(true), capsule.Rotation.ToUnityQuaternion(true), Vector3.one);
 
         // TODO: solid capsule shape, should probably be done with a texture
@@ -25630,6 +26324,8 @@ namespace Quantum {
         GL.PopMatrix();
       } else {
         if (capsule.Wire) {
+          GetMaterial(capsule.Color).SetPass(0);
+          
           GL.PushMatrix();
 
 #if QUANTUM_XY
@@ -25665,6 +26361,8 @@ namespace Quantum {
 
           GL.PopMatrix();
         } else {
+          GetMaterial(capsule.Color, true).SetPass(0);
+          
           var height = capsule.Height.AsFloat / 2.0f;
           var diameter = capsule.Diameter.AsFloat;
           var m = Matrix4x4.TRS(capsule.Center.ToUnityVector3(true), capsule.Rotation.ToUnityQuaternion(true), (Vector3.up * height) + (Vector3.right + Vector3.forward) * diameter);
@@ -25761,6 +26459,40 @@ namespace Quantum {
         }
 
         return count;
+      }
+    }
+
+    struct DebugMaterial : IEquatable<DebugMaterial> {
+      private sealed class ColorUseShadingEqualityComparer : IEqualityComparer<DebugMaterial> {
+        Boolean IEqualityComparer<DebugMaterial>.Equals(DebugMaterial x, DebugMaterial y) {
+          return x.Equals(y);
+        }
+
+        Int32 IEqualityComparer<DebugMaterial>.GetHashCode(DebugMaterial x) {
+          return x.GetHashCode();
+        }
+      }
+
+      [StaticField(StaticFieldResetMode.None)]
+      public static readonly IEqualityComparer<DebugMaterial> Comparer = new ColorUseShadingEqualityComparer();
+
+      public ColorRGBA Color;
+      public bool UseShading;
+
+      public override Boolean Equals(object obj) {
+        if (obj is DebugMaterial) {
+          return Equals((DebugMaterial)obj);
+        }
+
+        return false;
+      }
+      
+      public Boolean Equals(DebugMaterial other) {
+        return this.UseShading == other.UseShading && other.Color.Equals(this.Color);
+      }
+
+      public override int GetHashCode() {
+        return HashCode.Combine(Color, UseShading);
       }
     }
   }
@@ -26038,27 +26770,47 @@ namespace Quantum {
   /// </summary>
   public static class FPMathUtils {
     /// <summary>
-    /// Load the lookup tables from the resources folders.
+    /// Load the lookup tables. By default, loaded from Resources.
     /// </summary>
     /// <param name="force">Will reload the table if set to true</param>
     public static void LoadLookupTables(Boolean force = false) {
       if (FPLut.IsLoaded && force == false) {
         return;
       }
-
-      FPLut.Init(file => {
-#if UNITY_EDITOR
-        if (!Application.isPlaying) {
-          var path = "Assets/Photon/Quantum/Resources/LUT/" + file + ".bytes";
-          var textAsset = UnityEditor.AssetDatabase.LoadAssetAtPath<TextAsset>(path);
-          if (textAsset) {
-            return textAsset.bytes;
-          }
-        }
-#endif
-        return UnityEngine.Resources.Load<TextAsset>("LUT/" + file).bytes;
-      });
+      
+      if (!QuantumLookupTables.TryGetGlobal(out var global)) {
+        Log.Error($"Failed to load {nameof(QuantumLookupTables)}");
+        return;
+      }
+      
+      FPLut.Init(
+        sinCos: global.TableSinCos?.bytes,
+        tan: global.TableTan?.bytes,
+        asin: global.TableAsin?.bytes,
+        acos: global.TableAcos?.bytes,
+        atan: global.TableAtan?.bytes,
+        sqrt: global.TableSqrt?.bytes);
     }
+
+    /// <summary>
+    /// Load the lookup tables asynchronously. By default, loaded from Resources.
+    /// </summary>
+    /// <param name="force">Will reload the table if set to true</param>
+    public static async System.Threading.Tasks.Task LoadLookupTablesAsync(bool force = false) {
+      if (FPLut.IsLoaded && force == false) {
+        return;
+      }
+      
+      var global = await QuantumLookupTables.GetGlobalAsync();
+      
+      FPLut.Init(
+        sinCos: global.TableSinCos?.bytes,
+        tan: global.TableTan?.bytes,
+        asin: global.TableAsin?.bytes,
+        acos: global.TableAcos?.bytes,
+        atan: global.TableAtan?.bytes,
+        sqrt: global.TableSqrt?.bytes);
+    } 
 
     /// <summary>
     /// Convert a float to an FP, with rounding towards zero.
@@ -26663,10 +27415,11 @@ namespace Quantum {
     /// <param name="center">The center of the capsule.</param>
     /// <param name="radius">The radius of the capsule.</param>
     /// <param name="height">The height of the capsule.</param>
+    /// <param name="tHeight">The height of the vertical transform</param>
     /// <param name="color">The color of the gizmo.</param>
     /// <param name="rotation">The rotation of the capsule. If null, identity rotation is used.</param>
     /// <param name="style">The style of the gizmo. If not provided, default style is used.</param>
-    public static void DrawGizmosCapsule2D(Vector3 center, float radius, float height, Color color, Quaternion? rotation = null, QuantumGizmoStyle style = default) {
+    public static void DrawGizmosCapsule2D(Vector3 center, float radius, float height, float tHeight, Color color, Quaternion? rotation = null, QuantumGizmoStyle style = default) {
 #if UNITY_EDITOR
 
       var matrix = Matrix4x4.TRS(center, rotation ?? Quaternion.identity, Vector3.one);
@@ -26674,21 +27427,159 @@ namespace Quantum {
       Handles.matrix = matrix;
       Gizmos.color = color;
       Handles.color = Gizmos.color;
+
 #if QUANTUM_XY
-      var left = Vector3.left * radius;
-      var right = Vector3.right * radius;
-      Handles.DrawLine(left + Vector3.up * height, left + Vector3.down * height);
-      Handles.DrawLine(right + Vector3.up * height, right + Vector3.down * height);
-      Handles.DrawWireArc(Vector3.up * height, Vector3.forward, Vector3.right * radius, 180, radius);
-      Handles.DrawWireArc(Vector3.down * height, Vector3.back, Vector3.left * radius, -180, radius);
+
+      var up = Vector3.back;
+      var down = Vector3.forward;
+
+      var capsuleLeft = Vector3.left * radius;
+      var capsuleRight = Vector3.right * radius;
+      var capsuleTop = Vector3.up * height;
+      var capsuleBottom = Vector3.down * height;
+
+      // the vertices
+      var v1 = capsuleLeft + capsuleBottom;
+      var v2 = capsuleLeft + capsuleTop;
+      var v3 = capsuleRight + capsuleBottom;
+      var v4 = capsuleRight + capsuleTop;
+
+      var yAxis = 1;
+      var zAxis = 0;
 #else
-      var left = Vector3.left * radius;
-      var right = Vector3.right * radius;
-      Handles.DrawLine(left + Vector3.back * height, left + Vector3.forward * height);
-      Handles.DrawLine(right + Vector3.back * height, right + Vector3.forward * height);
-      Handles.DrawWireArc(Vector3.back * height, Vector3.up, Vector3.right * radius, 180, radius);
-      Handles.DrawWireArc(Vector3.forward * height, Vector3.down, Vector3.left * radius, -180, radius);
+
+      var up = Vector3.up;
+      var down = Vector3.down;
+
+      var capsuleLeft = Vector3.left * radius;
+      var capsuleRight = Vector3.right * radius;
+      var capsuleTop = Vector3.forward * height;
+      var capsuleBottom = Vector3.back * height;
+
+      // the vertices
+      var v1 = capsuleLeft + capsuleBottom;
+      var v2 = capsuleLeft + capsuleTop;
+      var v3 = capsuleRight + capsuleBottom;
+      var v4 = capsuleRight + capsuleTop;
+
+      var yAxis = 0;
+      var zAxis = 1;
+
 #endif
+
+      // draw the wires of the capsule
+      Handles.DrawLine(v1, v2);
+      Handles.DrawLine(v3, v4);
+      Handles.DrawWireArc(capsuleBottom, up, capsuleRight, 180, radius);
+      Handles.DrawWireArc(capsuleTop, down, capsuleLeft, -180, radius);
+
+      // draw the shape of the capsule
+      var numberOfLines = 8;
+      var distance = numberOfLines / Mathf.PI;
+      var cycleOffset = Mathf.PI / 2;
+      var vertices = new Vector3[(int)numberOfLines * 2 + 2];
+
+      // the points of the top
+      for (int i = 0; i < numberOfLines + 1; i++) {
+        var sin = Mathf.Sin(i / distance + cycleOffset) * radius;
+        var cos = Mathf.Cos(i / distance + cycleOffset) * radius;
+        vertices[i] = new Vector3(capsuleTop.x + sin, capsuleTop.y - cos * yAxis, capsuleTop.z - cos * zAxis);
+      }
+
+      // the points of the bottom
+      for (int i = (int)numberOfLines + 1; i < numberOfLines * 2 + 2; i++) {
+        var sin = Mathf.Sin((i - 1) / distance + cycleOffset) * radius;
+        var cos = Mathf.Cos((i - 1) / distance + cycleOffset) * radius;
+        vertices[i] = new Vector3(capsuleBottom.x + sin, capsuleBottom.y - cos * yAxis, capsuleBottom.z - cos * zAxis);
+      }
+
+      // draw the capsule shape with the points
+      Handles.DrawAAConvexPolygon(vertices.ToArray());
+
+
+      // draw the capsule vertical transform height
+      tHeight = Mathf.Abs(tHeight);
+      if (tHeight > 0) {
+        Vector3 th = up * tHeight;
+
+        // draw another wired capsule but at height position
+        Handles.DrawLine(v1 + th, v2 + th);
+        Handles.DrawLine(v3 + th, v4 + th);
+        Handles.DrawWireArc(capsuleBottom + th, up, capsuleRight, 180, radius);
+        Handles.DrawWireArc(capsuleTop + th, down, capsuleLeft, -180, radius);
+
+        // draw the lines between the arcs of the capsule
+        // the arc up
+        var capsuleTopH = capsuleTop + th;
+        for (float i = 0; i < numberOfLines; i++) {
+          var sin = Mathf.Sin(i / distance + cycleOffset) * radius;
+          var cos = Mathf.Cos(i / distance + cycleOffset) * radius;
+          Handles.DrawLine(
+            new Vector3(capsuleTop.x  + sin, capsuleTop.y  - cos * yAxis, capsuleTop.z  - cos * zAxis), 
+            new Vector3(capsuleTopH.x + sin, capsuleTopH.y - cos * yAxis, capsuleTopH.z - cos * zAxis)
+          );
+        }
+
+        // the arc down
+        var capsuleBottomH = capsuleBottom + th;
+        for (float i = 0; i < numberOfLines; i++) {
+          var sin = Mathf.Sin(i / distance - cycleOffset) * radius;
+          var cos = Mathf.Cos(i / distance - cycleOffset) * radius;
+          Handles.DrawAAConvexPolygon(
+            new Vector3(capsuleBottom.x  + sin, capsuleBottom.y  - cos * yAxis, capsuleBottom.z  - cos * zAxis), 
+            new Vector3(capsuleBottomH.x + sin, capsuleBottomH.y - cos * yAxis, capsuleBottomH.z - cos * zAxis)
+          );
+        }
+
+        // draw a second capsule shape at transform height
+        for (int i = 0; i < vertices.Length; i++) {
+          vertices[i] = vertices[i] + th;
+        }
+        Handles.DrawAAConvexPolygon(vertices.ToArray());
+
+        // draw side planes for the capsule at transform height
+        Handles.color = Gizmos.color / 2;
+        Handles.DrawAAConvexPolygon(new Vector3[] {
+          v1, v1 + th,
+          v2 + th, v2
+        });
+        Handles.DrawAAConvexPolygon(new Vector3[] {
+          v3, v3 + th,
+          v4 + th, v4
+        });
+
+        // draw the planes between the arcs of the capsule
+        // the arc up planes
+        capsuleTopH = capsuleTop + th;
+        for (float i = 0; i < numberOfLines; i++) {
+          var sin = Mathf.Sin(i / distance + cycleOffset) * radius;
+          var cos = Mathf.Cos(i / distance + cycleOffset) * radius;
+          var sin2 = Mathf.Sin((i + 1) / distance + cycleOffset) * radius;
+          var cos2 = Mathf.Cos((i + 1) / distance + cycleOffset) * radius;
+          Handles.DrawAAConvexPolygon(new Vector3[] {
+            new Vector3(capsuleTop.x  + sin,  capsuleTop.y  - cos  * yAxis, capsuleTop.z  - cos * zAxis), 
+            new Vector3(capsuleTopH.x + sin,  capsuleTopH.y - cos  * yAxis, capsuleTopH.z - cos * zAxis),
+            new Vector3(capsuleTopH.x + sin2, capsuleTopH.y - cos2 * yAxis, capsuleTopH.z - cos2 * zAxis), 
+            new Vector3(capsuleTop.x  + sin2, capsuleTop.y  - cos2 * yAxis, capsuleTop.z  - cos2 * zAxis)
+          });
+        }
+
+        // the arc down planes
+        capsuleBottomH = capsuleBottom + th;
+        for (float i = 0; i < numberOfLines; i++) {
+          var sin = Mathf.Sin(i / distance - cycleOffset) * radius;
+          var cos = Mathf.Cos(i / distance - cycleOffset) * radius;
+          var sin2 = Mathf.Sin((i + 1) / distance - cycleOffset) * radius;
+          var cos2 = Mathf.Cos((i + 1) / distance - cycleOffset) * radius;
+          Handles.DrawAAConvexPolygon(new Vector3[] {
+            new Vector3(capsuleBottom.x  + sin,  capsuleBottom.y  - cos  * yAxis, capsuleBottom.z  - cos  * zAxis), 
+            new Vector3(capsuleBottomH.x + sin,  capsuleBottomH.y - cos  * yAxis, capsuleBottomH.z - cos  * zAxis),
+            new Vector3(capsuleBottomH.x + sin2, capsuleBottomH.y - cos2 * yAxis, capsuleBottomH.z - cos2 * zAxis), 
+            new Vector3(capsuleBottom.x  + sin2, capsuleBottom.y  - cos2 * yAxis, capsuleBottom.z  - cos2 * zAxis)
+          });
+        }
+      }
+
       matrix = Matrix4x4.identity;
       Handles.color = Gizmos.color = Color.white;
       Handles.matrix = matrix;
@@ -27131,15 +28022,16 @@ namespace Quantum {
     /// <param name="style">The gizmo style to use.</param>
     public static void DrawGizmosEdge(Vector3 start, Vector3 end, float height, Color color, QuantumGizmoStyle style = default) {
       Gizmos.color = color;
+      height = Math.Abs(height);
 
-      if (Math.Abs(height) > float.Epsilon) {
+      if (height > float.Epsilon) {
         var startToEnd = end - start;
         var edgeSize   = startToEnd.magnitude;
         var size       = new Vector3(edgeSize, 0);
         var center     = start + startToEnd / 2;
 #if QUANTUM_XY
-        size.z = height;
-        center.z += height / 2;
+        size.z = -height;
+        center.z -= height / 2;
 #else
         size.y   =  height;
         center.y += height / 2;
@@ -27517,6 +28409,19 @@ namespace Quantum {
       get => GlobalInternal;
       protected set => GlobalInternal = value;
     } 
+    
+    /// <summary>
+    /// Try get or load the global instance.
+    /// </summary>
+    /// <param name="global">Resulting global instance</param>
+    /// <returns>True if the global instance was found</returns>
+    public static bool TryGetGlobal(out T global) => TryGetGlobalInternal(out global);
+
+    /// <summary>
+    /// Get the Global instance of the scriptable object, attempting to load it asynchronously.
+    /// After it is done regular global accessor can be used.
+    /// </summary>
+    public static System.Threading.Tasks.Task<T> GetGlobalAsync() => GetGlobalAsyncInternal();
   }
 }
 
@@ -28397,7 +29302,102 @@ namespace Quantum {
   public static class SerializedObjectExtensions {
     [StaticField(StaticFieldResetMode.None)]
     private static readonly Regex _arrayElementRegex = new Regex(@"\.Array\.data\[\d+\]$", RegexOptions.Compiled);
+    
+    /// <summary>
+    /// Get the index this element is at.
+    /// </summary>
+    /// <param name="element"></param>
+    /// <returns></returns>
+    public static int GetArrayIndex(this SerializedProperty element)
+    {
+      string path = element.propertyPath;
+      int start = path.LastIndexOf('[');
+      int end = path.LastIndexOf(']');
+    
+      if (start != -1 && end != -1)
+      {
+        string indexString = path.Substring(start + 1, end - start - 1);
+        return int.Parse(indexString);
+      }
+    
+      return -1; // Not an array element or parsing failed
+    }
 
+    /// <summary>
+    /// Gets the object the property represents.
+    /// </summary>
+    /// <param name="property">Serialized property to get the target object from</param>
+    /// <param name="fieldInfo">The field containing the object</param>
+    /// <returns>The target object or null if not found</returns>
+    public static object GetTargetObject(this SerializedProperty property, out FieldInfo fieldInfo, out object parent) {
+      fieldInfo = null;
+      parent = null;
+      
+      if (property == null) {
+        throw new ArgumentNullException(nameof(property));
+      }
+      
+      var path = property.propertyPath.Replace(".Array.data[", "[");
+      object targetObject = property.serializedObject.targetObject;
+      var elements = path.Split('.');
+      
+      foreach (var element in elements) {
+        if (element.Contains("[")) {
+          var elementName = element.Substring(0, element.IndexOf("[", StringComparison.Ordinal));
+          var index = Convert.ToInt32(element.Substring(element.IndexOf("[", StringComparison.Ordinal)).Replace("[", string.Empty).Replace("]", string.Empty));
+          parent = targetObject;
+          targetObject = GetFieldValue(targetObject, elementName, index, out fieldInfo);
+        } else {
+          parent = targetObject;
+          targetObject = GetFieldValue(targetObject, element, out fieldInfo);
+        }
+        
+        if (targetObject == null) {
+          return null;
+        }
+      }
+      
+      return targetObject;
+    }
+    
+    private static object GetFieldValue(object source, string name, out FieldInfo fieldInfo) {
+      fieldInfo = null;
+      if (source == null) {
+        return null;
+      }
+      
+      var type = source.GetType();
+      
+      while (type != null) {
+        var field = type.GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+        if (field != null) {
+          fieldInfo = field;
+          return field.GetValue(source);
+        }
+        
+        type = type.BaseType;
+      }
+      
+      return null;
+    }
+    
+    private static object GetFieldValue(object source, string name, int index, out FieldInfo fieldInfo) {
+      var enumerable = GetFieldValue(source, name, out fieldInfo) as IEnumerable;
+      if (enumerable == null) {
+        return null;
+      }
+      
+      var enumerator = enumerable.GetEnumerator();
+      
+      for (int i = 0; i <= index; i++) {
+        if (!enumerator.MoveNext()) {
+          return null;
+        }
+      }
+      
+      return enumerator.Current;
+    }
+    
     /// <summary>
     /// Find a property in the serialized object or throw an exception if not found.
     /// </summary>

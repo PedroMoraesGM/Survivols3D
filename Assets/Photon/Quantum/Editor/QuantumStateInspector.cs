@@ -154,7 +154,13 @@ namespace Quantum.Editor {
           });
 
         _runnersTreeView.SystemContextMenu = QuantumEditorGUI.BuildMenu<SystemTreeViewItem>()
-          .AddItem("Toggle", _ => {
+          .AddItem("Toggle System", _ => {
+            foreach (var group in GetSelectedSystems().GroupBy(x => x.Item0)) {
+              var payload = group.Select(x => DebugCommand.CreateToggleSystemPayload(x.Item2));
+              CommandEnqueue(group.Key, payload.ToArray());
+            }
+          }, runnerExistsDebug)
+          .AddItem("Toggle System Type", _ => {
             foreach (var group in GetSelectedSystems().GroupBy(x => x.Item0)) {
               var payload = group.Select(x => DebugCommand.CreateToggleSystemPayload(x.Item1));
               CommandEnqueue(group.Key, payload.ToArray());
@@ -484,7 +490,7 @@ namespace Quantum.Editor {
       var dropdownRect = EditorGUILayout.GetControlRect(false, 16, EditorStyles.toolbarPopup, GUILayout.MaxWidth(110));
       if (EditorGUI.DropdownButton(dropdownRect, new GUIContent("System Options"), FocusType.Keyboard, EditorStyles.toolbarPopup)) {
         var menu = new GenericMenu();
-        menu.AddItem(new GUIContent("Hide Disabled"), _showDisabledSystems, () => { _showDisabledSystems = !_showDisabledSystems; });
+        menu.AddItem(new GUIContent("Show Disabled"), _showDisabledSystems, () => { _showDisabledSystems = !_showDisabledSystems; });
         menu.AddItem(new GUIContent("Sort Alphabetically"), _sortSystemsAlphabetically, () => { _sortSystemsAlphabetically = !_sortSystemsAlphabetically; });
         menu.DropDown(dropdownRect);
       }
@@ -557,15 +563,10 @@ namespace Quantum.Editor {
       return GetEntitiesByTreeId(_runnersTreeView.GetSelection());
     }
 
-    private QTuple<QuantumRunner, Type>[] GetSystemsByTreeId(IList<int> ids) {
-
-      var foo = GetSystemNodes(ids)
-        .Select(n => QTuple.Create(FindRunnerById(n.RunnerModel.Id), n.Type.Value))
-        .Where(n => n.Item0 != null)
-        .ToArray();
+    private QTuple<QuantumRunner, Type, int>[] GetSystemsByTreeId(IList<int> ids) {
 
       return GetSystemNodes(ids)
-        .Select(n => QTuple.Create(FindRunnerById(n.RunnerModel.Id), n.Type.Value))
+        .Select(n => QTuple.Create(FindRunnerById(n.RunnerModel.Id), n.Type.Value, n.RuntimeIndex))
         .Where(n => n.Item0 != null)
         .ToArray();
     }
@@ -580,7 +581,7 @@ namespace Quantum.Editor {
         .OfType<SystemTreeViewItem>();
     }
 
-    private QTuple<QuantumRunner, Type>[] GetSelectedSystems() {
+    private QTuple<QuantumRunner, Type, int>[] GetSelectedSystems() {
       var foo = _runnersTreeView.GetSelection();
 
 
@@ -725,7 +726,7 @@ namespace Quantum.Editor {
           runnerState.DynamicDB.Add(assetState);
         }
 
-        for (int i = 0; i < frame.PlayerCount; i++) {
+        for (int i = 0; i < frame.MaxPlayerCount; i++) {
           var playerState = new PlayerState { Player = i, InputFlags = frame.GetPlayerInputFlags(i) };
 
           var playerNodeId = model.GetTreeNodeForPlayer(playersNodeId, i);
@@ -742,7 +743,7 @@ namespace Quantum.Editor {
         }
         foreach (var system in systems) {
           SystemState.Create(system, frame, ref runnerState.Systems, runnerState.ShowDisabledSystems, 0, (system) => {
-            var systemNodeId = model.GetTreeNodeForSystem(systemsNodeId, system);
+            var systemNodeId = model.GetTreeNodeForSystem(systemsNodeId, system.RuntimeIndex);
             if (selectedNodes.Contains(systemNodeId)) {
               runnerState.AcquireInspectorState(ref dynamicInspectorState, out var inspectorId).FromSystem(system, frame);
               return inspectorId;
@@ -929,9 +930,9 @@ namespace Quantum.Editor {
         }
       }
 
-      public int GetTreeNodeForSystem(int systemsNodeId, SystemBase system) {
-        Debug.Assert(system.RuntimeIndex < SystemsIdCount);
-        return systemsNodeId + 1 + system.RuntimeIndex;
+      public int GetTreeNodeForSystem(int systemsNodeId, int runtimeIndex) {
+        Debug.Assert(runtimeIndex < SystemsIdCount);
+        return systemsNodeId + 1 + runtimeIndex;
       }
 
       public int GetTreeNodeForPlayer(int playersNodeId, PlayerRef player) {
@@ -963,7 +964,7 @@ namespace Quantum.Editor {
       public QuantumSimulationObjectInspectorState RunnerInspectorState        = new QuantumSimulationObjectInspectorState();
       public List<QuantumSimulationObjectInspectorState> DynamicInspectorState = new List<QuantumSimulationObjectInspectorState>();
       public QuantumSimulationObjectInspectorState SystemsInspectorState       = new QuantumSimulationObjectInspectorState();
-      public QuantumSimulationObjectInspectorState PlayersInspectorState      = new QuantumSimulationObjectInspectorState();
+      public QuantumSimulationObjectInspectorState PlayersInspectorState       = new QuantumSimulationObjectInspectorState();
 
       public QuantumSimulationObjectInspectorState AcquireInspectorState(ref int state, out int id) {
         var index = state++;
@@ -1142,6 +1143,7 @@ namespace Quantum.Editor {
       public int StateIndex;
       [SerializableType(WarnIfNoPreserveAttribute = true)]
       public SerializableType<SystemBase> Type;
+      public int RuntimeIndex;
       public bool IsEnabled;
 
       public SystemTreeViewItem(int id, int depth, int stateIndex) : base(id, depth, string.Empty) {
@@ -1303,15 +1305,8 @@ namespace Quantum.Editor {
             var systems = new SystemsTreeViewItem(systemsNodeId, 1);
             _rowsBuffer.Add(systems);
 
-            if (IsExpanded(systemsNodeId)) { 
-              var systemStateIndex = 0;
-              foreach (var system in runner.Systems) {
-                _rowsBuffer.Add(new SystemTreeViewItem(systemsNodeId + system.RuntimeIndex + 1, system.Depth + 2, systemStateIndex++) {
-                  Type = system.Type,
-                  IsEnabled = system.IsEnabled
-                });
-
-              }
+            if (IsExpanded(systemsNodeId)) {
+              CreateSystemTree(runner.Systems, ref _rowsBuffer, systemsNodeId);
             } else if (runner.Systems.Any()) {
               systems.children = CreateChildListForCollapsedParent();
             }
@@ -1332,7 +1327,49 @@ namespace Quantum.Editor {
           }
         }
         SetupParentsAndChildrenFromDepths(root, _rowsBuffer);
+
         return _rowsBuffer;
+      }
+
+      private void CreateSystemTree(List<SystemState> systems, ref List<TreeViewItem> tree,  int systemsNodeId) {
+        var systemStateIndex = 0;
+        var currentDepth = 0;
+        var parentStack = new Stack<TreeViewItem>();
+
+        parentStack.Push(tree.Last());
+
+        foreach (var system in systems) {
+          if (system.Depth > currentDepth) {
+            parentStack.Push(tree.Last());
+          }
+
+          while (currentDepth > system.Depth) {
+            currentDepth--;
+            parentStack.Pop();
+          }
+
+          // Use the parent stack to find out the expanded state. Any other ways to do this?
+          var isExpanded = true;
+          if (parentStack.TryPeek(out var parent)) {
+            isExpanded = IsExpanded(parent.id);
+          }
+
+          currentDepth = system.Depth;
+
+          if (isExpanded) {
+            var systemNodeId = _model.GetTreeNodeForSystem(systemsNodeId, system.RuntimeIndex);
+            tree.Add(new SystemTreeViewItem(systemNodeId, system.Depth + 2, systemStateIndex) {
+              Type = system.Type,
+              RuntimeIndex = system.RuntimeIndex,
+              IsEnabled = system.IsEnabled
+            });
+          }
+          else {
+            parent.children = CreateChildListForCollapsedParent();
+          }
+
+          systemStateIndex++;
+        }
       }
 
       protected override float GetCustomRowHeight(int row, TreeViewItem item) {

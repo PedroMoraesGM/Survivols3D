@@ -170,6 +170,11 @@
               This is needed since Unity serialization does find inherited privates.
             </summary>
         </member>
+        <member name="T:Quantum.Editor.QuantumEditorHubSrpTools">
+            <summary>
+            Utilities for converting scene and prefab materials to the used SRP. This allows intro samples to imported into a project with any SRP.
+            </summary>
+        </member>
         <member name="T:Quantum.Editor.QuantumDotnetBuildSettingsInspector">
             <summary>
             Inspector code to manage the QuantumDotnetBuildSettings asset in the editor.
@@ -216,6 +221,9 @@
             <summary>
             The mode is saved in string but can be cached into internal enum for convenience.
             </summary>
+        </member>
+        <member name="P:Quantum.Editor.QuantumEditorHubWidget.HasTypeAndTypeIsValid">
+            TODO: potentially slow 
         </member>
         <member name="T:Quantum.Editor.QuantumEditorHubWindow">
             <summary>

@@ -72,7 +72,7 @@ namespace Quantum.Editor {
        }
        set {
          if (_scrollRect.HasValue == false || _scrollRect.Value != value) {
-           PlayerPrefs.SetString(ScrollRectPlayerPrefsKey, JsonUtility.ToJson(_scrollRect));
+           PlayerPrefs.SetString(ScrollRectPlayerPrefsKey, JsonUtility.ToJson(value));
          }
          _scrollRect = value;
        }
@@ -133,7 +133,7 @@ namespace Quantum.Editor {
 
     [UnityEditor.Callbacks.DidReloadScripts]
     static void OnDidReloadScripts() {
-      CheckPopupCondition();
+      EditorApplication.delayCall += CheckPopupCondition;
     }
 
     /// <summary>
@@ -232,6 +232,10 @@ namespace Quantum.Editor {
         _nextForceRepaint = timeSinceStartup + .05f;
         Repaint();
       }
+    }
+
+    void OnProjectChange() {
+      HubUtils.GlobalInstanceMissing.Clear();
     }
 
     protected virtual void CustomDrawWidget(QuantumEditorHubPage page, QuantumEditorHubWidget widget) {

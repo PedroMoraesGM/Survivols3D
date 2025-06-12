@@ -9,8 +9,11 @@
             The base class for a hierarchy of systems.
             </summary>
         </member>
-        <member name="P:Quantum.SystemGroup.ChildSystems">
-            <inheritdoc cref="P:Quantum.SystemBase.ChildSystems"/>
+        <member name="M:Quantum.SystemGroup.#ctor(Quantum.SystemBase[])">
+            <summary>
+            Create a new system group.
+            </summary>
+            <param name="children">The child systems.</param>
         </member>
         <member name="M:Quantum.SystemGroup.#ctor(System.String,Quantum.SystemBase[])">
             <summary>
@@ -21,17 +24,8 @@
         </member>
         <member name="M:Quantum.SystemGroup.Schedule(Quantum.Frame,Quantum.Task.TaskHandle)">
             <summary>
-            Add the child systems the the task hierarchy.
+            Nothing to schedule, this is only a container for children.
             </summary>
-            <param name="f">The referenced frame.</param>
-            <param name="taskHandle">The initial task handle.</param>
-            <returns>The final task graph.</returns>
-        </member>
-        <member name="M:Quantum.SystemGroup.OnEnabled(Quantum.Frame)">
-            <inheritdoc cref="M:Quantum.SystemBase.OnEnabled(Quantum.Frame)"/>
-        </member>
-        <member name="M:Quantum.SystemGroup.OnDisabled(Quantum.Frame)">
-            <inheritdoc cref="M:Quantum.SystemBase.OnDisabled(Quantum.Frame)"/>
         </member>
         <member name="T:Quantum.GameResult">
             <summary>
@@ -468,34 +462,26 @@
         <member name="T:Quantum.SystemMainThreadGroup">
             <summary>
             A Quantum main thread system that has a system hierarchy.
+            The class will be deprecated in future versions, use SystemGroup instead.
             </summary>
         </member>
-        <member name="M:Quantum.SystemMainThreadGroup.#ctor(System.String,Quantum.SystemMainThread[])">
+        <member name="M:Quantum.SystemMainThreadGroup.#ctor(Quantum.SystemBase[])">
             <summary>
-            Create a new system group.
+            Create a new system main thread group.
+            </summary>
+            <param name="children">The system children.</param>
+        </member>
+        <member name="M:Quantum.SystemMainThreadGroup.#ctor(System.String,Quantum.SystemBase[])">
+            <summary>
+            Create a new system main thread group.
             </summary>
             <param name="name">The system name.</param>
             <param name="children">The system children.</param>
         </member>
-        <member name="P:Quantum.SystemMainThreadGroup.ChildSystems">
-            <summary>
-            Returns all child systems of this instance.
-            </summary>
-        </member>
         <member name="M:Quantum.SystemMainThreadGroup.Schedule(Quantum.Frame,Quantum.Task.TaskHandle)">
-            <inheritdoc cref="M:Quantum.SystemMainThread.Schedule(Quantum.Frame,Quantum.Task.TaskHandle)"/>
-        </member>
-        <member name="M:Quantum.SystemMainThreadGroup.OnEnabled(Quantum.Frame)">
-            <inheritdoc cref="M:Quantum.SystemBase.OnEnabled(Quantum.Frame)"/>
-        </member>
-        <member name="M:Quantum.SystemMainThreadGroup.OnDisabled(Quantum.Frame)">
-            <inheritdoc cref="M:Quantum.SystemBase.OnDisabled(Quantum.Frame)"/>
-        </member>
-        <member name="M:Quantum.SystemMainThreadGroup.Update(Quantum.Frame)">
             <summary>
-            Override to add the workload.
+            Nothing to schedule, this is just a container for children.
             </summary>
-            <param name="f">The current frame.</param>
         </member>
         <member name="T:Quantum.DotNetSessionRunner">
             <summary>
@@ -864,6 +850,11 @@
             System.Type, pointing to a Quantum system type for example.
             </summary>
         </member>
+        <member name="F:Quantum.Core.DebugCommand.Payload.SystemRuntimeIndex">
+            <summary>
+            System runtime index.
+            </summary>
+        </member>
         <member name="M:Quantum.Core.DebugCommand.CreateDestroyPayload(Quantum.EntityRef)">
             <summary>
             Factory to create a destroy entity debug command payload.
@@ -892,7 +883,14 @@
             <summary>
             Factory to create the payload for a toggle system command.
             </summary>
-            <param name="systemType">System type, serialized as string</param>
+            <param name="systemType">System type to toggle</param>
+            <returns>The debug command payload.</returns>
+        </member>
+        <member name="M:Quantum.Core.DebugCommand.CreateToggleSystemPayload(System.Int32)">
+            <summary>
+            Factory to create the payload for a toggle system command.
+            </summary>
+            <param name="systemRuntimeIndex">System runtime index to toggle</param>
             <returns>The debug command payload.</returns>
         </member>
         <member name="T:Quantum.QuantumGame">
@@ -1658,6 +1656,11 @@
             Set to <see langword="true"/> when the simulation should start with this system enabled.
             </summary>
         </member>
+        <member name="P:Quantum.SystemBase.ProfilerName">
+            <summary>
+            Profiler name.
+            </summary>
+        </member>
         <member name="M:Quantum.SystemBase.#ctor">
             <summary>
             Constructor.
@@ -1668,6 +1671,12 @@
             Create a new instance and setting the sample name.
             </summary>
             <param name="scheduleSample">The name of the system to identify in the profiler.</param>
+        </member>
+        <member name="M:Quantum.SystemBase.#ctor(Quantum.SystemBase[])">
+            <summary>
+            Create a new instance of a system with children.
+            </summary>
+            <param name="children">Children systems to create a hierarchy to toggle.</param>
         </member>
         <member name="M:Quantum.SystemBase.OnInit(Quantum.Frame)">
             <summary>
@@ -1834,6 +1843,11 @@
             Is set the frame dump will not print the IsVerified information.
             </summary>
         </member>
+        <member name="F:Quantum.Frame.DumpFlag_SceneMesh3D">
+            <summary>
+            If set the 3D Physics SceneMesh metadata will be dumped.
+            </summary>
+        </member>
         <member name="P:Quantum.Frame.Global">
             <summary>
             Access the global read and write struct with generated variables by the Quantum DSL compiler.
@@ -1862,6 +1876,11 @@
         <member name="P:Quantum.Frame.PlayerCount">
             <summary>
             Returns the max player count that the simulation was started with <see cref="F:Photon.Deterministic.DeterministicSessionConfig.PlayerCount"/>.
+            </summary>
+        </member>
+        <member name="P:Quantum.Frame.MaxPlayerCount">
+            <summary>
+            Returns the max player count that the simulation was started with, see <see cref="F:Photon.Deterministic.DeterministicSessionConfig.PlayerCount"/>.
             </summary>
         </member>
         <member name="P:Quantum.Frame.PlayerConnectedCount">
@@ -2056,38 +2075,136 @@
             </summary>
             <param name="frame">Input frame object</param>
         </member>
-        <member name="M:Quantum.Frame.SystemIsEnabledSelf``1">
+        <member name="M:Quantum.Frame.SystemAllEnabledSelf``1">
             <summary>
-            Test if a system is enabled.
+            Checks is all systems of the type are enabled themselves.
+            System can be enabled themselves but still be disabled by <see cref="P:Quantum.SystemBase.ParentSystem"/>.
+            Logs an error if the system type is not found.
             </summary>
             <typeparam name="T">System type</typeparam>
-            <returns>True if the system is enabled</returns>
+            <returns><see langword="true"/> if all systems are enabled themselves.</returns>
+        </member>
+        <member name="M:Quantum.Frame.SystemAllEnabledSelf(System.Type)">
+            <inheritdoc cref="M:Quantum.Frame.SystemAllEnabledSelf``1"/>
+        </member>
+        <member name="M:Quantum.Frame.SystemAnyEnabledSelf``1">
+            <summary>
+            Checks is any systems of the type is enabled itself.
+            System can be enabled themselves but still be disabled by <see cref="P:Quantum.SystemBase.ParentSystem"/>.
             Logs an error if the system type is not found.
+            </summary>
+            <typeparam name="T">System type</typeparam>
+            <returns><see langword="true"/> if any systems of the type is enabled itself.</returns>
+        </member>
+        <member name="M:Quantum.Frame.SystemAnyEnabledSelf(System.Type)">
+            <inheritdoc cref="M:Quantum.Frame.SystemAnyEnabledSelf``1"/>
+        </member>
+        <member name="M:Quantum.Frame.SystemIsEnabledSelf(System.Int32)">
+            <summary>
+            Checks if the system identified by its runtime index is enabled itself.
+            The system can be enabled but still disabled by <see cref="P:Quantum.SystemBase.ParentSystem"/>.
+            Logs an error if the system is not found.
+            </summary>
+            <param name="systemRuntimeIndex">System runtime index identified by <see cref="P:Quantum.SystemBase.RuntimeIndex"/></param>
+            <returns><see langword="true"/> if the system is enabled itself.</returns>
+        </member>
+        <member name="M:Quantum.Frame.SystemIsEnabledSelf(Quantum.SystemBase)">
+            <summary>
+            Checks if the system itself is enabled.
+            The system can be enabled but still disabled by <see cref="P:Quantum.SystemBase.ParentSystem"/>.
+            </summary>
+            <param name="system">System object.</param>
+            <returns><see langword="true"/> if the system is enabled itself.</returns>
+        </member>
+        <member name="M:Quantum.Frame.SystemAllEnabledInHierarchy``1">
+            <summary>
+            Checks is all systems of the type are enabled by their hierarchy <see cref="P:Quantum.SystemBase.ParentSystem"/>.
+            Logs an error if the system type is not found.
+            </summary>
+            <typeparam name="T">System type</typeparam>
+            <returns><see langword="true"/> if all systems of the type are enabled by hierarchy.</returns>
+        </member>
+        <member name="M:Quantum.Frame.SystemAllEnabledInHierarchy(System.Type)">
+            <inheritdoc cref="M:Quantum.Frame.SystemAllEnabledInHierarchy``1"/>
+        </member>
+        <member name="M:Quantum.Frame.SystemAnyEnabledInHierarchy``1">
+            <summary>
+            Checks is any system of the type is enabled by their hierarchy <see cref="P:Quantum.SystemBase.ParentSystem"/>.
+            Logs an error if the system type is not found.
+            </summary>
+            <typeparam name="T">System type</typeparam>
+            <returns><see langword="true"/> if any systems of the type is enabled by hierarchy.</returns>
+        </member>
+        <member name="M:Quantum.Frame.SystemAnyEnabledInHierarchy(System.Type)">
+            <inheritdoc cref="M:Quantum.Frame.SystemAnyEnabledInHierarchy``1"/>
+        </member>
+        <member name="M:Quantum.Frame.SystemIsEnabledInHierarchy(System.Int32)">
+            <summary>
+            Checks is the system is enabled and enabled by it's hierarchy <see cref="P:Quantum.SystemBase.ParentSystem"/>.
+            If multiple systems have the same type are used, only the state of the first system found with the lowest <see cref="P:Quantum.SystemBase.RuntimeIndex"/> will be returned.
+            Logs an error if the system is not found.
+            </summary>
+            <param name="systemRuntimeIndex">System runtime index identified by <see cref="P:Quantum.SystemBase.RuntimeIndex"/></param>
+            <returns><see langword="true"/> if the system is enabled itself and by hierarchy.</returns>
+        </member>
+        <member name="M:Quantum.Frame.SystemIsEnabledInHierarchy(Quantum.SystemBase)">
+            <summary>
+            Checks is the system is enabled and enabled by it's hierarchy <see cref="P:Quantum.SystemBase.ParentSystem"/>.
+            </summary>
+            <param name="system">System object</param>
+            <returns><see langword="true"/> if the system is enabled itself and by hierarchy.</returns>
         </member>
         <member name="M:Quantum.Frame.SystemEnable``1">
             <summary>
-            Enable a system.
+            Enables all systems of a type.
+            Will trigger <see cref="M:Quantum.SystemBase.OnEnabled(Quantum.Frame)"/> callback after the state of a system was successfully changed.
+            Logs an error if the system type is not found.
             </summary>
             <typeparam name="T">System type</typeparam>
+        </member>
+        <member name="M:Quantum.Frame.SystemEnable(System.Type)">
+            <inheritdoc cref="M:Quantum.Frame.SystemEnable``1"/>
+        </member>
+        <member name="M:Quantum.Frame.SystemEnable(System.Int32)">
+            <summary>
+            Enables a system.
+            Will trigger <see cref="M:Quantum.SystemBase.OnEnabled(Quantum.Frame)"/> callback after the state was successfully changed.
             Logs an error if the system type is not found.
+            </summary>
+            <param name="systemRuntimeIndex">System runtime index identified by <see cref="P:Quantum.SystemBase.RuntimeIndex"/></param>
+        </member>
+        <member name="M:Quantum.Frame.SystemEnable(Quantum.SystemBase)">
+            <summary>
+            Enables a system.
+            Will trigger <see cref="M:Quantum.SystemBase.OnEnabled(Quantum.Frame)"/> callback after the state was successfully changed.
+            </summary>
+            <param name="system">System object</param>
         </member>
         <member name="M:Quantum.Frame.SystemDisable``1">
             <summary>
-            Disables a system.
+            Disables all systems of a type.
+            Will trigger <see cref="M:Quantum.SystemBase.OnDisabled(Quantum.Frame)"/> callback after the state was successfully changed.
+            Logs an error if the system is not found.
             </summary>
             <typeparam name="T">System type</typeparam>
-            Logs an error if the system type is not found.
-            <example><code>
-            // test for a certain asset and disable the system during its OnInit method
-            public override void OnInit(Frame f) {
-              var testSettings = f.FindAsset&lt;NavMeshAgentsSettings&gt;(f.Map.UserAsset.Id);
-              if (testSettings == null) {
-                f.SystemDisable&lt;NavMeshAgentTestSystem&gt;();
-                return;
-               }
-               //..
-             }
-            </code></example>
+        </member>
+        <member name="M:Quantum.Frame.SystemDisable(System.Type)">
+            <inheritdoc cref="M:Quantum.Frame.SystemDisable``1"/>
+        </member>
+        <member name="M:Quantum.Frame.SystemDisable(System.Int32)">
+            <summary>
+            Disables a system.
+            Will trigger <see cref="M:Quantum.SystemBase.OnDisabled(Quantum.Frame)"/> callback after the state was successfully changed.
+            Logs an error if the system is not found.
+            </summary>
+            <param name="systemRuntimeIndex">System runtime index identified by <see cref="P:Quantum.SystemBase.RuntimeIndex"/></param>
+        </member>
+        <member name="M:Quantum.Frame.SystemDisable(Quantum.SystemBase)">
+            <summary>
+            Disables a system.
+            Will trigger <see cref="M:Quantum.SystemBase.OnDisabled(Quantum.Frame)"/> callback after the state was successfully changed.
+            </summary>
+            <param name="system">System object</param>
         </member>
         <member name="M:Quantum.Frame.InitStatic">
             <summary>
@@ -4268,6 +4385,11 @@
             Dumps component checksums.
             </summary>
         </member>
+        <member name="F:Quantum.SimulationConfigChecksumErrorDumpOptions.SceneMesh3D">
+            <summary>
+            Dumps 3D Physics SceneMesh metadata.
+            </summary>
+        </member>
         <member name="T:Quantum.EventDispatcher">
             <summary>
             Publish, subscribe pattern for Quantum events: <see cref="T:Quantum.EventBase"/>.
@@ -4346,9 +4468,16 @@
             Create a new system.
             </summary>
         </member>
+        <member name="M:Quantum.SystemMainThread.#ctor(Quantum.SystemBase[])">
+            <summary>
+            Create a new main thread system with children.
+            </summary>
+            <param name="children"></param>
+        </member>
         <member name="M:Quantum.SystemMainThread.#ctor(System.String)">
             <summary>
             Create a new system with a custom name.
+            Unused, will be removed in future versions.
             </summary>
             <param name="name">The system name shows up in the task profiler for example.</param>
         </member>
@@ -4693,7 +4822,9 @@
             <para>Always register new system types on the <see cref="T:Quantum.SystemsConfig"/>.</para>
         </member>
         <member name="M:Quantum.SystemSignalsOnly.Schedule(Quantum.Frame,Quantum.Task.TaskHandle)">
-            <inheritdoc cref="M:Quantum.SystemBase.Schedule(Quantum.Frame,Quantum.Task.TaskHandle)"/>/>
+            <summary>
+            Nothing to schedule, this is a system just for signals that requires not task processing.
+            </summary>
         </member>
         <member name="T:Quantum.SystemsConfig">
             <summary>
@@ -4747,12 +4878,11 @@
             </summary>
             <returns>List of child systems</returns>
         </member>
-        <member name="M:Quantum.SystemsConfig.SystemEntryBase`1.AddSystem``1(System.String,System.Boolean)">
+        <member name="M:Quantum.SystemsConfig.SystemEntryBase`1.AddSystem``1(System.Boolean)">
             <summary>
             Add a child system.
             </summary>
             <typeparam name="TSystem">System type</typeparam>
-            <param name="name">System name</param>
             <param name="enabled">Start enabled</param>
             <returns>The created child system entry</returns>
         </member>
@@ -4787,32 +4917,27 @@
             Converts the systems configuration into a list of system objects while calling the matching (Name, Children) constructors.
             This method throws AssertionExceptions on any invalid system configuration.
             
-                                                 SystemBase   
-                   __________________________________|___________________________________________________________
-                  |                 |                |                    |                     |                |
-            SystemGroup     SystemMainThread  SystemArrayComponent  SystemArrayFilter  SystemSignalsOnly  SystemThreadedFilter
-             children (SystemBase)  |
-                          __________|__________
-                         |                     |
-              SystemMainThreadGroup  SystemMainThreadFilter
-                   children (SystemMainThread)
+                                                           SystemBase   
+                                                       Children[] (SystemBase)
+                        _______________________________________|______________________________________
+                       |                    |                  |                  |                  |
+                SystemMainThread  SystemArrayComponent  SystemArrayFilter  SystemSignalsOnly  SystemThreadedFilter
+                       |
+             SystemMainThreadFilter
             </summary>
         </member>
-        <member name="M:Quantum.SystemsConfig.AddSystem``1(System.String,System.Boolean)">
+        <member name="M:Quantum.SystemsConfig.AddSystem``1(System.Boolean)">
             <summary>
             Add a system entry that describes a system to be instantiated on simulation start.
             </summary>
-            <typeparam name="T">System type</typeparam>
-            <param name="name">System name</param>
             <param name="enabled">System starts enabled</param>
             <returns>System entry that was added to the config</returns>
         </member>
-        <member name="M:Quantum.SystemsConfig.AddSystem(System.Type,System.String,System.Boolean)">
+        <member name="M:Quantum.SystemsConfig.AddSystem(System.Type,System.Boolean)">
             <summary>
             Add a system entry that describes a system to be instantiated on simulation start.
             </summary>
             <param name="systemType">System type</param>
-            <param name="name">System name</param>
             <param name="enabled">System starts enabled</param>
             <returns>System entry that was added to the config</returns>
             <exception cref="T:System.ArgumentNullException">Is raised of the systemType is null</exception>
