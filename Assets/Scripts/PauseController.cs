@@ -1,9 +1,15 @@
 using UnityEngine;
 using Quantum;
+using System;
 
-public class CursorController : MonoBehaviour
+public class PauseController : MonoBehaviour
 {
+    [SerializeField] private GameInput gameInput;
     private bool _isPaused = false;
+
+    public Action<bool> GamePauseChanged;
+
+    public bool IsPaused { get { return _isPaused; } }
 
     private void Awake()
     {
@@ -16,6 +22,28 @@ public class CursorController : MonoBehaviour
 
         // PauseMenu.OnPaused   += () => { _isPaused = true;  UpdateCursor(); };
         // PauseMenu.OnResumed  += () => { _isPaused = false; UpdateCursor(); };
+    }
+
+    public void Resume()
+    {
+        _isPaused = false;
+        UpdateCursor();
+    }
+
+    public void Pause()
+    {
+        _isPaused = !_isPaused;
+        UpdateCursor();
+
+        GamePauseChanged?.Invoke(_isPaused);
+    }
+
+    private void Update()
+    {
+        if(gameInput.GetPauseAction().WasPressedThisFrame())
+        {
+            Pause();
+        }
     }
 
     private void OnDestroy()

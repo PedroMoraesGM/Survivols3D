@@ -16,7 +16,6 @@ public class UpgradeUIController : MonoBehaviour
         QuantumEvent.Subscribe(this, (EventOnChooseUpgrades e) => OnRewardsDisplay(e));
         QuantumEvent.Subscribe(this, (EventOnHasChoosenUpgrades e) => OnHasChoosenUpgrades(e));
         QuantumEvent.Subscribe(this, (EventOnDefeated e) => OnPlayerDefeated(e));
-
     }
 
     private void OnPlayerDefeated(EventOnDefeated e)

@@ -12,51 +12,52 @@ namespace Tomorrow.Quantum
         {
              if(!f.IsVerified) return;
 
-            OnPlayerTouchesXp(f, info);            
+            OnPlayerTouchesXp(f, info.Entity, info.Other);
+            OnProjectileHitting(f, info.Entity, info.Other);
         }
 
         public void OnTriggerEnter3D(Frame f, TriggerInfo3D info)
         {
-            OnProjectileHitting(f, info);
+            OnProjectileHitting(f, info.Entity, info.Other);
         }
 
-        private void OnPlayerTouchesXp(Frame f, CollisionInfo3D info)
+        private void OnPlayerTouchesXp(Frame f, EntityRef infoEntity, EntityRef infoOther)
         {
-            if (f.Unsafe.TryGetPointer<XPPickup>(info.Entity, out XPPickup* xpPickup))
+            if (f.Unsafe.TryGetPointer<XPPickup>(infoEntity, out XPPickup* xpPickup))
             {
-                if (f.Unsafe.TryGetPointer<Character>(info.Other, out Character* character))
+                if (f.Unsafe.TryGetPointer<Character>(infoOther, out Character* character))
                 {
                     Debug.Log("[CollisionSystem] xp hitted player!");
 
-                    f.Signals.OnXpAdquired(info.Other, xpPickup->Value);
-                    f.Events.OnXpAdquired(info.Other, xpPickup->Value);
+                    f.Signals.OnXpAdquired(infoOther, xpPickup->Value);
+                    f.Events.OnXpAdquired(infoOther, xpPickup->Value);
 
                     // Destroy xp after being adquired
-                    f.Destroy(info.Entity); 
+                    f.Destroy(infoEntity); 
 
                 }
             }
         }
 
-        private void OnProjectileHitting(Frame f, TriggerInfo3D info)
+        private void OnProjectileHitting(Frame f, EntityRef infoEntity, EntityRef infoOther)
         {
-            if (f.Unsafe.TryGetPointer<Projectile>(info.Entity, out Projectile* projectile))
+            if (f.Unsafe.TryGetPointer<Projectile>(infoEntity, out Projectile* projectile))
             {
-                if (f.Unsafe.TryGetPointer<HealthComponent>(info.Other, out HealthComponent* health))
+                if (f.Unsafe.TryGetPointer<HealthComponent>(infoOther, out HealthComponent* health))
                 {
                     Debug.Log("[CollisionSystem] projectile hitted health!");
 
-                    if (!f.Unsafe.TryGetPointer<OwnerData>(info.Entity, out var owner))
+                    if (!f.Unsafe.TryGetPointer<OwnerData>(infoEntity, out var owner))
                         return;
 
-                    f.Signals.OnHit(info.Other, owner->OwnerEntity, projectile->Damage);
-                    f.Events.OnHit(info.Other, owner->OwnerEntity, projectile->Damage);
+                    f.Signals.OnHit(infoOther, owner->OwnerEntity, projectile->Damage);
+                    f.Events.OnHit(infoOther, owner->OwnerEntity, projectile->Damage);
                 }
 
                 projectile->HitsToDestroy--;
 
                 if (projectile->HitsToDestroy <= 0)
-                    f.Destroy(info.Entity);
+                    f.Destroy(infoEntity);
             }
         }
     }

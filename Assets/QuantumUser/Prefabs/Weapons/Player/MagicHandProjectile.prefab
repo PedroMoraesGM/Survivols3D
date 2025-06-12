@@ -426,15 +426,15 @@ MonoBehaviour:
     LayerSource: 0
     Layer: 9
     CallbackFlags:
-      Value: 466
+      Value: 192
   PhysicsBody:
-    IsEnabled: 0
+    IsEnabled: 1
     Config2D: 116
     Config3D: 58
     RotationFreeze: 255
     InertiaMode: 0
     Mass:
-      RawValue: 32768000
+      RawValue: 65536
     Drag:
       RawValue: 327680
     AngularDrag:
@@ -629,8 +629,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    IsEnemyTeam:
+    HomeToPlayers:
       Value: 0
+    MinFollowDistance:
+      RawValue: 0
     RemainingBounces: 0
     Speed:
       RawValue: 49152

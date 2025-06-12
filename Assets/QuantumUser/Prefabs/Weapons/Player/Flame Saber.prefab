@@ -5032,7 +5032,7 @@ MonoBehaviour:
       RawValue: 0
   PhysicsCollider:
     IsEnabled: 1
-    IsTrigger: 1
+    IsTrigger: 0
     Material:
       Id:
         Value: 2301746459976711362
@@ -5101,7 +5101,7 @@ MonoBehaviour:
     LayerSource: 0
     Layer: 9
     CallbackFlags:
-      Value: 1234
+      Value: 3
   PhysicsBody:
     IsEnabled: 1
     Config2D: 116
@@ -5109,7 +5109,7 @@ MonoBehaviour:
     RotationFreeze: 255
     InertiaMode: 0
     Mass:
-      RawValue: 65536
+      RawValue: 6554
     Drag:
       RawValue: 327680
     AngularDrag:

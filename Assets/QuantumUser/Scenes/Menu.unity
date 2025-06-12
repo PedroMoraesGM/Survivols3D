@@ -1644,6 +1644,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: -34
       objectReference: {fileID: 0}
+    - target: {fileID: 3721964455018921161, guid: 54ecd76b34b474d4e8d33760a2ad0b62, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4661524608685665804, guid: 54ecd76b34b474d4e8d33760a2ad0b62, type: 3}
       propertyPath: m_Name
       value: PhotonMenuViewGameplay
@@ -1718,11 +1722,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9080202634340887961, guid: 54ecd76b34b474d4e8d33760a2ad0b62, type: 3}
       propertyPath: m_AnchorMin.x
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9080202634340887961, guid: 54ecd76b34b474d4e8d33760a2ad0b62, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9080202634340887961, guid: 54ecd76b34b474d4e8d33760a2ad0b62, type: 3}
       propertyPath: m_SizeDelta.x

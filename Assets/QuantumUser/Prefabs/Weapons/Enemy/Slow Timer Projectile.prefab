@@ -359,7 +359,7 @@ MonoBehaviour:
       RawValue: 0
   PhysicsCollider:
     IsEnabled: 1
-    IsTrigger: 1
+    IsTrigger: 0
     Material:
       Id:
         Value: 2301746459976711362
@@ -428,15 +428,15 @@ MonoBehaviour:
     LayerSource: 0
     Layer: 8
     CallbackFlags:
-      Value: 466
+      Value: 3
   PhysicsBody:
-    IsEnabled: 0
+    IsEnabled: 1
     Config2D: 116
     Config3D: 58
     RotationFreeze: 255
     InertiaMode: 0
     Mass:
-      RawValue: 32768000
+      RawValue: 65536
     Drag:
       RawValue: 327680
     AngularDrag:
@@ -633,7 +633,7 @@ MonoBehaviour:
   Prototype:
     HomeToPlayers:
       Value: 1
-    MaxFollowDistance:
+    MinFollowDistance:
       RawValue: 0
     RemainingBounces: 0
     Speed:

@@ -28,7 +28,7 @@ struct StateObjectPair
 }
 
 public unsafe class GameUIController : QuantumCallbacks
-{
+{    
     [SerializeField] private List<StateObjectPair> _stateObjectPairs = new();
     private Dictionary<UIState, GameObject> _stateObjectDictionary = new();
 
@@ -66,7 +66,7 @@ public unsafe class GameUIController : QuantumCallbacks
     }
 
     private void Awake()
-    {
+    {        
         QuantumEvent.Subscribe(this, (EventOnGameStateChanged e) => OnGameStateChanged(e));
         QuantumEvent.Subscribe(this, (EventOnScoreChanged e) => OnScoreChanged(e));
         QuantumEvent.Subscribe(this, (EventOnGameTerminated e) => OnGameTerminated(e));

@@ -15,6 +15,8 @@ public class DisconnectHandler : QuantumEntityViewComponent
         if (!f.TryGet(e.Entity, out PlayerLink playerLink)) return;
         if (!e.Game.PlayerIsLocal(playerLink.Player)) return;
 
+        QuantumRunner.Default.Game.RemovePlayer();
+
         // Stop Quantum runner
         if (QuantumRunner.Default != null && QuantumRunner.Default.Game != null)
         {

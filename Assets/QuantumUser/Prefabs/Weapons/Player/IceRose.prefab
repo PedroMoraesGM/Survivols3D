@@ -5002,7 +5002,7 @@ MonoBehaviour:
     LayerSource: 0
     Layer: 9
     CallbackFlags:
-      Value: 1234
+      Value: 192
   PhysicsBody:
     IsEnabled: 1
     Config2D: 116

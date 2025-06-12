@@ -6,10 +6,12 @@ using UnityEngine.InputSystem;
 public class GameInput : MonoBehaviour
 {
     [SerializeField] private InputActionAsset _inputActions;
+    private PauseController pauseController;
     private InputActionMap _map;
 
     private void Awake()
     {
+        pauseController = FindFirstObjectByType<PauseController>();
         _map = _inputActions.FindActionMap("Player", true);
     }
 
@@ -18,8 +20,15 @@ public class GameInput : MonoBehaviour
         QuantumCallback.Subscribe(this, (CallbackPollInput cb) => PollInput(cb));
     }
 
+    public InputAction GetPauseAction()
+    {
+        return _map.FindAction("Pause");
+    }
+
     void PollInput(CallbackPollInput callback)
     {
+        if (pauseController.IsPaused) return;
+
         var qInput = new Quantum.Input();
 
         // Read mouse look delta
@@ -34,10 +43,9 @@ public class GameInput : MonoBehaviour
         qInput.ChoiceFirst = _map.FindAction("ChoiceFirst").WasPressedThisFrame();
         qInput.ChoiceSecond = _map.FindAction("ChoiceSecond").WasPressedThisFrame();
         qInput.ChoiceThird = _map.FindAction("ChoiceThird").WasPressedThisFrame();
-        
+
         // Submit with repeatable flag
         callback.SetInput(qInput, DeterministicInputFlags.Repeatable);
 
     }
-
 }
