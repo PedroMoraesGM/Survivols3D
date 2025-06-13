@@ -25,6 +25,7 @@ public class CharacterClassSelector : QuantumMenuUIScreen
     [SerializeField] private float selectionFadeDuration;
     
     [Header("Menu Config")]
+    [SerializeField] private QuantumMenuUIController menuController;
     [SerializeField] private QuantumMenuConfig menuConfig;
 
     private CharacterClass _currentClass;
@@ -41,6 +42,8 @@ public class CharacterClassSelector : QuantumMenuUIScreen
         // Load saved selection 
         int saved = PlayerPrefs.GetInt(PREF_KEY, (int)CharacterClass.Tank);
         _currentClass = (CharacterClass)Mathf.Clamp(saved, 0, 3);
+        // Update the player's custom properties with the selected class
+        menuController.ConnectArgs.RuntimePlayers[0].SelectedClass = _currentClass; 
 
         // Update UI to reflect loaded value
         RefreshUI();
@@ -53,6 +56,10 @@ public class CharacterClassSelector : QuantumMenuUIScreen
         // Persist
         PlayerPrefs.SetInt(PREF_KEY, (int)_currentClass);
         PlayerPrefs.Save();
+
+        // Update the player's custom properties with the selected class
+        menuController.ConnectArgs.RuntimePlayers[0].SelectedClass = _currentClass; // Assuming single player
+
         // Update visuals
         RefreshUI();
     }

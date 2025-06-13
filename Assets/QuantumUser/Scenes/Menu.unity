@@ -1314,6 +1314,7 @@ MonoBehaviour:
   mageSelectedOverlay: {fileID: 858909656}
   healerSelectedOverlay: {fileID: 1360386695}
   selectionFadeDuration: 0.25
+  menuController: {fileID: 7243461718389809947}
   menuConfig: {fileID: 11400000, guid: 12a7b15ea36bce843ac6c61b635f6534, type: 2}
 --- !u!114 &1948938712 stripped
 MonoBehaviour:
@@ -7008,6 +7009,7 @@ MonoBehaviour:
         Id:
           Value: 1496409425384618818
       PlayerNickname: 
+      SelectedClass: 2
     SessionConfig: {fileID: 11400000, guid: ddced9348c7694940b05d96b4da144d6, type: 2}
     ServerSettings: {fileID: 11400000, guid: f8e2e7d6876f7467782398d0fbe7f72c, type: 2}
     ShutdownFlags: 3

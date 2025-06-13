@@ -2,5 +2,6 @@
 {
     public partial class RuntimePlayer
     {
+        public CharacterClass SelectedClass;
     }
 }

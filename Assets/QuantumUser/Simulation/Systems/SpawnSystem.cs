@@ -55,8 +55,7 @@ namespace Tomorrow.Quantum
             var playerLink = new PlayerLink()
             {
                 Player = player,
-                Class = (CharacterClass) PlayerPrefs.GetInt("SelectedCharacterClass", 0),
-                //Class = f.RuntimeConfig.SelectedClass
+                Class = f.GetPlayerData(player).SelectedClass   // class value is assigned at player customproperties,
             };
             f.Add(playerEntity, playerLink);
         }
