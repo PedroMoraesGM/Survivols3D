@@ -62,6 +62,16 @@ namespace Tomorrow.Quantum
                 }
             }
 
+            //Check for Health Regen area
+            if (f.Unsafe.TryGetPointer<HealthRegenAreaComponent>(info.Entity, out var healthRegenArea))
+            {
+                if (f.Unsafe.TryGetPointer<StatusEffectComponent>(info.Other, out var status))
+                {
+                    status->HealthRegenAmount = healthRegenArea->HealthRegenAmount;
+                    status->HealthRegenTimer = healthRegenArea->HealthRegenDuration;
+                }
+            }
+
             // Only apply damage during valid damage tick
             if (!areaWeapon->IsDamageTick)
                 return;

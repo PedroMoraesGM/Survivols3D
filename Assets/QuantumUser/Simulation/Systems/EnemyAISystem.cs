@@ -70,9 +70,9 @@ namespace Tomorrow.Quantum
             if (f.Unsafe.TryGetPointer(target, out EnemyAI* enemy))
             {
                 f.Unsafe.TryGetPointer(target, out HealthComponent* health);
-                health->CurrentHealth -= damage;
-
-                if(health->CurrentHealth < 0)
+                health->CurrentHealth = FPMath.Clamp(health->CurrentHealth - damage, 0, health->MaxHealth);
+            
+                if(health->CurrentHealth <= 0)
                 {
                     f.Signals.OnDefeated(target, dealer);
                     f.Events.OnDefeated(target, dealer);

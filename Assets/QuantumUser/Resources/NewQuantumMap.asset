@@ -328,6 +328,12 @@ MonoBehaviour:
         Entries:
         - Prefab:
             Id:
+              Value: 1318991670280147314
+          MinWave: 5
+          Weight:
+            RawValue: 6554
+        - Prefab:
+            Id:
               Value: 1450041578110963961
           MinWave: 0
           Weight:
@@ -340,16 +346,16 @@ MonoBehaviour:
             RawValue: 65536
         - Prefab:
             Id:
-              Value: 1296241623356491307
+              Value: 1280262240190112261
           MinWave: 2
           Weight:
-            RawValue: 81920
+            RawValue: 16384
         - Prefab:
             Id:
-              Value: 1280262240190112261
-          MinWave: 1
+              Value: 1296241623356491307
+          MinWave: 3
           Weight:
-            RawValue: 16384
+            RawValue: 81920
         - Prefab:
             Id:
               Value: 1346333854077795796
@@ -418,7 +424,7 @@ MonoBehaviour:
               Value: 1348710445196619827
           Id: 0
           MinLevel: 0
-          Weight: 1
+          Weight: 10
           CanBeRepeated:
             Value: 1
         - Prefab:
@@ -426,7 +432,7 @@ MonoBehaviour:
               Value: 1412917834980047614
           Id: 1
           MinLevel: 0
-          Weight: 1
+          Weight: 10
           CanBeRepeated:
             Value: 1
         - Prefab:
@@ -434,7 +440,7 @@ MonoBehaviour:
               Value: 1266653282462716527
           Id: 2
           MinLevel: 0
-          Weight: 1
+          Weight: 10
           CanBeRepeated:
             Value: 1
         - Prefab:
@@ -442,7 +448,7 @@ MonoBehaviour:
               Value: 1525995945446780013
           Id: 3
           MinLevel: 0
-          Weight: 1
+          Weight: 5
           CanBeRepeated:
             Value: 1
         - Prefab:
@@ -450,7 +456,15 @@ MonoBehaviour:
               Value: 1447083690833105115
           Id: 4
           MinLevel: 0
-          Weight: 1
+          Weight: 5
+          CanBeRepeated:
+            Value: 1
+        - Prefab:
+            Id:
+              Value: 1511700823856340672
+          Id: 5
+          MinLevel: 5
+          Weight: 3
           CanBeRepeated:
             Value: 1
         ChoicesPerLevel: 3

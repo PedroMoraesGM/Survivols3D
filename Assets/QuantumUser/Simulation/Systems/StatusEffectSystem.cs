@@ -1,3 +1,4 @@
+using Photon.Deterministic;
 using Quantum;
 using UnityEngine.Scripting;
 
@@ -7,6 +8,7 @@ public unsafe class StatusEffectSystem : SystemMainThreadFilter<StatusEffectSyst
     public struct Filter
     {
         public EntityRef Entity;
+        public HealthComponent* Health;
         public StatusEffectComponent* Status;
     }
 
@@ -22,6 +24,34 @@ public unsafe class StatusEffectSystem : SystemMainThreadFilter<StatusEffectSyst
                 // Reset slow when timer expires
                 status->SlowMultiplier = 1;
                 status->SlowTimer = 0;
+            }
+        }
+
+        if (status->HealthRegenTimer > 0)
+        {
+            status->HealthRegenTimer -= f.DeltaTime;
+            if (status->HealthRegenTimer <= 0)
+            {
+                // Reset health regen when timer expires
+                status->HealthRegenAmount = 0;
+                status->HealthRegenTimer = 0;
+            }
+            else
+            {
+                // Apply health regeneration effect
+                RegenHealthEffect(f, filter.Entity, status->HealthRegenAmount * f.DeltaTime);
+            }
+        }
+    }
+
+    private void RegenHealthEffect(Frame f, EntityRef entity, FP regenAmount)
+    {
+        if (f.Unsafe.TryGetPointer(entity, out HealthComponent* health))
+        {
+            health->CurrentHealth += regenAmount;
+            if (health->CurrentHealth > health->MaxHealth)
+            {
+                health->CurrentHealth = health->MaxHealth;
             }
         }
     }

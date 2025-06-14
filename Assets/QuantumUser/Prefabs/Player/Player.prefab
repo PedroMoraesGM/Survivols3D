@@ -759,6 +759,10 @@ MonoBehaviour:
       Id:
         Value: 2301746459976711362
     SourceCollider: {fileID: 0}
+    SourceShapeSettings:
+      IsScaledBySource: 0
+      CapsuleDirection2D: 0
+      CapsuleDirection3D: 0
     Shape2D:
       ShapeType: 0
       PolygonCollider:
@@ -1203,6 +1207,8 @@ MonoBehaviour:
   Prototype:
     SlowMultiplier:
       RawValue: 65536
+    HealthRegenAmount:
+      RawValue: 0
 --- !u!1 &2760386084047579640
 GameObject:
   m_ObjectHideFlags: 0

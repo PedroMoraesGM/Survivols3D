@@ -44,11 +44,11 @@ MonoBehaviour:
     Icon: {fileID: -1917760231, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
     IconColor: {r: 1, g: 0.3499613, b: 0, a: 1}
   - Key: 5
-    DisplayName: Magic Horse
-    Description: Increase move speed by 5%
+    DisplayName: Ethereal Laundry Machine
+    Description: Summons a ethereal machine that heals you and slows nearby entities
     Label: Upgrade
-    Icon: {fileID: -1917760231, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
-    IconColor: {r: 0.60764694, g: 1, b: 0, a: 1}
+    Icon: {fileID: -1424185632, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
+    IconColor: {r: 0, g: 1, b: 0.76862746, a: 1}
   - Key: 6
     DisplayName: Accuracy Eye
     Description: Your physical attacks hit 1 more time

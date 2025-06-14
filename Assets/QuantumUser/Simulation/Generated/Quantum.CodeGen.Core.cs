@@ -1102,6 +1102,28 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct HealthRegenAreaComponent : Quantum.IComponent {
+    public const Int32 SIZE = 16;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(0)]
+    public FP HealthRegenAmount;
+    [FieldOffset(8)]
+    public FP HealthRegenDuration;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 2267;
+        hash = hash * 31 + HealthRegenAmount.GetHashCode();
+        hash = hash * 31 + HealthRegenDuration.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (HealthRegenAreaComponent*)ptr;
+        FP.Serialize(&p->HealthRegenAmount, serializer);
+        FP.Serialize(&p->HealthRegenDuration, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HomingProjectileComponent : Quantum.IComponent {
     public const Int32 SIZE = 64;
     public const Int32 ALIGNMENT = 8;
@@ -1461,23 +1483,32 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct StatusEffectComponent : Quantum.IComponent {
-    public const Int32 SIZE = 16;
+    public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(0)]
+    [FieldOffset(16)]
     public FP SlowMultiplier;
-    [FieldOffset(8)]
+    [FieldOffset(24)]
     [ExcludeFromPrototype()]
     public FP SlowTimer;
+    [FieldOffset(0)]
+    public FP HealthRegenAmount;
+    [FieldOffset(8)]
+    [ExcludeFromPrototype()]
+    public FP HealthRegenTimer;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10597;
         hash = hash * 31 + SlowMultiplier.GetHashCode();
         hash = hash * 31 + SlowTimer.GetHashCode();
+        hash = hash * 31 + HealthRegenAmount.GetHashCode();
+        hash = hash * 31 + HealthRegenTimer.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (StatusEffectComponent*)ptr;
+        FP.Serialize(&p->HealthRegenAmount, serializer);
+        FP.Serialize(&p->HealthRegenTimer, serializer);
         FP.Serialize(&p->SlowMultiplier, serializer);
         FP.Serialize(&p->SlowTimer, serializer);
     }
@@ -1660,6 +1691,8 @@ namespace Quantum {
       BuildSignalsArrayOnComponentRemoved<Quantum.Goal>();
       BuildSignalsArrayOnComponentAdded<Quantum.HealthComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.HealthComponent>();
+      BuildSignalsArrayOnComponentAdded<Quantum.HealthRegenAreaComponent>();
+      BuildSignalsArrayOnComponentRemoved<Quantum.HealthRegenAreaComponent>();
       BuildSignalsArrayOnComponentAdded<Quantum.HomingProjectileComponent>();
       BuildSignalsArrayOnComponentRemoved<Quantum.HomingProjectileComponent>();
       BuildSignalsArrayOnComponentAdded<MapEntityLink>();
@@ -1894,6 +1927,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.GameState), 4);
       typeRegistry.Register(typeof(Quantum.Goal), Quantum.Goal.SIZE);
       typeRegistry.Register(typeof(Quantum.HealthComponent), Quantum.HealthComponent.SIZE);
+      typeRegistry.Register(typeof(Quantum.HealthRegenAreaComponent), Quantum.HealthRegenAreaComponent.SIZE);
       typeRegistry.Register(typeof(HingeJoint), HingeJoint.SIZE);
       typeRegistry.Register(typeof(HingeJoint3D), HingeJoint3D.SIZE);
       typeRegistry.Register(typeof(Hit), Hit.SIZE);
@@ -1967,7 +2001,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum._globals_), Quantum._globals_.SIZE);
     }
     static partial void InitComponentTypeIdGen() {
-      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 23)
+      ComponentTypeId.Reset(ComponentTypeId.BuiltInComponentCount + 24)
         .AddBuiltInComponents()
         .Add<Quantum.AreaWeaponComponent>(Quantum.AreaWeaponComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.Character>(Quantum.Character.Serialize, null, null, ComponentFlags.None)
@@ -1977,6 +2011,7 @@ namespace Quantum {
         .Add<Quantum.Game>(Quantum.Game.Serialize, Quantum.Game.OnAdded, Quantum.Game.OnRemoved, ComponentFlags.Singleton)
         .Add<Quantum.Goal>(Quantum.Goal.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.HealthComponent>(Quantum.HealthComponent.Serialize, null, null, ComponentFlags.None)
+        .Add<Quantum.HealthRegenAreaComponent>(Quantum.HealthRegenAreaComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.HomingProjectileComponent>(Quantum.HomingProjectileComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.OwnerData>(Quantum.OwnerData.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.PlayerLink>(Quantum.PlayerLink.Serialize, null, null, ComponentFlags.None)

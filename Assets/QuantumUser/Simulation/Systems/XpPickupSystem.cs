@@ -8,7 +8,7 @@ public unsafe class XPPickupSystem : SystemSignalsOnly, ISignalOnDefeated, ISign
 {
     public void OnXpAdquired(Frame f, EntityRef target, FP xpAmount)
     {
-        // Grab the player’s XPComponent
+        // Grab the playerï¿½s XPComponent
         if (!f.Unsafe.TryGetPointer<XPComponent>(target, out XPComponent* xpComponent))
         {
             return;

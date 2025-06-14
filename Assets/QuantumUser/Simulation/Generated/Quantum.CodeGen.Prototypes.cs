@@ -246,6 +246,23 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.HealthRegenAreaComponent))]
+  public unsafe partial class HealthRegenAreaComponentPrototype : ComponentPrototype<Quantum.HealthRegenAreaComponent> {
+    public FP HealthRegenAmount;
+    public FP HealthRegenDuration;
+    partial void MaterializeUser(Frame frame, ref Quantum.HealthRegenAreaComponent result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.HealthRegenAreaComponent component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.HealthRegenAreaComponent result, in PrototypeMaterializationContext context = default) {
+        result.HealthRegenAmount = this.HealthRegenAmount;
+        result.HealthRegenDuration = this.HealthRegenDuration;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.HomingProjectileComponent))]
   public unsafe class HomingProjectileComponentPrototype : ComponentPrototype<Quantum.HomingProjectileComponent> {
     public QBoolean HomeToPlayers;
@@ -534,6 +551,7 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.StatusEffectComponent))]
   public unsafe partial class StatusEffectComponentPrototype : ComponentPrototype<Quantum.StatusEffectComponent> {
     public FP SlowMultiplier;
+    public FP HealthRegenAmount;
     partial void MaterializeUser(Frame frame, ref Quantum.StatusEffectComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.StatusEffectComponent component = default;
@@ -542,6 +560,7 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.StatusEffectComponent result, in PrototypeMaterializationContext context = default) {
         result.SlowMultiplier = this.SlowMultiplier;
+        result.HealthRegenAmount = this.HealthRegenAmount;
         MaterializeUser(frame, ref result, in context);
     }
   }

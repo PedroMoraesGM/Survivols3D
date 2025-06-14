@@ -1,4 +1,6 @@
 component StatusEffectComponent {
   FP SlowMultiplier;    // 1.0 = normal speed, 0.5 = 50% speed
   [ExcludeFromPrototype] FP SlowTimer;         // counts down time remaining for slow
+  FP HealthRegenAmount; // 0 = no regen
+  [ExcludeFromPrototype] FP HealthRegenTimer;
 }

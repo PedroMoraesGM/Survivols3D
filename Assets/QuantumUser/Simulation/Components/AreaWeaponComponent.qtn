@@ -13,3 +13,8 @@ component SlowAreaComponent {
 	FP SlowAmount;        // e.g. 0.5 means 50% speed
 	FP SlowDuration;      // duration in seconds
 }
+
+component HealthRegenAreaComponent {
+	FP HealthRegenAmount;        
+	FP HealthRegenDuration;      // duration in seconds
+}

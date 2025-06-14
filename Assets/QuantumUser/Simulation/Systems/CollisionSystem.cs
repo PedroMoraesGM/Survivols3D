@@ -45,13 +45,13 @@ namespace Tomorrow.Quantum
             {
                 if (f.Unsafe.TryGetPointer<HealthComponent>(infoOther, out HealthComponent* health))
                 {
-                    Debug.Log("[CollisionSystem] projectile hitted health!");
+                    EntityRef dealerEntity = EntityRef.None;
 
-                    if (!f.Unsafe.TryGetPointer<OwnerData>(infoEntity, out var owner))
-                        return;
+                    if (f.Unsafe.TryGetPointer<OwnerData>(infoEntity, out var owner))
+                        dealerEntity = owner->OwnerEntity;
 
-                    f.Signals.OnHit(infoOther, owner->OwnerEntity, projectile->Damage);
-                    f.Events.OnHit(infoOther, owner->OwnerEntity, projectile->Damage);
+                    f.Signals.OnHit(infoOther, dealerEntity, projectile->Damage);
+                    f.Events.OnHit(infoOther, dealerEntity, projectile->Damage);
                 }
 
                 projectile->HitsToDestroy--;

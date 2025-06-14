@@ -125,6 +125,7 @@
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumStaticPolygonCollider2D.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumGraphProfilerRenderTime.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QPrototypeNavMeshAvoidanceAgent.cs" />
+    <Compile Include="Assets\QuantumUser\View\Generated\QPrototypeHealthRegenAreaComponent.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumMapNavMeshUnity.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumGraphSeriesValue.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumNavMeshDebugDrawer.cs" />

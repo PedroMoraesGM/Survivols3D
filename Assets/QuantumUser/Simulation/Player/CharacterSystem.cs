@@ -37,17 +37,17 @@ namespace Quantum
         {
             if (f.Unsafe.TryGetPointer(target, out Character* character))
             {
-                if (f.Unsafe.TryGetPointer(dealer, out EnemyAI* enemy))
+                f.Unsafe.TryGetPointer(target, out HealthComponent* health);
+
+                if(health->IsDead) // If the target is already dead, ignore the hit
+                    return;                
+
+                health->CurrentHealth = FPMath.Clamp(health->CurrentHealth - damage, 0, health->MaxHealth);                
+
+                if (health->CurrentHealth <= 0 && !health->IsDead)
                 {
-                    f.Unsafe.TryGetPointer(target, out HealthComponent* health);
-
-                    health->CurrentHealth -= damage;
-
-                    if (health->CurrentHealth < 0 && !health->IsDead)
-                    {
-                        f.Signals.OnDefeated(target, dealer);
-                        f.Events.OnDefeated(target, dealer);
-                    }
+                    f.Signals.OnDefeated(target, dealer);
+                    f.Events.OnDefeated(target, dealer);
                 }
             }
         }

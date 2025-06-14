@@ -42,8 +42,11 @@ public unsafe class GameUIController : QuantumCallbacks
     [Header("Playing")]
     [SerializeField] private GameObject crosshairImage;
     [Header("Health UI")]
+    private float previousHealth = -1;
     [SerializeField] private float healthBlinkDuration = 1;
     [SerializeField] private Image healthVignette;
+    [SerializeField] private Color healthGainColor = Color.green;
+    [SerializeField] private Color healthLossColor = Color.red;
     [SerializeField] private CanvasGroup healthBarCanvasGroup;
     [SerializeField] private float disableBarDelay = 3;
     [SerializeField] private Image healthBarImage;
@@ -131,15 +134,30 @@ public unsafe class GameUIController : QuantumCallbacks
         if (!f.TryGet(e.Target, out PlayerLink playerLink)) return;
         if (!e.Game.PlayerIsLocal(playerLink.Player)) return;
 
-        healthVignette.color = Color.white;
-        healthVignette.DOKill();
-        healthVignette.DOFade(0, healthBlinkDuration);
-
         f.Unsafe.TryGetPointer(e.Target, out HealthComponent* health);
+        if (previousHealth == -1) // Initialize previousHealth on first hit
+            previousHealth = health->CurrentHealth.AsFloat;
+        
+        if (health->CurrentHealth.AsFloat == previousHealth)
+                return;
+
+        if (health->CurrentHealth.AsFloat < previousHealth)
+        {
+            healthVignette.color = healthLossColor;
+            healthVignette.DOKill();
+            healthVignette.DOFade(0, healthBlinkDuration);
+        }
+        else
+        {
+            healthVignette.color = healthGainColor;
+            healthVignette.DOKill();
+            healthVignette.DOFade(0, healthBlinkDuration);
+        }
 
         healthBarCanvasGroup.DOKill();
         healthBarCanvasGroup.DOFade(1, 0.35f);
-        healthBarImage.transform.localScale = new Vector3(Math.Clamp((health->CurrentHealth / health->MaxHealth).AsFloat, 0, 1), 1, 1);
+        healthBarImage.transform.DOScale(new Vector3(Math.Clamp((health->CurrentHealth / health->MaxHealth).AsFloat, 0, 1), 1, 1), 0.3f);
+        previousHealth = health->CurrentHealth.AsFloat;
 
         CancelInvoke(nameof(DisableHealthBar));
         Invoke(nameof(DisableHealthBar), disableBarDelay);
