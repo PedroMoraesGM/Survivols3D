@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3232589523780210388}
   - component: {fileID: 5320364645022030142}
   - component: {fileID: 702151256405721621}
+  - component: {fileID: 6282446366860297988}
   m_Layer: 0
   m_Name: FlippingKnife
   m_TagString: Untagged
@@ -59,6 +60,10 @@ MonoBehaviour:
       Id:
         Value: 0
     SourceCollider: {fileID: 0}
+    SourceShapeSettings:
+      IsScaledBySource: 0
+      CapsuleDirection2D: 0
+      CapsuleDirection3D: 0
     Shape2D:
       ShapeType: 0
       PolygonCollider:
@@ -292,3 +297,20 @@ MonoBehaviour:
         RawValue: 65536
       Z:
         RawValue: 0
+--- !u!114 &6282446366860297988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 334967146245887172}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c21e04958561d34e95ff83eeb0da93e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    BaseDamage:
+      RawValue: 0
+    DamageMultiplier:
+      RawValue: 65536

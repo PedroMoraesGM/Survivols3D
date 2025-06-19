@@ -81,6 +81,7 @@
     <Compile Include="Assets\QuantumUser\View\EnemyViewController.cs" />
     <Compile Include="Assets\Vefects\Trails VFX URP\Scripts\Demo_TurningAround.cs" />
     <Compile Include="Assets\QuantumUser\Scripts\Input\GameInput.cs" />
+    <Compile Include="Assets\QuantumUser\View\AreaWeaponViewController.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Photon\Quantum\Assemblies\Quantum.Deterministic.xml" />

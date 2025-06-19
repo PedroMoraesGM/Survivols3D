@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 6433713338052550406}
   - component: {fileID: 922539061847712016}
   - component: {fileID: 5946175445703967610}
+  - component: {fileID: 8952100736078017581}
   m_Layer: 6
   m_Name: Enemies Slow Area
   m_TagString: Untagged
@@ -327,7 +328,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    Damage: 0
     DamageCooldown: 30
     IsDamageTick:
       Value: 0
@@ -350,6 +350,23 @@ MonoBehaviour:
       RawValue: 52429
     SlowDuration:
       RawValue: 19661
+--- !u!114 &8952100736078017581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1489887589990321980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c21e04958561d34e95ff83eeb0da93e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    BaseDamage:
+      RawValue: 0
+    DamageMultiplier:
+      RawValue: 0
 --- !u!1 &1637612235409175162
 GameObject:
   m_ObjectHideFlags: 0
@@ -378,7 +395,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.000000029802322, y: -0.00000010309762, z: -1, w: 0.00000014830293}
   m_LocalPosition: {x: -0.00000039646858, y: -1.150001, z: -0.00000026492702}
-  m_LocalScale: {x: 14.951, y: 14.951, z: 14.951}
+  m_LocalScale: {x: 15, y: 15, z: 15}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8300076206607552644}
@@ -452,6 +469,8 @@ GameObject:
   - component: {fileID: 3303600519870389788}
   - component: {fileID: 4898114057224838497}
   - component: {fileID: 356962746373779616}
+  - component: {fileID: 6999837305151382820}
+  - component: {fileID: 7925209162274947760}
   m_Layer: 8
   m_Name: 'Laundry Regen Dome '
   m_TagString: Untagged
@@ -761,7 +780,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    Damage: 0
     DamageCooldown: 30
     IsDamageTick:
       Value: 0
@@ -815,6 +833,39 @@ MonoBehaviour:
       RawValue: 52429
     SlowDuration:
       RawValue: 19661
+--- !u!114 &6999837305151382820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4658210303930770046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c21e04958561d34e95ff83eeb0da93e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    BaseDamage:
+      RawValue: -131072
+    DamageMultiplier:
+      RawValue: 65536
+--- !u!114 &7925209162274947760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4658210303930770046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 978151dad23145745a45ea4c5407ef3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  areaParticleEffects:
+  - {fileID: 8124675506272204373}
+  areaMeshModel: {fileID: 4095584585677160363}
+  emissionRatePerUnitRadius: 6
 --- !u!1 &5364367608078349254
 GameObject:
   m_ObjectHideFlags: 0
@@ -1700,7 +1751,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 7.2
+      value: 7.52
       mode: 0
       spread: 0
       speed:

@@ -173,6 +173,8 @@ GameObject:
   - component: {fileID: 7107326377363849311}
   - component: {fileID: 8474774495975209206}
   - component: {fileID: -8618597181333356685}
+  - component: {fileID: -1804603044606770612}
+  - component: {fileID: -7153559677221741907}
   m_Layer: 7
   m_Name: CrabEmperor MInion
   m_TagString: Untagged
@@ -230,6 +232,10 @@ MonoBehaviour:
       Id:
         Value: 2301746459976711362
     SourceCollider: {fileID: 0}
+    SourceShapeSettings:
+      IsScaledBySource: 0
+      CapsuleDirection2D: 0
+      CapsuleDirection3D: 0
     Shape2D:
       ShapeType: 0
       PolygonCollider:
@@ -539,6 +545,8 @@ MonoBehaviour:
   Prototype:
     SlowMultiplier:
       RawValue: 65536
+    HealthRegenAmount:
+      RawValue: 0
 --- !u!114 &-8618597181333356685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -554,6 +562,40 @@ MonoBehaviour:
   Prototype:
     MaxHealth:
       RawValue: 655360
+--- !u!114 &-1804603044606770612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5247745156847184110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c21e04958561d34e95ff83eeb0da93e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    BaseDamage:
+      RawValue: 39322
+    DamageMultiplier:
+      RawValue: 65536
+--- !u!114 &-7153559677221741907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5247745156847184110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72b716436f6f6cf4cb93234bfea2fd2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    BaseSpeed:
+      RawValue: 9830
+    SpeedMultiplier:
+      RawValue: 65536
 --- !u!1 &8680789988241368681
 GameObject:
   m_ObjectHideFlags: 0

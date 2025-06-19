@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4426728493768658687}
   - component: {fileID: 7911495737506667483}
   - component: {fileID: 2165766613236295114}
+  - component: {fileID: 549237565793831069}
   m_Layer: 0
   m_Name: BouncyMissile
   m_TagString: Untagged
@@ -59,6 +60,10 @@ MonoBehaviour:
       Id:
         Value: 0
     SourceCollider: {fileID: 0}
+    SourceShapeSettings:
+      IsScaledBySource: 0
+      CapsuleDirection2D: 0
+      CapsuleDirection3D: 0
     Shape2D:
       ShapeType: 0
       PolygonCollider:
@@ -280,6 +285,11 @@ MonoBehaviour:
         Value: 1278416079342391519
     CanShoot:
       Value: 1
+    CanHome:
+      Value: 1
+    CanBounce:
+      Value: 0
+    AddHitsToDestroy: 0
     BurstCount: 1
     BurstShotDelay: 0
     BurstDispersion:
@@ -289,6 +299,25 @@ MonoBehaviour:
       X:
         RawValue: 65536
       Y:
-        RawValue: 0
+        RawValue: 65536
       Z:
         RawValue: 0
+    AddAreaRangeMultiplier:
+      RawValue: 0
+--- !u!114 &549237565793831069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 676405245586260271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c21e04958561d34e95ff83eeb0da93e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    BaseDamage:
+      RawValue: 0
+    DamageMultiplier:
+      RawValue: 65536

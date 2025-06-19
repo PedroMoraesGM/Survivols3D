@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -7454226570599336116, guid: 34e9040c5f039124bbebc480af942488, type: 3}
+      propertyPath: Prototype.BaseSpeed.RawValue
+      value: 8777
+      objectReference: {fileID: 0}
     - target: {fileID: 1014936992563765277, guid: 34e9040c5f039124bbebc480af942488, type: 3}
       propertyPath: m_Controller
       value: 
@@ -75,6 +79,10 @@ PrefabInstance:
     - target: {fileID: 5553106784641972540, guid: 34e9040c5f039124bbebc480af942488, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5873841398834856321, guid: 34e9040c5f039124bbebc480af942488, type: 3}
+      propertyPath: Prototype.BaseDamage.RawValue
+      value: 26214
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

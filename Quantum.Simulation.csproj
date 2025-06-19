@@ -110,7 +110,7 @@
     <None Include="Assets\QuantumUser\Simulation\Components\StatusEffectComponent.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\Wall.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\SpawnWaves.qtn" />
-    <None Include="Assets\QuantumUser\Simulation\Components\Health.qtn" />
+    <None Include="Assets\QuantumUser\Simulation\Components\Stats.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Components\XP.qtn" />
     <None Include="Assets\QuantumUser\Simulation\Quantum.Simulation.asmref" />
     <None Include="Assets\QuantumUser\Simulation\Components\AreaWeaponComponent.qtn" />

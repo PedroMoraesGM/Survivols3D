@@ -5,6 +5,19 @@ component HealthComponent
 	[ExcludeFromPrototype] QBoolean IsDead;
 }
 
+component DamageComponent
+{	
+	// Damage 
+	FP BaseDamage;
+	FP DamageMultiplier;	
+}
+
+component MoveComponent
+{
+	FP BaseSpeed;
+	FP SpeedMultiplier;
+}
+
 signal OnHit(EntityRef target, EntityRef dealer,  FP damage);
 signal OnDefeated(EntityRef target, EntityRef dealer );
 event OnHit { EntityRef Target; EntityRef Dealer; FP Damage;  }

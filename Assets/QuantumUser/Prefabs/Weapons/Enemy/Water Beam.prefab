@@ -146,6 +146,8 @@ GameObject:
   - component: {fileID: 5180948074739425202}
   - component: {fileID: 5010210873979148506}
   - component: {fileID: 3126843873953547597}
+  - component: {fileID: -6966091796010367727}
+  - component: {fileID: -5521770841835916370}
   m_Layer: 8
   m_Name: Water Beam
   m_TagString: Untagged
@@ -455,11 +457,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    Damage:
-      RawValue: 917504
+    CanMove:
+      Value: 1
     HitsToDestroy: 0
-    Velocity:
-      RawValue: 65536
     TimeToLive:
       RawValue: 81920
 --- !u!114 &3126843873953547597
@@ -476,6 +476,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prototype:
     OwnerEntity: {fileID: 0}
+--- !u!114 &-6966091796010367727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7681006120380682493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c21e04958561d34e95ff83eeb0da93e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    BaseDamage:
+      RawValue: 655360
+    DamageMultiplier:
+      RawValue: 65536
+--- !u!114 &-5521770841835916370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7681006120380682493}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72b716436f6f6cf4cb93234bfea2fd2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    BaseSpeed:
+      RawValue: 65536
+    SpeedMultiplier:
+      RawValue: 65536
 --- !u!1001 &1986067180617812516
 PrefabInstance:
   m_ObjectHideFlags: 0

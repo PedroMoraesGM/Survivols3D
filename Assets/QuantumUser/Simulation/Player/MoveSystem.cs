@@ -19,6 +19,7 @@ namespace Tomorrow.Quantum
             public Transform3D* Transform;
             public PhysicsBody3D* Body;
             public Character* Character;
+            public MoveComponent* Move;
             public CharacterController3D* Controller;
             public HealthComponent* Health;
             public StatusEffectComponent* Status;
@@ -94,7 +95,7 @@ namespace Tomorrow.Quantum
             // 6) Compute the actual move vector and issue the move
             FPVector3 clampedDir = predictedPos - currentPos;
             //filter.Controller->Move(f, filter.Entity, clampedDir);
-            filter.Body->AddForceAtPosition(clampedDir * filter.Character->MoveSpeed * filter.Status->SlowMultiplier, filter.Transform->Position, filter.Transform);
+            filter.Body->AddForceAtPosition(clampedDir * filter.Move->BaseSpeed * filter.Move->SpeedMultiplier * filter.Status->SlowMultiplier, filter.Transform->Position, filter.Transform);
             //filter.Body->Velocity = clampedDir * filter.Character->MoveSpeed;
             //filter.Body->ClearForce();
             //filter.Body->AddForce(clampedDir * filter.Character->MoveSpeed);

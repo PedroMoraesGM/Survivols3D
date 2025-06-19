@@ -50,6 +50,19 @@ namespace Quantum.Prototypes.Unity {
   #endif //;
   
   [System.SerializableAttribute()]
+  public unsafe partial class AcquiredUpgradeInfoPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.AcquiredUpgradeInfoPrototype> {
+    public Quantum.QuantumEntityPrototype UpgradeEntity;
+    public Int32 Count;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.AcquiredUpgradeInfoPrototype prototype);
+    public override Quantum.Prototypes.AcquiredUpgradeInfoPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.AcquiredUpgradeInfoPrototype();
+      converter.Convert(this.UpgradeEntity, out result.UpgradeEntity);
+      converter.Convert(this.Count, out result.Count);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
   public unsafe partial class EnemyInfoPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.EnemyInfoPrototype> {
     public Quantum.QuantumEntityPrototype Entity;
     public FPVector3 Position;
@@ -76,10 +89,10 @@ namespace Quantum.Prototypes.Unity {
   }
   [System.SerializableAttribute()]
   public unsafe partial class HomingProjectileComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.HomingProjectileComponentPrototype> {
+    public QBoolean CanMove;
     public QBoolean HomeToPlayers;
     public FP MinFollowDistance;
     public Int32 RemainingBounces;
-    public FP Speed;
     public FP HomingStrength;
     public QBoolean HasTarget;
     public QBoolean CanDragTarget;
@@ -89,10 +102,10 @@ namespace Quantum.Prototypes.Unity {
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.HomingProjectileComponentPrototype prototype);
     public override Quantum.Prototypes.HomingProjectileComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.HomingProjectileComponentPrototype();
+      converter.Convert(this.CanMove, out result.CanMove);
       converter.Convert(this.HomeToPlayers, out result.HomeToPlayers);
       converter.Convert(this.MinFollowDistance, out result.MinFollowDistance);
       converter.Convert(this.RemainingBounces, out result.RemainingBounces);
-      converter.Convert(this.Speed, out result.Speed);
       converter.Convert(this.HomingStrength, out result.HomingStrength);
       converter.Convert(this.HasTarget, out result.HasTarget);
       converter.Convert(this.CanDragTarget, out result.CanDragTarget);
@@ -136,6 +149,40 @@ namespace Quantum.Prototypes.Unity {
       var result = new Quantum.Prototypes.PlayerRegistryComponentPrototype();
       converter.Convert(this.ActivePlayers, out result.ActivePlayers);
       ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
+  public unsafe partial class PlayerUpgradeComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.PlayerUpgradeComponentPrototype> {
+    [FreeOnComponentRemoved()]
+    [DictionaryAttribute()]
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.Unity.DictionaryEntry_Int32_AcquiredUpgradeInfo[] AcquiredUpgrades = {};
+    public QBoolean WaitingForChoice;
+    [AllocateOnComponentAdded()]
+    [FreeOnComponentRemoved()]
+    [DynamicCollectionAttribute()]
+    public Int32[] PendingChoices = {};
+    public Int32 ChosenUpgradeId;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerUpgradeComponentPrototype prototype);
+    public override Quantum.Prototypes.PlayerUpgradeComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.PlayerUpgradeComponentPrototype();
+      converter.Convert(this.AcquiredUpgrades, out result.AcquiredUpgrades);
+      converter.Convert(this.WaitingForChoice, out result.WaitingForChoice);
+      converter.Convert(this.PendingChoices, out result.PendingChoices);
+      converter.Convert(this.ChosenUpgradeId, out result.ChosenUpgradeId);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
+  public unsafe partial class DictionaryEntry_Int32_AcquiredUpgradeInfo : Quantum.Prototypes.DictionaryEntry, Quantum.IQuantumPrototypeConvertible<Quantum.Prototypes.DictionaryEntry_Int32_AcquiredUpgradeInfo> {
+    public Int32 Key;
+    public Quantum.Prototypes.Unity.AcquiredUpgradeInfoPrototype Value;
+    public Quantum.Prototypes.DictionaryEntry_Int32_AcquiredUpgradeInfo Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.DictionaryEntry_Int32_AcquiredUpgradeInfo();
+      converter.Convert(Key, out result.Key);
+      converter.Convert(Value, out result.Value);
       return result;
     }
   }

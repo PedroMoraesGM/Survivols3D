@@ -14,21 +14,19 @@ namespace Quantum {
   using UnityEngine;
   
   [UnityEngine.DisallowMultipleComponent()]
-  public unsafe partial class QPrototypePlayerUpgradeComponent : QuantumUnityComponentPrototype<Quantum.Prototypes.PlayerUpgradeComponentPrototype>, IQuantumUnityPrototypeWrapperForComponent<Quantum.PlayerUpgradeComponent> {
-    partial void CreatePrototypeUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerUpgradeComponentPrototype prototype);
+  public unsafe partial class QPrototypeMoveComponent : QuantumUnityComponentPrototype<Quantum.Prototypes.MoveComponentPrototype>, IQuantumUnityPrototypeWrapperForComponent<Quantum.MoveComponent> {
+    partial void CreatePrototypeUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.MoveComponentPrototype prototype);
     [DrawInline()]
     [ReadOnly(InEditMode = false)]
-    public Quantum.Prototypes.Unity.PlayerUpgradeComponentPrototype Prototype;
+    public Quantum.Prototypes.MoveComponentPrototype Prototype;
     public override System.Type ComponentType {
       get {
-        return typeof(Quantum.PlayerUpgradeComponent);
+        return typeof(Quantum.MoveComponent);
       }
     }
     public override ComponentPrototype CreatePrototype(Quantum.QuantumEntityPrototypeConverter converter) {
-      Quantum.Prototypes.PlayerUpgradeComponentPrototype result;
-      converter.Convert(Prototype, out result);
-      CreatePrototypeUser(converter, ref result);
-      return result;
+      CreatePrototypeUser(converter, ref Prototype);
+      return Prototype;
     }
   }
 }

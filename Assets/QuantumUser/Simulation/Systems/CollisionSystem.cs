@@ -27,8 +27,6 @@ namespace Tomorrow.Quantum
             {
                 if (f.Unsafe.TryGetPointer<Character>(infoOther, out Character* character))
                 {
-                    Debug.Log("[CollisionSystem] xp hitted player!");
-
                     f.Signals.OnXpAdquired(infoOther, xpPickup->Value);
                     f.Events.OnXpAdquired(infoOther, xpPickup->Value);
 
@@ -50,8 +48,11 @@ namespace Tomorrow.Quantum
                     if (f.Unsafe.TryGetPointer<OwnerData>(infoEntity, out var owner))
                         dealerEntity = owner->OwnerEntity;
 
-                    f.Signals.OnHit(infoOther, dealerEntity, projectile->Damage);
-                    f.Events.OnHit(infoOther, dealerEntity, projectile->Damage);
+                    if (f.Unsafe.TryGetPointer<DamageComponent>(infoEntity, out DamageComponent* damageComponent))
+                    {
+                        f.Signals.OnHit(infoOther, dealerEntity, damageComponent->BaseDamage * damageComponent->DamageMultiplier);
+                        f.Events.OnHit(infoOther, dealerEntity, damageComponent->BaseDamage * damageComponent->DamageMultiplier);
+                    }
                 }
 
                 projectile->HitsToDestroy--;

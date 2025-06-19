@@ -16,6 +16,7 @@ namespace Tomorrow.Quantum
         {
             public EntityRef Entity;
             public Transform3D* Transform;
+            public MoveComponent* MoveComponent;
             public HomingProjectileComponent* Missile;
         }
 
@@ -23,10 +24,13 @@ namespace Tomorrow.Quantum
         public override void Update(Frame f, ref Filter filter)
         {
             ref var m = ref *filter.Missile;
+            ref var move = ref *filter.MoveComponent;
             var pos = filter.Transform->Position;
 
             // Acquire or validate target...
             bool gotTarget = TryAcquireClosestTarget(f, filter, pos, out m.CurrentTarget);
+
+            if (!m.CanMove) return;
 
             if (m.CurrentTarget.IsValid)
             {
@@ -54,12 +58,12 @@ namespace Tomorrow.Quantum
 
                 // Move if within follow range
                 if (m.MinFollowDistance <= FP._0 || distance <= m.MinFollowDistance)
-                    filter.Transform->Position += dir * m.Speed;
+                    filter.Transform->Position += dir * move.BaseSpeed * move.SpeedMultiplier;
             }
             else
             {
                 // fallback move forward
-                filter.Transform->Position += filter.Transform->Forward * m.Speed;
+                filter.Transform->Position += filter.Transform->Forward * move.BaseSpeed * move.SpeedMultiplier;
             }
         }
 

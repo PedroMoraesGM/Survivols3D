@@ -1,6 +1,5 @@
 component Character {
-	// Move 
-	FP MoveSpeed;
+	// Camera move 
 	FP HorizontalTurnSpeedDegrees;
 	FP VerticalTurnSpeedDegrees;
 	[ExcludeFromPrototype] FP VerticalLookPitch;

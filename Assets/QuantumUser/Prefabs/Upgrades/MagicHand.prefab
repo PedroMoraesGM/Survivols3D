@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4652797999805087729}
   - component: {fileID: 7555209531345262584}
   - component: {fileID: 5710907589421887007}
+  - component: {fileID: 1635715631282572516}
   m_Layer: 0
   m_Name: MagicHand
   m_TagString: Untagged
@@ -59,6 +60,10 @@ MonoBehaviour:
       Id:
         Value: 0
     SourceCollider: {fileID: 0}
+    SourceShapeSettings:
+      IsScaledBySource: 0
+      CapsuleDirection2D: 0
+      CapsuleDirection3D: 0
     Shape2D:
       ShapeType: 0
       PolygonCollider:
@@ -280,8 +285,13 @@ MonoBehaviour:
         Value: 1517981128656675034
     CanShoot:
       Value: 1
+    CanHome:
+      Value: 0
+    CanBounce:
+      Value: 0
+    AddHitsToDestroy: 0
     BurstCount: 1
-    BurstShotDelay: 0
+    BurstShotDelay: 10
     BurstDispersion:
       RawValue: 0
     FireCooldown: 120
@@ -289,6 +299,25 @@ MonoBehaviour:
       X:
         RawValue: 65536
       Y:
-        RawValue: 0
+        RawValue: 65536
       Z:
         RawValue: 0
+    AddAreaRangeMultiplier:
+      RawValue: 0
+--- !u!114 &1635715631282572516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5725811088052494600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c21e04958561d34e95ff83eeb0da93e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    BaseDamage:
+      RawValue: 0
+    DamageMultiplier:
+      RawValue: 65536

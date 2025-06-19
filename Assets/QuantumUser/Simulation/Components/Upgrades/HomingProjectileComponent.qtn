@@ -1,8 +1,8 @@
 component HomingProjectileComponent {
+  bool    CanMove;
   bool	  HomeToPlayers; // whether it should home enemies or players
   FP	  MinFollowDistance; // if less or equal 0 we always follow, otherwise move according to distance
   int     RemainingBounces;
-  FP      Speed;
   FP      HomingStrength;
   bool    HasTarget;
   bool	  CanDragTarget;

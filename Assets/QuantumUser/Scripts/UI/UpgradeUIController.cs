@@ -85,12 +85,10 @@ public class UpgradeUIController : MonoBehaviour
             var entryForThisCard = pending[i];
 
             var metaForThisCard = catalog.Get(entryForThisCard);
-            Debug.Log("On upgrades display! entry ID:" + entryForThisCard);
 
             var card = Instantiate(rewardCardPrefab, rewardsContent);
             if (metaForThisCard != null)
             {
-                Debug.Log("Meta is valid");
                 card.Setup(entryForThisCard,
                        metaForThisCard,
                        // here `id` is fixed per iteration

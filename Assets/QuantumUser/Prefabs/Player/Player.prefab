@@ -697,6 +697,8 @@ GameObject:
   - component: {fileID: 7506120001702604284}
   - component: {fileID: 3910160910305410099}
   - component: {fileID: 6992940179058417509}
+  - component: {fileID: -2016031772206800954}
+  - component: {fileID: -3590219562594562928}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -1026,8 +1028,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    MoveSpeed:
-      RawValue: 1179648
     HorizontalTurnSpeedDegrees:
       RawValue: 26214400
     VerticalTurnSpeedDegrees:
@@ -1116,7 +1116,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    AcquiredUpgrades: 
+    AcquiredUpgrades:
+    - Key: 2
+      Value:
+        UpgradeEntity: {fileID: -8659347868862416721}
+        Count: 1
     WaitingForChoice:
       Value: 0
     PendingChoices: 
@@ -1139,6 +1143,11 @@ MonoBehaviour:
         Value: 1361179226252959751
     CanShoot:
       Value: 1
+    CanHome:
+      Value: 0
+    CanBounce:
+      Value: 0
+    HitsToDestroy: 0
     BurstCount: 1
     BurstShotDelay: 0
     BurstDispersion:
@@ -1151,6 +1160,8 @@ MonoBehaviour:
         RawValue: 65536
       Z:
         RawValue: 0
+    AreaRangeMultiplier:
+      RawValue: 0
 --- !u!114 &1034736552393520118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1209,6 +1220,40 @@ MonoBehaviour:
       RawValue: 65536
     HealthRegenAmount:
       RawValue: 0
+--- !u!114 &-2016031772206800954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2043308203219904105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72b716436f6f6cf4cb93234bfea2fd2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    BaseSpeed:
+      RawValue: 1179648
+    SpeedMultiplier:
+      RawValue: 65536
+--- !u!114 &-3590219562594562928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2043308203219904105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c21e04958561d34e95ff83eeb0da93e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    BaseDamage:
+      RawValue: 0
+    DamageMultiplier:
+      RawValue: 65536
 --- !u!1 &2760386084047579640
 GameObject:
   m_ObjectHideFlags: 0

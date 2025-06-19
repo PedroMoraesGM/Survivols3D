@@ -1,3 +1,27 @@
+enum WeaponUpgradeType {
+  DamageBonus,
+  AddDamageMultiplier,
+  AddBounce,
+  AddHitsToDestroy,
+  EnableHoming,
+  FireRateMultiplier,
+  AddAreaRangeMultiplier,
+  FireRateBonus,
+  BurstCountBonus,
+  BurstShotDelayBonus
+}
+
+[Serializable]
+struct WeaponUpgradeEffect {
+  WeaponUpgradeType Type;
+  FP             Value;     // e.g. +10 damage, or bounce count as int
+}
+
+[Serializable]
+struct WeaponUpgradeEffects {
+  [FreeOnComponentRemoved] list<WeaponUpgradeEffect> Effects;
+}
+
 enum UpgradeCategory { WeaponUnlock, WeaponUpgrade }
 
 // Describes one upgrade or new weapon option
@@ -7,11 +31,12 @@ struct UpgradeEntry {
 	int         MinLevel;       // minimum player level to unlock
 	int        Weight;         // relative weight in random selection
 	bool		CanBeRepeated;	
+  [FreeOnComponentRemoved] list<WeaponUpgradeEffects> EffectsPerExtraUpgrade;    
 }
 
 // Master list of all upgrades, editable in the Inspector
 singleton component UpgradeDataComponent {
-  list<UpgradeEntry> Entries;
+  [FreeOnComponentRemoved] list<UpgradeEntry> Entries;
   int                ChoicesPerLevel;   // e.g. 3 choices at each level up
 }
 
@@ -21,11 +46,16 @@ component OwnerData{
 
 // Per-player upgrade state
 component PlayerUpgradeComponent {
-  list<int> AcquiredUpgrades;  // Ids of entries already taken
+  [FreeOnComponentRemoved] dictionary<int, AcquiredUpgradeInfo> AcquiredUpgrades;  // Ids of entries already taken, with count
   bool       WaitingForChoice;    // true between level-up and player pick
   [AllocateOnComponentAdded]
-  list<int> PendingChoices; // entries currently on offer
+  [FreeOnComponentRemoved] list<int> PendingChoices; // entries currently on offer
   int		ChosenUpgradeId;
+}
+
+struct AcquiredUpgradeInfo {
+    EntityRef UpgradeEntity;
+    int Count;
 }
 
 event OnChooseUpgrades{ EntityRef Target; }

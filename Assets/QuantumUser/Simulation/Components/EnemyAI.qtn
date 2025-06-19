@@ -1,13 +1,10 @@
 component EnemyAI {
 	FP XpDrop;
 
-	FP Damage;
 	FP CloseDamageRange;
 
 	FP ShootRangeDistance;
 
-	//Move
-	FP Speed;
 	FP MinHeightLimit;
 
 	bool CanMove;

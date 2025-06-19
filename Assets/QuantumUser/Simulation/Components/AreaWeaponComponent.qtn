@@ -1,5 +1,4 @@
 component AreaWeaponComponent {
-	int						Damage;
 	int    DamageCooldown;      // ticks between shots
 	[ExcludeFromPrototype] int                     DamageCdTicks;       // accumulates ticks
 

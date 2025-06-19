@@ -30,7 +30,7 @@ namespace Tomorrow.Quantum
 
             // Resolve the QTN lists
             var pending = f.ResolveList(pu.PendingChoices);
-            var taken = f.ResolveList(pu.AcquiredUpgrades);
+            QDictionary<int, AcquiredUpgradeInfo> taken = f.ResolveDictionary(pu.AcquiredUpgrades);
 
             // Player picks one
             if (pu.ChosenUpgradeId == -1)
@@ -80,13 +80,10 @@ namespace Tomorrow.Quantum
                     chosenEntry = item;
                     break;
                 }
-            }
+            }            
 
             // Apply the upgrade (instantiate prefab, modify stats, etc.)
-            ApplyUpgradeToPlayer(f, filter.Entity, chosenEntry);
-
-            // Record it so it won�t be offered again
-            taken.Add(pending[chosenIndex]);
+            ApplyUpgradeToPlayer(f, filter.Entity, chosenEntry, taken);
 
             // Clear pending and reset choice state
             pending.Clear();
@@ -94,10 +91,88 @@ namespace Tomorrow.Quantum
             pu.WaitingForChoice = false;
         }
 
-        void ApplyUpgradeToPlayer(Frame f, EntityRef player, UpgradeEntry entry)
+        void ApplyUpgradeToPlayer(Frame f, EntityRef player, UpgradeEntry entry, QDictionary<int, AcquiredUpgradeInfo> taken)
         {
-            var newUpgrade = f.Create(entry.Prefab);
-            f.Set(newUpgrade, new OwnerData() { OwnerEntity = player });            
+            bool isRepeated = taken.ContainsKey(entry.Id);
+
+            if (!isRepeated)
+            {
+                var newUpgrade = f.Create(entry.Prefab); // prefab here is a weapon that the player will be shooting 
+                f.Set(newUpgrade, new OwnerData() { OwnerEntity = player });
+
+                // Record it so it 
+                taken.Add(entry.Id, new AcquiredUpgradeInfo() { UpgradeEntity = newUpgrade, Count = 1 });
+            }
+            else
+            {
+                // First increase the count of the upgrade
+                AcquiredUpgradeInfo acquired = taken[entry.Id];                
+
+                // Then apply the upgrade effect based on count
+                QList<WeaponUpgradeEffects> effectsPerUpgrade = f.ResolveList(entry.EffectsPerExtraUpgrade);
+                int i = acquired.Count - 1; // count starts at 1, so we subtract to access effect from start
+
+                if (i < 0 || i >= effectsPerUpgrade.Count) // If the index is out of bounds, we assume it finishes the effects
+                {
+                    i = 0; // No valid effect to apply reset count to 1
+                    acquired.Count = 1; // Reset count to 1
+                }
+
+                QList<WeaponUpgradeEffect> effects = f.ResolveList(effectsPerUpgrade[i].Effects);
+
+                foreach (var effect in effects)
+                {
+                    UnityEngine.Debug.Log($"Applying effect {effect.Type} with value {effect.Value} to upgrade {acquired.UpgradeEntity}");
+                    switch (effect.Type)
+                    {
+                        case WeaponUpgradeType.DamageBonus:
+                            if (f.Unsafe.TryGetPointer(acquired.UpgradeEntity, out DamageComponent* damageComponent))
+                                damageComponent->BaseDamage += effect.Value;
+                            break;
+                        case WeaponUpgradeType.AddDamageMultiplier:
+                            if (f.Unsafe.TryGetPointer(acquired.UpgradeEntity, out DamageComponent* damageComponent1))
+                                damageComponent1->DamageMultiplier += effect.Value;
+                            break;
+                        case WeaponUpgradeType.FireRateBonus:
+                            if (f.Unsafe.TryGetPointer(acquired.UpgradeEntity, out ShootingWeaponComponent* shootingWeapon1))
+                                shootingWeapon1->FireCooldown -= effect.Value.AsInt;
+                            break;
+                        case WeaponUpgradeType.FireRateMultiplier:
+                            // This is a multiplier, so we multiply the cooldown by the value
+                            if (f.Unsafe.TryGetPointer(acquired.UpgradeEntity, out ShootingWeaponComponent* shootingWeapon))
+                                shootingWeapon->FireCooldown = (int)(shootingWeapon->FireCooldown * effect.Value);
+                            break;
+                        case WeaponUpgradeType.BurstCountBonus:
+                            if (f.Unsafe.TryGetPointer(acquired.UpgradeEntity, out ShootingWeaponComponent* shootingWeapon2))
+                                shootingWeapon2->BurstCount += effect.Value.AsInt;
+                            break;
+                        case WeaponUpgradeType.BurstShotDelayBonus:
+                            if (f.Unsafe.TryGetPointer(acquired.UpgradeEntity, out ShootingWeaponComponent* shootingWeapon3))
+                                shootingWeapon3->BurstShotDelay += effect.Value.AsInt;
+                            break;
+                        case WeaponUpgradeType.AddBounce:
+                            if (f.Unsafe.TryGetPointer(acquired.UpgradeEntity, out ShootingWeaponComponent* shootingWeapon4))
+                                shootingWeapon4->CanBounce = true;
+                            break;
+                        case WeaponUpgradeType.EnableHoming:
+                            if (f.Unsafe.TryGetPointer(acquired.UpgradeEntity, out ShootingWeaponComponent* shootingWeapon5))
+                                shootingWeapon5->CanHome = true;
+                            break;
+                        case WeaponUpgradeType.AddAreaRangeMultiplier:
+                            if (f.Unsafe.TryGetPointer(acquired.UpgradeEntity, out ShootingWeaponComponent* shootingWeapon6))
+                                shootingWeapon6->AddAreaRangeMultiplier += effect.Value;
+                            break;
+                        case WeaponUpgradeType.AddHitsToDestroy:
+                            if (f.Unsafe.TryGetPointer(acquired.UpgradeEntity, out ShootingWeaponComponent* shootingWeapon7))
+                                shootingWeapon7->AddHitsToDestroy += effect.Value.AsInt;
+                            break;
+                    }
+                }
+
+                // Increase the count of the upgrade
+                    acquired.Count++;
+                taken[entry.Id] = acquired;// update the count in the dictionary        
+            }       
         }
     }
 }

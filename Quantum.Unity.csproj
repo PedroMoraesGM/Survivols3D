@@ -69,6 +69,7 @@
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumGameGizmosSettingsScriptableObject.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumMapData.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumRunnerBehaviour.cs" />
+    <Compile Include="Assets\QuantumUser\View\Generated\QPrototypeMoveComponent.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumGraphProfilerVerifiedFrames.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QPrototypePhysicsBody2D.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QPrototypeTransform3D.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumLookupTables.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumDefaultConfigs.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumStaticBoxCollider2D.cs" />
+    <Compile Include="Assets\QuantumUser\View\Generated\QPrototypeDamageComponent.cs" />
     <Compile Include="Assets\QuantumUser\View\Generated\Quantum.CodeGen.UnityPrototypeAdapters.cs" />
     <Compile Include="Assets\QuantumUser\View\Generated\QPrototypeSpawnerComponent.cs" />
     <Compile Include="Assets\Photon\Quantum\Runtime\QuantumFrameDiffer.cs" />

@@ -307,6 +307,8 @@ GameObject:
   - component: {fileID: -8622168076273116082}
   - component: {fileID: 7693151864254455738}
   - component: {fileID: -3984293036613950213}
+  - component: {fileID: 2373774289107057497}
+  - component: {fileID: -1469186683620606010}
   m_Layer: 8
   m_Name: Slow Timer Projectile
   m_TagString: Untagged
@@ -615,11 +617,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    Damage:
-      RawValue: 0
+    CanMove:
+      Value: 0
     HitsToDestroy: 0
-    Velocity:
-      RawValue: 0
     TimeToLive:
       RawValue: 65536
 --- !u!114 &1417837064580232020
@@ -635,13 +635,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
+    CanMove:
+      Value: 1
     HomeToPlayers:
       Value: 1
     MinFollowDistance:
       RawValue: 0
     RemainingBounces: 0
-    Speed:
-      RawValue: 19661
     HomingStrength:
       RawValue: 65536
     HasTarget:
@@ -696,9 +696,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    Damage: 5
     DamageCooldown: 10
     IsDamageTick:
       Value: 0
     TimeToLive:
+      RawValue: 65536
+--- !u!114 &2373774289107057497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7359059258303677730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c21e04958561d34e95ff83eeb0da93e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    BaseDamage:
+      RawValue: 0
+    DamageMultiplier:
+      RawValue: 65536
+--- !u!114 &-1469186683620606010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7359059258303677730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72b716436f6f6cf4cb93234bfea2fd2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    BaseSpeed:
+      RawValue: 19661
+    SpeedMultiplier:
       RawValue: 65536

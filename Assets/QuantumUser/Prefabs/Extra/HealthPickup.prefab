@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7891910086133733771}
   - component: {fileID: 4470155523959724907}
   - component: {fileID: 2308213501338018040}
+  - component: {fileID: -420213973449387477}
   m_Layer: 8
   m_Name: HealthPickup
   m_TagString: Untagged
@@ -109,7 +110,7 @@ MonoBehaviour:
       SphereRadius:
         RawValue: 32768
       CapsuleRadius:
-        RawValue: 41288
+        RawValue: 65536
       CapsuleHeight:
         RawValue: 12452
       PositionOffset:
@@ -322,11 +323,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    Damage:
-      RawValue: -6553600
+    CanMove:
+      Value: 0
     HitsToDestroy: 0
-    Velocity:
-      RawValue: 0
     TimeToLive:
       RawValue: 32768000
 --- !u!114 &2308213501338018040
@@ -343,6 +342,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prototype:
     OwnerEntity: {fileID: 0}
+--- !u!114 &-420213973449387477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688720773002596889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c21e04958561d34e95ff83eeb0da93e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    BaseDamage:
+      RawValue: -6553600
+    DamageMultiplier:
+      RawValue: 65536
 --- !u!1 &4758949852775866692
 GameObject:
   m_ObjectHideFlags: 0

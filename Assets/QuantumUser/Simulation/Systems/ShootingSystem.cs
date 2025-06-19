@@ -12,6 +12,7 @@ namespace Tomorrow.Quantum
         {
             public EntityRef Entity;
             public OwnerData* OwnerData;
+            public DamageComponent* DamageComponent;
             public ShootingWeaponComponent* WeaponComponent;
         }
 
@@ -38,7 +39,7 @@ namespace Tomorrow.Quantum
                 }
 
                 // Time to fire the next shot in the burst
-                FireSingleProjectile(f, filter.Entity, filter.OwnerData->OwnerEntity, weapon);
+                FireSingleProjectile(f, filter.Entity, filter.OwnerData->OwnerEntity, weapon, filter.DamageComponent);
 
                 // Decrement shots remaining
                 weapon->BurstShotsRemaining--;
@@ -83,7 +84,8 @@ namespace Tomorrow.Quantum
           Frame f,
           EntityRef weaponEntity,
           EntityRef ownerEntity,
-          ShootingWeaponComponent* weapon)
+          ShootingWeaponComponent* weapon,
+          DamageComponent* damage)
         {
             // 1) Figure out spawn position & “forward” direction from the owner’s Transform3D
             var ownerTf = f.Get<Transform3D>(ownerEntity);
@@ -147,8 +149,28 @@ namespace Tomorrow.Quantum
             projTf->Position = spawnPos;
             projTf->Rotation = finalRot;
 
-            // 6) (Optionally) initialize any projectile-specific components here…
+            // 6) Initialize any projectile-specific components here…
             //    e.g. damage, homing logic, etc.
+            var damageComp = f.Unsafe.GetPointer<DamageComponent>(proj);
+            damageComp->BaseDamage += damage->BaseDamage;
+            damageComp->DamageMultiplier *= damage->DamageMultiplier;
+
+            // Check projectile
+            if(f.Unsafe.TryGetPointer<Projectile>(proj, out var projectileComp))
+                projectileComp->HitsToDestroy += weapon->AddHitsToDestroy;
+
+            // Check homing and bouncing
+            if (f.Unsafe.TryGetPointer<HomingProjectileComponent>(proj, out var homingComp))
+            {
+                f.Unsafe.TryGetPointer<Projectile>(proj, out var projectileComp1);
+                projectileComp1->CanMove = !weapon->CanHome; // 0 homing speed means no homing
+                homingComp->CanMove = weapon->CanHome; // 0 homing speed means no homing
+                homingComp->CanRepeatTarget = weapon->CanBounce;
+            }
+
+            //Check area damage
+            if(f.Unsafe.TryGetPointer<PhysicsCollider3D>(proj, out PhysicsCollider3D* collider))
+                collider->Shape.Capsule.Radius = collider->Shape.Capsule.Radius * (FP._1 + weapon->AddAreaRangeMultiplier);
         }
     }
 }

@@ -10,6 +10,7 @@ public unsafe class ProjectileLifetimeSystem : SystemMainThreadFilter<Projectile
         public EntityRef Entity;
         public Transform3D* Transform;
         public Projectile* Projectile;
+        public MoveComponent* MoveComponent;
     }
 
     public override void Update(Frame f, ref Filter filter)
@@ -22,6 +23,7 @@ public unsafe class ProjectileLifetimeSystem : SystemMainThreadFilter<Projectile
             return;
         }
 
-        filter.Transform->Position += filter.Transform->Forward * filter.Projectile->Velocity;
+        if(filter.Projectile->CanMove)
+            filter.Transform->Position += filter.Transform->Forward * filter.MoveComponent->BaseSpeed * filter.MoveComponent->SpeedMultiplier;
     }
 }

@@ -1,7 +1,6 @@
 component Projectile {
-	FP Damage;
+	bool 		CanMove;
 	int HitsToDestroy;
-	FP Velocity;
 	[ExcludeFromPrototype] FP Elapsed;
 	FP TimeToLive;
 }

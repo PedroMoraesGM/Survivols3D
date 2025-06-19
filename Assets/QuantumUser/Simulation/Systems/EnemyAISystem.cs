@@ -14,6 +14,8 @@ namespace Tomorrow.Quantum
             public EntityRef Entity;
             public Transform3D* Transform;
             public EnemyAI* EnemyAI;
+            public DamageComponent* Damage;
+            public MoveComponent* Move;
             public StatusEffectComponent* StatusEffect;
         }
 
@@ -46,7 +48,7 @@ namespace Tomorrow.Quantum
             if (bestDistSqr < FP.MaxValue && enemy.EnemyAI->CanMove)
             {
                 var dir = (bestTarget.Position - mePos).Normalized;
-                var moveDelta = dir * enemy.EnemyAI->Speed * enemy.StatusEffect->SlowMultiplier;
+                var moveDelta = dir * enemy.Move->BaseSpeed * enemy.Move->SpeedMultiplier * enemy.StatusEffect->SlowMultiplier;
                 enemy.Transform->LookAt(bestTarget.Position);
                 enemy.Transform->Position += moveDelta;
             }
@@ -60,8 +62,8 @@ namespace Tomorrow.Quantum
             // Check if distance is very close to try hit player
             if (enemy.EnemyAI->CloseDamageRange > bestDistSqr)
             {
-                f.Signals.OnHit(bestTarget.Entity, enemy.Entity, enemy.EnemyAI->Damage);
-                f.Events.OnHit(bestTarget.Entity, enemy.Entity, enemy.EnemyAI->Damage);
+                f.Signals.OnHit(bestTarget.Entity, enemy.Entity, enemy.Damage->BaseDamage * enemy.Damage->DamageMultiplier);
+                f.Events.OnHit(bestTarget.Entity, enemy.Entity, enemy.Damage->BaseDamage * enemy.Damage->DamageMultiplier);
             }
         }
 
@@ -77,7 +79,6 @@ namespace Tomorrow.Quantum
                     f.Signals.OnDefeated(target, dealer);
                     f.Events.OnDefeated(target, dealer);
                     f.Destroy(target); 
-                    Debug.Log("Enemy destroyed");
                 }
             }
         }

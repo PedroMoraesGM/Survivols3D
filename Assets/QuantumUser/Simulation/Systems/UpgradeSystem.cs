@@ -12,7 +12,7 @@ public unsafe class UpgradeSystem : SystemSignalsOnly, ISignalOnLevelUp
     {
         var data = f.GetSingleton<UpgradeDataComponent>();
         var all = f.ResolveList(data.Entries);
-        var taken = f.ResolveList(pu->AcquiredUpgrades);
+        var taken = f.ResolveDictionary(pu->AcquiredUpgrades);
         var pending = f.ResolveList(pu->PendingChoices);
 
         if (!f.TryGet(entity, out XPComponent xp)) return;
@@ -21,7 +21,7 @@ public unsafe class UpgradeSystem : SystemSignalsOnly, ISignalOnLevelUp
         var pool = new List<UpgradeEntry>();
         foreach (var e in all)
         {
-            if (e.MinLevel <= xp.Level && (!taken.Contains(e.Id) || e.CanBeRepeated) )
+            if (e.MinLevel <= xp.Level && (!taken.ContainsKey(e.Id) || e.CanBeRepeated) )
                 pool.Add(e);
         }
 
@@ -39,7 +39,6 @@ public unsafe class UpgradeSystem : SystemSignalsOnly, ISignalOnLevelUp
             }
 
             pending.Add(pool[idx].Id);
-            Debug.Log("Adding pending choice id:" + pool[idx].Id);
             pool.RemoveAt(idx);
         }
     }
