@@ -71,6 +71,7 @@
     <Compile Include="Assets\QuantumUser\Scripts\UI\MinimapPointersController.cs" />
     <Compile Include="Assets\QuantumUser\View\PlayerViewController.cs" />
     <Compile Include="Assets\QuantumUser\Scripts\UpgradeCatalog.cs" />
+    <Compile Include="Assets\QuantumUser\Scripts\UI\ActiveUpgradeItem.cs" />
     <Compile Include="Assets\QuantumUser\Scripts\DisconnectHandler.cs" />
     <Compile Include="Assets\Vefects\Trails VFX URP\Scripts\Demo_FreeCam.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />

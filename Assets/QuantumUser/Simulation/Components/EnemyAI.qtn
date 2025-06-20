@@ -1,12 +1,9 @@
 component EnemyAI {
+	[FreeOnComponentRemoved] list<AssetRef<EntityPrototype>>		Weapons;
 	FP XpDrop;
-
 	FP CloseDamageRange;
-
 	FP ShootRangeDistance;
-
 	FP MinHeightLimit;
-
 	bool CanMove;
 }
 

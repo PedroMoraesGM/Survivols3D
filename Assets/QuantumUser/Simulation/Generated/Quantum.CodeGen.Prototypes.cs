@@ -65,10 +65,12 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.AcquiredUpgradeInfo))]
   public unsafe class AcquiredUpgradeInfoPrototype : StructPrototype {
     public MapEntityId UpgradeEntity;
-    public Int32 Count;
+    public Int32 CountIndex;
+    public Int32 TotalCount;
     public void Materialize(Frame frame, ref Quantum.AcquiredUpgradeInfo result, in PrototypeMaterializationContext context = default) {
         PrototypeValidator.FindMapEntity(this.UpgradeEntity, in context, out result.UpgradeEntity);
-        result.Count = this.Count;
+        result.CountIndex = this.CountIndex;
+        result.TotalCount = this.TotalCount;
     }
   }
   [System.SerializableAttribute()]
@@ -133,6 +135,9 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.EnemyAI))]
   public unsafe partial class EnemyAIPrototype : ComponentPrototype<Quantum.EnemyAI> {
+    [FreeOnComponentRemoved()]
+    [DynamicCollectionAttribute()]
+    public AssetRef<EntityPrototype>[] Weapons = {};
     public FP XpDrop;
     public FP CloseDamageRange;
     public FP ShootRangeDistance;
@@ -145,6 +150,16 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.EnemyAI result, in PrototypeMaterializationContext context = default) {
+        if (this.Weapons.Length == 0) {
+          result.Weapons = default;
+        } else {
+          var list = frame.AllocateList(out result.Weapons, this.Weapons.Length);
+          for (int i = 0; i < this.Weapons.Length; ++i) {
+            AssetRef<EntityPrototype> tmp = default;
+            tmp = this.Weapons[i];
+            list.Add(tmp);
+          }
+        }
         result.XpDrop = this.XpDrop;
         result.CloseDamageRange = this.CloseDamageRange;
         result.ShootRangeDistance = this.ShootRangeDistance;
@@ -293,7 +308,6 @@ namespace Quantum.Prototypes {
     public QBoolean CanMove;
     public QBoolean HomeToPlayers;
     public FP MinFollowDistance;
-    public Int32 RemainingBounces;
     public FP HomingStrength;
     public QBoolean HasTarget;
     public QBoolean CanDragTarget;
@@ -309,7 +323,6 @@ namespace Quantum.Prototypes {
         result.CanMove = this.CanMove;
         result.HomeToPlayers = this.HomeToPlayers;
         result.MinFollowDistance = this.MinFollowDistance;
-        result.RemainingBounces = this.RemainingBounces;
         result.HomingStrength = this.HomingStrength;
         result.HasTarget = this.HasTarget;
         result.CanDragTarget = this.CanDragTarget;
@@ -504,7 +517,9 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.ShootingWeaponComponent))]
   public unsafe partial class ShootingWeaponComponentPrototype : ComponentPrototype<Quantum.ShootingWeaponComponent> {
-    public AssetRef<EntityPrototype> ProjectilePrefab;
+    [FreeOnComponentRemoved()]
+    [DynamicCollectionAttribute()]
+    public AssetRef<EntityPrototype>[] ProjectilePrefabs = {};
     public QBoolean CanShoot;
     public QBoolean CanHome;
     public QBoolean CanBounce;
@@ -522,7 +537,16 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.ShootingWeaponComponent result, in PrototypeMaterializationContext context = default) {
-        result.ProjectilePrefab = this.ProjectilePrefab;
+        if (this.ProjectilePrefabs.Length == 0) {
+          result.ProjectilePrefabs = default;
+        } else {
+          var list = frame.AllocateList(out result.ProjectilePrefabs, this.ProjectilePrefabs.Length);
+          for (int i = 0; i < this.ProjectilePrefabs.Length; ++i) {
+            AssetRef<EntityPrototype> tmp = default;
+            tmp = this.ProjectilePrefabs[i];
+            list.Add(tmp);
+          }
+        }
         result.CanShoot = this.CanShoot;
         result.CanHome = this.CanHome;
         result.CanBounce = this.CanBounce;

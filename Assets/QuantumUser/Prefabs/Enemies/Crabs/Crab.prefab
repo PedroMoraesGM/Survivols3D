@@ -82,7 +82,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3899622627276476817}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.9983555, z: -0, w: 0.057326537}
+  m_LocalRotation: {x: -0, y: 0.73356915, z: -0, w: 0.67961484}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 6.2397, y: 6.2397, z: 6.2397}
   m_ConstrainProportionsScale: 0
@@ -499,16 +499,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
+    Weapons: []
     XpDrop:
       RawValue: 131072
-    Damage:
-      RawValue: 17039
     CloseDamageRange:
       RawValue: 65536
     ShootRangeDistance:
       RawValue: 0
-    Speed:
-      RawValue: 6554
     MinHeightLimit:
       RawValue: -262144
     CanMove:

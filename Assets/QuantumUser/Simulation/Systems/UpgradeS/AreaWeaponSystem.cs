@@ -80,10 +80,11 @@ namespace Tomorrow.Quantum
                 return;
 
             // Apply damage 
-            f.Unsafe.TryGetPointer<DamageComponent>(info.Entity, out DamageComponent* damageComponent);
-
-            f.Signals.OnHit(info.Other, owner->OwnerEntity, damageComponent->BaseDamage * damageComponent->DamageMultiplier);
-            f.Events.OnHit(info.Other, owner->OwnerEntity, damageComponent->BaseDamage * damageComponent->DamageMultiplier);
+            if (f.Unsafe.TryGetPointer<DamageComponent>(info.Entity, out DamageComponent* damageComponent))
+            {
+                f.Signals.OnHit(info.Other, owner->OwnerEntity, damageComponent->BaseDamage * damageComponent->DamageMultiplier);
+                f.Events.OnHit(info.Other, owner->OwnerEntity, damageComponent->BaseDamage * damageComponent->DamageMultiplier);
+            }
         }
     }
 }

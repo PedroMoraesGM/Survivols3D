@@ -280,6 +280,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
+    ProjectilePrefabs:
+    - Id:
+        Value: 1517981128656675034
     ProjectilePrefab:
       Id:
         Value: 1517981128656675034

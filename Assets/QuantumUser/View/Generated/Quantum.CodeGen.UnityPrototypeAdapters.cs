@@ -52,12 +52,14 @@ namespace Quantum.Prototypes.Unity {
   [System.SerializableAttribute()]
   public unsafe partial class AcquiredUpgradeInfoPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.AcquiredUpgradeInfoPrototype> {
     public Quantum.QuantumEntityPrototype UpgradeEntity;
-    public Int32 Count;
+    public Int32 CountIndex;
+    public Int32 TotalCount;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.AcquiredUpgradeInfoPrototype prototype);
     public override Quantum.Prototypes.AcquiredUpgradeInfoPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.AcquiredUpgradeInfoPrototype();
       converter.Convert(this.UpgradeEntity, out result.UpgradeEntity);
-      converter.Convert(this.Count, out result.Count);
+      converter.Convert(this.CountIndex, out result.CountIndex);
+      converter.Convert(this.TotalCount, out result.TotalCount);
       ConvertUser(converter, ref result);
       return result;
     }
@@ -92,7 +94,6 @@ namespace Quantum.Prototypes.Unity {
     public QBoolean CanMove;
     public QBoolean HomeToPlayers;
     public FP MinFollowDistance;
-    public Int32 RemainingBounces;
     public FP HomingStrength;
     public QBoolean HasTarget;
     public QBoolean CanDragTarget;
@@ -105,7 +106,6 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.CanMove, out result.CanMove);
       converter.Convert(this.HomeToPlayers, out result.HomeToPlayers);
       converter.Convert(this.MinFollowDistance, out result.MinFollowDistance);
-      converter.Convert(this.RemainingBounces, out result.RemainingBounces);
       converter.Convert(this.HomingStrength, out result.HomingStrength);
       converter.Convert(this.HasTarget, out result.HasTarget);
       converter.Convert(this.CanDragTarget, out result.CanDragTarget);

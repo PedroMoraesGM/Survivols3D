@@ -30,7 +30,7 @@ namespace Tomorrow.Quantum
             // Resolve its list in the frame
             var list = f.ResolveList(registry.ActivePlayers);
 
-            // Add this player’s info
+            // Add this playerï¿½s info
             list.Add(new PlayerInfo
             {
                 Entity = filter.Entity,

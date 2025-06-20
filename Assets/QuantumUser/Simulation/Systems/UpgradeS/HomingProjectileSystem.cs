@@ -122,19 +122,12 @@ namespace Tomorrow.Quantum
             if (!isValidTarget)
                 return;
 
-            // Decrement bounces
-            bm->RemainingBounces--;
-
-            if (bm->RemainingBounces > 0 || bm->CanRepeatTarget)
+            Debug.Log("Projectile hit target: " + infoOther + " bm->CanRepeatTarget: " + bm->CanRepeatTarget);
+            if (!bm->CanRepeatTarget)
             {
                 // Reset so next tick it will retarget
                 bm->PreviousTarget = bm->CurrentTarget;
                 bm->CurrentTarget = EntityRef.None;
-            }
-            else
-            {
-                // No bounces left ? destroy
-                f.Destroy(infoEntity);
             }
         }
 

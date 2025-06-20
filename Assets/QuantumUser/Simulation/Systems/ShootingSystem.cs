@@ -15,12 +15,11 @@ namespace Tomorrow.Quantum
             public DamageComponent* DamageComponent;
             public ShootingWeaponComponent* WeaponComponent;
         }
-
         public override void Update(Frame f, ref Filter filter)
         {
             // If there's no owner or the owner is dead, bail out
             if (!filter.OwnerData->OwnerEntity.IsValid) return;
-            if (f.Get<HealthComponent>(filter.OwnerData->OwnerEntity).IsDead) return;
+            if (!f.TryGet(filter.OwnerData->OwnerEntity, out HealthComponent healthComponent) || healthComponent.IsDead) return;
             if (!filter.WeaponComponent->CanShoot) return;
 
             var weapon = filter.WeaponComponent;
@@ -39,7 +38,7 @@ namespace Tomorrow.Quantum
                 }
 
                 // Time to fire the next shot in the burst
-                FireSingleProjectile(f, filter.Entity, filter.OwnerData->OwnerEntity, weapon, filter.DamageComponent);
+                FireAllProjectiles(f, filter.Entity, filter.OwnerData->OwnerEntity, weapon, filter.DamageComponent);
 
                 // Decrement shots remaining
                 weapon->BurstShotsRemaining--;
@@ -78,9 +77,9 @@ namespace Tomorrow.Quantum
         }
 
         // ────────────────────────────────────────────────────────────────────
-        // Fires exactly one projectile, with a bit of random angular dispersion.
+        // Fires all projectile prefabs in the list, with a bit of random angular dispersion.
         // ────────────────────────────────────────────────────────────────────
-        private void FireSingleProjectile(
+        private void FireAllProjectiles(
           Frame f,
           EntityRef weaponEntity,
           EntityRef ownerEntity,
@@ -93,84 +92,65 @@ namespace Tomorrow.Quantum
             var up = ownerTf.Up;
 
             // 2) Apply a small random cone/spread, using BurstDispersion:
-            //    We'll generate two random FP angles (pitch & yaw) ∈ [-Dispersion, +Dispersion].
-            //    Then rotate the forward vector by those small angles.
-            //
-            //    RngSession.NextNormalized() yields an FP in [0,1]. We center it around 0:
-            //      x ∈ [-1, +1] → x * BurstDispersion = random angle in [-Dispersion, +Dispersion].
             FP randPitch = (f.Global->RngSession.Next() * FP._1 * 2 - FP._1) * weapon->BurstDispersion;
             FP randYaw = (f.Global->RngSession.Next() * FP._1 * 2 - FP._1) * weapon->BurstDispersion;
-
-            // Build a quaternion from those small Euler angles (pitch, yaw, 0)
             var spreadRot = FPQuaternion.Euler(randPitch, randYaw, FP._0);
-            var shotDir = spreadRot * forward; // rotated forward vector
+            var shotDir = spreadRot * forward;
 
             // 3) Compute final spawn position:
-            //    MuzzleOffset is in local “forward/up” space, so we do:
             var spawnPos = ownerTf.Position
                          + forward * weapon->MuzzleOffset.X
                          + up * weapon->MuzzleOffset.Y;
 
-            // 4) Create the projectile entity and set its OwnerData
-            var proj = f.Create(weapon->ProjectilePrefab);
-            if (!f.Unsafe.TryGetPointer<OwnerData>(proj, out var projOwner))
+            // 4) Fire all projectile prefabs in the list
+            if (!f.TryResolveList(weapon->ProjectilePrefabs, out var projectilePrefabs))
+                return;
+
+            for (int i = 0; i < projectilePrefabs.Count; i++)
             {
-                f.Set(proj, new OwnerData { });
-                projOwner = f.Unsafe.GetPointer<OwnerData>(proj);
+                var prefab = projectilePrefabs[i];
+                var proj = f.Create(prefab);
+                if (!f.Unsafe.TryGetPointer<OwnerData>(proj, out var projOwner))
+                {
+                    f.Set(proj, new OwnerData { });
+                    projOwner = f.Unsafe.GetPointer<OwnerData>(proj);
+                }
+                projOwner->OwnerEntity = ownerEntity;
+
+                // 5) Initialize projectile’s Transform3D using the “shotDir” and spawnPos
+                FP verticalPitch = FP._0;
+                if (f.Unsafe.TryGetPointer<Character>(ownerEntity, out var character))
+                {
+                    verticalPitch = character->VerticalLookPitch;
+                }
+                var ownerEulerY = ownerTf.Rotation.AsEuler.Y;
+                var ownerEulerZ = ownerTf.Rotation.AsEuler.Z;
+                var rotYawRoll = FPQuaternion.Euler(verticalPitch, ownerEulerY, ownerEulerZ);
+                var finalRot = spreadRot * rotYawRoll;
+
+                var projTf = f.Unsafe.GetPointer<Transform3D>(proj);
+                projTf->Position = spawnPos;
+                projTf->Rotation = finalRot;
+
+                // 6) Initialize any projectile-specific components here…
+                var damageComp = f.Unsafe.GetPointer<DamageComponent>(proj);
+                damageComp->BaseDamage += damage->BaseDamage;
+                damageComp->DamageMultiplier *= damage->DamageMultiplier;
+
+                if(f.Unsafe.TryGetPointer<Projectile>(proj, out var projectileComp))
+                    projectileComp->HitsToDestroy += weapon->AddHitsToDestroy;
+
+                if (f.Unsafe.TryGetPointer<HomingProjectileComponent>(proj, out var homingComp))
+                {
+                    f.Unsafe.TryGetPointer<Projectile>(proj, out var projectileComp1);
+                    projectileComp1->CanMove = !weapon->CanHome;
+                    homingComp->CanMove = weapon->CanHome;
+                    homingComp->CanRepeatTarget = !weapon->CanBounce;
+                }
+
+                if(f.Unsafe.TryGetPointer<PhysicsCollider3D>(proj, out PhysicsCollider3D* collider))
+                    collider->Shape.Capsule.Radius = collider->Shape.Capsule.Radius * (FP._1 + weapon->AddAreaRangeMultiplier);
             }
-            projOwner->OwnerEntity = ownerEntity;
-
-            // 5) Initialize projectile’s Transform3D using the “shotDir” and spawnPos
-            FP verticalPitch = FP._0;
-            if (f.Unsafe.TryGetPointer<Character>(ownerEntity, out var character))
-            {
-                verticalPitch = character->VerticalLookPitch;
-            }
-
-            // We combine:
-            //   a) our randomized “spread” yaw/pitch about the forward axis, and
-            //   b) the player’s actual vertical look pitch.
-            //
-            // First, get the owner’s yaw & roll from ownerTf.Rotation. As Euler angles:
-            var ownerEulerY = ownerTf.Rotation.AsEuler.Y; // owner’s yaw
-            var ownerEulerZ = ownerTf.Rotation.AsEuler.Z; // owner’s roll (if any)
-
-            // Then build a full rotation quaternion:
-            //   1) start with vertical pitch (character look up/down),
-            //   2) then apply owner yaw/roll,
-            //   3) then apply our small “spread” pitch/yaw.
-            //
-            // In practice, we can multiply quaternions in Euler order:
-            var rotYawRoll = FPQuaternion.Euler(verticalPitch, ownerEulerY, ownerEulerZ);
-            var finalRot = spreadRot * rotYawRoll;
-            //Debug.Log("spreadRot:" + spreadRot);
-
-            var projTf = f.Unsafe.GetPointer<Transform3D>(proj);
-            projTf->Position = spawnPos;
-            projTf->Rotation = finalRot;
-
-            // 6) Initialize any projectile-specific components here…
-            //    e.g. damage, homing logic, etc.
-            var damageComp = f.Unsafe.GetPointer<DamageComponent>(proj);
-            damageComp->BaseDamage += damage->BaseDamage;
-            damageComp->DamageMultiplier *= damage->DamageMultiplier;
-
-            // Check projectile
-            if(f.Unsafe.TryGetPointer<Projectile>(proj, out var projectileComp))
-                projectileComp->HitsToDestroy += weapon->AddHitsToDestroy;
-
-            // Check homing and bouncing
-            if (f.Unsafe.TryGetPointer<HomingProjectileComponent>(proj, out var homingComp))
-            {
-                f.Unsafe.TryGetPointer<Projectile>(proj, out var projectileComp1);
-                projectileComp1->CanMove = !weapon->CanHome; // 0 homing speed means no homing
-                homingComp->CanMove = weapon->CanHome; // 0 homing speed means no homing
-                homingComp->CanRepeatTarget = weapon->CanBounce;
-            }
-
-            //Check area damage
-            if(f.Unsafe.TryGetPointer<PhysicsCollider3D>(proj, out PhysicsCollider3D* collider))
-                collider->Shape.Capsule.Radius = collider->Shape.Capsule.Radius * (FP._1 + weapon->AddAreaRangeMultiplier);
         }
     }
 }

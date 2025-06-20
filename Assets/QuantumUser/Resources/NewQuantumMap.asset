@@ -433,11 +433,15 @@ MonoBehaviour:
                 Value: 4
               Value:
                 RawValue: 0
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 65536
           - Effects:
             - Type:
                 Value: 3
               Value:
-                RawValue: 196608
+                RawValue: 131072
           - Effects:
             - Type:
                 Value: 8

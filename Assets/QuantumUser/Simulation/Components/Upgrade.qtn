@@ -55,7 +55,8 @@ component PlayerUpgradeComponent {
 
 struct AcquiredUpgradeInfo {
     EntityRef UpgradeEntity;
-    int Count;
+    int CountIndex; // this one is used to track the index on effects
+    int TotalCount; // this one is used to track all counts
 }
 
 event OnChooseUpgrades{ EntityRef Target; }

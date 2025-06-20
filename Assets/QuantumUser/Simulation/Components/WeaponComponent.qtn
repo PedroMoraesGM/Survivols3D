@@ -1,5 +1,5 @@
 component ShootingWeaponComponent {
-  AssetRef<EntityPrototype> ProjectilePrefab;  // your homing/bounce missile prefab
+  [FreeOnComponentRemoved] list<AssetRef<EntityPrototype>> ProjectilePrefabs;  // all projectile prefabs
 
   bool			CanShoot;
   bool      CanHome;

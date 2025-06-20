@@ -118,8 +118,8 @@ TrailRenderer:
     colorGradient:
       serializedVersion: 2
       key0: {r: 0.8, g: 0.8995633, b: 1, a: 0.8}
-      key1: {r: 0.39999998, g: 1, b: 0.6394616, a: 0.78431374}
-      key2: {r: 0.22342195, g: 1, b: 0.10196078, a: 0.78431374}
+      key1: {r: 0.5425881, g: 0.352, b: 1, a: 0.78431374}
+      key2: {r: 0.85882354, g: 0, b: 1, a: 0.78431374}
       key3: {r: 0.100000024, g: 0.17411782, b: 1, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
@@ -167,8 +167,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3633275905070143746}
   - component: {fileID: 3297934888254379737}
-  - component: {fileID: 4057375712824869747}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -234,8 +233,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1997661575, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
-  m_Color: {r: 0.31764707, g: 0.91764706, b: 0.40392157, a: 1}
+  m_Sprite: {fileID: -23216676, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
+  m_Color: {r: 0.85711336, g: 0, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -245,28 +244,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &4057375712824869747
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2720317765619811148}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 401e6acc305bcc246bb8d0e7024eda55, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &5358594789061653287
 GameObject:
   m_ObjectHideFlags: 0
@@ -328,10 +305,12 @@ GameObject:
   - component: {fileID: 3419994821462408731}
   - component: {fileID: 1417837064580232020}
   - component: {fileID: -8622168076273116082}
-  - component: {fileID: -3555390681441492022}
-  - component: {fileID: 7172892158378452245}
-  m_Layer: 9
-  m_Name: BouncyMissileProjectile
+  - component: {fileID: 7693151864254455738}
+  - component: {fileID: -3984293036613950213}
+  - component: {fileID: 2373774289107057497}
+  - component: {fileID: -1469186683620606010}
+  m_Layer: 8
+  m_Name: Slow Timer Projectile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -453,7 +432,7 @@ MonoBehaviour:
       IsPersistent: 1
       CompoundShapes: []
     LayerSource: 0
-    Layer: 9
+    Layer: 8
     CallbackFlags:
       Value: 192
   PhysicsBody:
@@ -642,7 +621,7 @@ MonoBehaviour:
       Value: 0
     HitsToDestroy: 0
     TimeToLive:
-      RawValue: 655360
+      RawValue: 65536
 --- !u!114 &1417837064580232020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -659,10 +638,9 @@ MonoBehaviour:
     CanMove:
       Value: 1
     HomeToPlayers:
-      Value: 0
+      Value: 1
     MinFollowDistance:
       RawValue: 0
-    RemainingBounces: 999
     HomingStrength:
       RawValue: 65536
     HasTarget:
@@ -670,9 +648,10 @@ MonoBehaviour:
     CanDragTarget:
       Value: 0
     CanRepeatTarget:
-      Value: 0
+      Value: 1
     CurrentTarget: {fileID: 0}
     PreviousTarget: {fileID: 0}
+    IgnorePreviousTargetTicks: 0
 --- !u!114 &-8622168076273116082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -687,7 +666,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prototype:
     OwnerEntity: {fileID: 0}
---- !u!114 &-3555390681441492022
+--- !u!114 &7693151864254455738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7359059258303677730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4879f3bf1309fac4380b98c69cd26631, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    SlowAmount:
+      RawValue: 26214
+    SlowDuration:
+      RawValue: 16384
+--- !u!114 &-3984293036613950213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7359059258303677730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c9b0a80d8f78a74e937bde286676e02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prototype:
+    DamageCooldown: 10
+    IsDamageTick:
+      Value: 0
+    TimeToLive:
+      RawValue: 65536
+--- !u!114 &2373774289107057497
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -701,10 +715,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prototype:
     BaseDamage:
-      RawValue: 524288
+      RawValue: 0
     DamageMultiplier:
       RawValue: 65536
---- !u!114 &7172892158378452245
+--- !u!114 &-1469186683620606010
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -718,6 +732,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prototype:
     BaseSpeed:
-      RawValue: 65536
+      RawValue: 19661
     SpeedMultiplier:
       RawValue: 65536

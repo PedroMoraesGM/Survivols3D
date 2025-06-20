@@ -78,7 +78,22 @@ public unsafe class EnemySpawnSystem : SystemMainThread
                 if (f.Unsafe.TryGetPointer<DamageComponent>(enemy, out DamageComponent* enemyDamage))
                 {
                     enemyDamage->DamageMultiplier *= spawner->DamageMultiplier;
-                }                
+                }
+
+                if (f.Unsafe.TryGetPointer<EnemyAI>(enemy, out EnemyAI* enemyAI))
+                {
+                    // Initialize AI Weapons
+                    if (!f.TryResolveList(enemyAI->Weapons, out var weapons))
+                        continue;
+
+                    // For some reason the weapons.Count is set to 2396 weapons for the enemies that I have not set any weapons for.
+                    foreach (var weaponProto in weapons)
+                    {
+                        if (!weaponProto.IsValid) continue;
+                        EntityRef weapon = f.Create(weaponProto);
+                        f.Unsafe.GetPointer<OwnerData>(weapon)->OwnerEntity = enemy;
+                    }
+                }
             }
         }
     }

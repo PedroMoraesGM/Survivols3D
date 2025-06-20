@@ -27,7 +27,6 @@ namespace Tomorrow.Quantum
             if (!pu.WaitingForChoice)
                 return;
 
-
             // Resolve the QTN lists
             var pending = f.ResolveList(pu.PendingChoices);
             QDictionary<int, AcquiredUpgradeInfo> taken = f.ResolveDictionary(pu.AcquiredUpgrades);
@@ -101,7 +100,7 @@ namespace Tomorrow.Quantum
                 f.Set(newUpgrade, new OwnerData() { OwnerEntity = player });
 
                 // Record it so it 
-                taken.Add(entry.Id, new AcquiredUpgradeInfo() { UpgradeEntity = newUpgrade, Count = 1 });
+                taken.Add(entry.Id, new AcquiredUpgradeInfo() { UpgradeEntity = newUpgrade, CountIndex = 1, TotalCount = 1 });
             }
             else
             {
@@ -110,12 +109,12 @@ namespace Tomorrow.Quantum
 
                 // Then apply the upgrade effect based on count
                 QList<WeaponUpgradeEffects> effectsPerUpgrade = f.ResolveList(entry.EffectsPerExtraUpgrade);
-                int i = acquired.Count - 1; // count starts at 1, so we subtract to access effect from start
+                int i = acquired.CountIndex - 1; // count starts at 1, so we subtract to access effect from start
 
                 if (i < 0 || i >= effectsPerUpgrade.Count) // If the index is out of bounds, we assume it finishes the effects
                 {
                     i = 0; // No valid effect to apply reset count to 1
-                    acquired.Count = 1; // Reset count to 1
+                    acquired.CountIndex = 1; // Reset count to 1
                 }
 
                 QList<WeaponUpgradeEffect> effects = f.ResolveList(effectsPerUpgrade[i].Effects);
@@ -169,8 +168,9 @@ namespace Tomorrow.Quantum
                     }
                 }
 
-                // Increase the count of the upgrade
-                    acquired.Count++;
+                // Increase the count index and total count of the upgrade
+                acquired.CountIndex++;
+                acquired.TotalCount++;
                 taken[entry.Id] = acquired;// update the count in the dictionary        
             }       
         }

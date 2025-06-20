@@ -3,9 +3,14 @@ using Quantum;
 using System;
 using UnityEngine;
 using Quantum.Collections;
+using UnityEngine.UI;
 
 public class UpgradeUIController : MonoBehaviour
 {
+    [Header("Upgrade UI")]
+    [SerializeField] private ActiveUpgradeItem upgradeSlotPrefab;
+    [SerializeField] private RectTransform activeUpgradesContent;
+    [Header("Upgrade Rewards UI")]
     [SerializeField] private CanvasGroup rewardsFrame;
     [SerializeField] private RectTransform rewardsContent;
     [SerializeField] private UpgradeCardItem rewardCardPrefab;
@@ -24,7 +29,73 @@ public class UpgradeUIController : MonoBehaviour
         if (!f.TryGet(e.Target, out PlayerLink playerLink)) return;
         if (!e.Game.PlayerIsLocal(playerLink.Player)) return;
 
-        HideUI();
+        HideChooseUpgradeUI();
+    }
+
+    void Update()
+    {
+        // 1. Get the local player's upgrade component
+        var game = QuantumRunner.Default.Game;
+        if (game == null) return;
+        var frame = game.Frames.Verified;
+
+        if(frame == null) return;
+
+        // Find the local player entity
+        EntityRef playerEntity = EntityRef.None;
+        var registryComp = frame.GetSingleton<PlayerRegistryComponent>();
+        var players = frame.ResolveList(registryComp.ActivePlayers);
+
+        foreach (var playerLink in players)
+            {
+                if (game.PlayerIsLocal(frame.Get<PlayerLink>(playerLink.Entity).Player))
+                {
+                    playerEntity = playerLink.Entity;
+                    break;
+                }
+            }
+        if (!playerEntity.IsValid) return;
+
+        // Get the PlayerUpgradeComponent
+        if (!frame.TryGet(playerEntity, out PlayerUpgradeComponent playerUpgrade)) return;
+
+        // 2. Clear existing UI
+        foreach (Transform child in activeUpgradesContent) // to fix: Instead of clearing all children, we should only clear those that are upgrade slots
+        {
+            if (child.TryGetComponent<ActiveUpgradeItem>(out _))
+                Destroy(child.gameObject);
+        }
+
+        // 3. For each acquired upgrade, create a slot
+        foreach (var kvp in frame.ResolveDictionary(playerUpgrade.AcquiredUpgrades))
+        {
+            int upgradeId = kvp.Key;
+            var upgradeInfo = kvp.Value;
+
+            // Get upgrade color from catalog
+            var meta = catalog.Get(upgradeId);
+            Color upgradeColor = meta != null ? meta.IconColor : Color.white;
+            Sprite upgradeIcon = meta != null ? meta.Icon : null;
+
+            // Instantiate UI slot
+            var slot = Instantiate(upgradeSlotPrefab, activeUpgradesContent);
+            slot.InitItem(upgradeIcon, upgradeColor, upgradeInfo.TotalCount);
+
+            // Try to get the weapon entity for this upgrade
+            var weaponEntity = upgradeInfo.UpgradeEntity;
+            if (frame.TryGet(weaponEntity, out ShootingWeaponComponent weapon))
+            {
+                // Show cooldown as fill amount
+                float fill = 1f;
+                if (weapon.FireCooldown > 0)
+                    fill = 1f - (weapon.FireCdTicks / (float)weapon.FireCooldown);
+                slot.SetFill(Mathf.Clamp01(fill));
+            }
+            else
+            {
+                slot.SetFill(1f);
+            }
+        }
     }
 
     private void OnHasChoosenUpgrades(EventOnHasChoosenUpgrades e)
@@ -106,13 +177,14 @@ public class UpgradeUIController : MonoBehaviour
 
     private void OnCardSelected()
     {
-        HideUI();
+        HideChooseUpgradeUI();
     }
-    private void HideUI()
+    private void HideChooseUpgradeUI()
     {
         rewardsFrame.DOFade(0, 0.25f).OnComplete(() =>
         {
             rewardsFrame.gameObject.SetActive(false);
         });
     }
+    
 }

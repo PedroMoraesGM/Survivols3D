@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 4549327209476609508}
   - component: {fileID: 1962502937514829984}
   - component: {fileID: 3536005742891334094}
-  - component: {fileID: 1061300174494178493}
+  - component: {fileID: -1991107616265863867}
   m_Layer: 0
-  m_Name: Ethereal Laundry Machine
+  m_Name: Ice Roses
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -280,16 +280,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
+    ProjectilePrefabs:
+    - Id:
+        Value: 1273179658545147898
     ProjectilePrefab:
       Id:
-        Value: 1314849798089807190
+        Value: 1273179658545147898
     CanShoot:
       Value: 1
+    CanHome:
+      Value: 0
+    CanBounce:
+      Value: 0
+    AddHitsToDestroy: 0
     BurstCount: 1
     BurstShotDelay: 0
     BurstDispersion:
       RawValue: 0
-    FireCooldown: 3000
+    FireCooldown: 150
     MuzzleOffset:
       X:
         RawValue: 65536
@@ -297,7 +305,9 @@ MonoBehaviour:
         RawValue: 0
       Z:
         RawValue: 0
---- !u!114 &1061300174494178493
+    AddAreaRangeMultiplier:
+      RawValue: 0
+--- !u!114 &-1991107616265863867
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

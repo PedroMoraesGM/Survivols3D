@@ -1120,7 +1120,8 @@ MonoBehaviour:
     - Key: 2
       Value:
         UpgradeEntity: {fileID: -8659347868862416721}
-        Count: 1
+        CountIndex: 1
+        TotalCount: 1
     WaitingForChoice:
       Value: 0
     PendingChoices: 
@@ -1138,8 +1139,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
-    ProjectilePrefab:
-      Id:
+    ProjectilePrefabs:
+    - Id:
         Value: 1361179226252959751
     CanShoot:
       Value: 1
@@ -1147,7 +1148,7 @@ MonoBehaviour:
       Value: 0
     CanBounce:
       Value: 0
-    HitsToDestroy: 0
+    AddHitsToDestroy: 0
     BurstCount: 1
     BurstShotDelay: 0
     BurstDispersion:
@@ -1160,7 +1161,7 @@ MonoBehaviour:
         RawValue: 65536
       Z:
         RawValue: 0
-    AreaRangeMultiplier:
+    AddAreaRangeMultiplier:
       RawValue: 0
 --- !u!114 &1034736552393520118
 MonoBehaviour:

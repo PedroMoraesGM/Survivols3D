@@ -142,25 +142,23 @@ public unsafe class GameUIController : QuantumCallbacks
                 return;
 
         if (health->CurrentHealth.AsFloat < previousHealth)
-        {
             healthVignette.color = healthLossColor;
-            healthVignette.DOKill();
-            healthVignette.DOFade(0, healthBlinkDuration);
-        }
         else
-        {
             healthVignette.color = healthGainColor;
-            healthVignette.DOKill();
-            healthVignette.DOFade(0, healthBlinkDuration);
-        }
+        
+        healthVignette.DOKill();
+        healthVignette.DOFade(0, healthBlinkDuration);
 
         healthBarCanvasGroup.DOKill();
         healthBarCanvasGroup.DOFade(1, 0.35f);
         healthBarImage.transform.DOScale(new Vector3(Math.Clamp((health->CurrentHealth / health->MaxHealth).AsFloat, 0, 1), 1, 1), 0.3f);
         previousHealth = health->CurrentHealth.AsFloat;
 
-        CancelInvoke(nameof(DisableHealthBar));
-        Invoke(nameof(DisableHealthBar), disableBarDelay);
+        if (health->CurrentHealth >= health->MaxHealth) // only fades when health is max
+        {
+            CancelInvoke(nameof(DisableHealthBar));
+            Invoke(nameof(DisableHealthBar), disableBarDelay);
+        }        
     }
 
     private void DisableHealthBar()
