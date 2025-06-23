@@ -22,6 +22,8 @@ namespace QuantumUser.View.Controllers
         [SerializeField] private Animator thirdPersonAnimator;
         [SerializeField] private GameObject thirdPersonView;
         [SerializeField] private GameObject DeadThirdPersonView;
+        [SerializeField] private float bobFrequency = 7.5f;
+        [SerializeField] private float bobAmplitude = 0.05f;
 
         float yaw;
         float pitch;
@@ -32,6 +34,9 @@ namespace QuantumUser.View.Controllers
         [SerializeField] private Canvas headCanvas;
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private Image healthBar;
+
+        private float bobTimer = 0f;
+        private Vector3 cameraPivotDefaultLocalPos;
 
         public override void OnActivate(Frame frame)
         {
@@ -45,7 +50,9 @@ namespace QuantumUser.View.Controllers
                 nameText.text = data.PlayerNickname;
 
                 UpdateCharacterVisuals(playerLink);
-            }            
+            }    
+
+            cameraPivotDefaultLocalPos = cameraPivot.localPosition;
         }
 
         private void UpdateCharacterVisuals(PlayerLink playerLink)
@@ -83,9 +90,29 @@ namespace QuantumUser.View.Controllers
 
             if (!isPlayerLocal) return;
 
-            //Convert fixed-point look delta back to float
             var character = frame.Unsafe.GetPointer<Character>(EntityRef);
 
+            // Head bobbing logic
+            bool isMoving = false;
+            if (frame.TryGet(EntityRef, out PhysicsBody3D move))
+            {
+                // You can use a threshold to avoid bobbing on tiny movements
+                isMoving = move.Velocity.Magnitude.AsFloat > 0.1f;
+            }
+
+            if (isMoving)
+            {
+                bobTimer += Time.deltaTime * bobFrequency;
+                float bobOffset = Mathf.Sin(bobTimer) * bobAmplitude;
+                cameraPivot.localPosition = cameraPivotDefaultLocalPos + new Vector3(0, bobOffset, 0);
+            }
+            else
+            {
+                bobTimer = 0f;
+                cameraPivot.localPosition = cameraPivotDefaultLocalPos;
+            }
+
+            // Existing camera pitch logic
             cameraPivot.localRotation = Quaternion.Euler(character->VerticalLookPitch.AsFloat, 0, 0);
         }
     }

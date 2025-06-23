@@ -205,7 +205,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.29411766, g: 0.1764706, b: 0.4117647, a: 0}
+  m_BackGroundColor: {r: 0.06666667, g: 0.047058824, b: 0.2627451, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -403,7 +403,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1148972998113690066}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.96195924, z: -0, w: 0.2731932}
+  m_LocalRotation: {x: -0, y: 0.8560963, z: -0, w: -0.5168163}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 6, y: 6, z: 6}
   m_ConstrainProportionsScale: 0
@@ -839,7 +839,7 @@ MonoBehaviour:
     Mass:
       RawValue: 65536
     Drag:
-      RawValue: 65536
+      RawValue: 32768
     AngularDrag:
       RawValue: 327680
     ExplicitInertia2D:
@@ -929,9 +929,9 @@ MonoBehaviour:
       _value:
         RawValue: 0
     GravityScale:
-      _hasValue: 0
+      _hasValue: 1
       _value:
-        RawValue: 0
+        RawValue: 3276800
   NavMeshPathfinder:
     IsEnabled: 0
     NavMeshAgentConfig:
@@ -1235,7 +1235,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prototype:
     BaseSpeed:
-      RawValue: 1179648
+      RawValue: 786432
     SpeedMultiplier:
       RawValue: 65536
 --- !u!114 &-3590219562594562928
@@ -1806,7 +1806,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6577253397102531174}
-  m_LocalRotation: {x: -0, y: 0.96195924, z: -0, w: 0.2731932}
+  m_LocalRotation: {x: -0, y: 0.8560963, z: -0, w: -0.5168163}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.017121, y: 0.017121, z: 0.017121}
   m_ConstrainProportionsScale: 0
@@ -2245,7 +2245,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
+  m_BackGroundColor: {r: 0.1882353, g: 0.18039216, b: 0.1882353, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -2482,7 +2482,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 1}
+  m_BackGroundColor: {r: 0.11764706, g: 0.12156863, b: 0.12156863, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0

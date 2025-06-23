@@ -73,32 +73,22 @@ namespace Tomorrow.Quantum
 
             if (dir == FPVector3.Zero)
             {
+                // Stop immediately when no input
+                filter.Body->Velocity = FPVector3.Zero;
                 return;
             }
 
             // 3) Normalize and scale
             dir = dir.Normalized;
 
-            // 4) Predict next position
-            FPVector3 currentPos = filter.Transform->Position;  // current world-space pos
-            FPVector3 predictedPos = (currentPos + dir);           // next position if unclamped
-
-            // 5) Clamp Y against MinHeightLimit
-            //    (uses Mathf.Clamp concept for floats :contentReference[oaicite:0]{index=0},
-            //     and applies the same logic to FPVector3.Y :contentReference[oaicite:1]{index=1})
+            // 4) Clamp Y against MinHeightLimit
+            FP currentY = filter.Transform->Position.Y;
             FP minY = filter.Character->MinHeightLimit;
-            if (predictedPos.Y != minY)
-            {
-                predictedPos.Y = minY;
-            }
+            FPVector3 velocity = dir * filter.Move->BaseSpeed * filter.Move->SpeedMultiplier * filter.Status->SlowMultiplier;
+            velocity.Y = 0; // Prevent vertical movement
 
-            // 6) Compute the actual move vector and issue the move
-            FPVector3 clampedDir = predictedPos - currentPos;
-            //filter.Controller->Move(f, filter.Entity, clampedDir);
-            filter.Body->AddForceAtPosition(clampedDir * filter.Move->BaseSpeed * filter.Move->SpeedMultiplier * filter.Status->SlowMultiplier, filter.Transform->Position, filter.Transform);
-            //filter.Body->Velocity = clampedDir * filter.Character->MoveSpeed;
-            //filter.Body->ClearForce();
-            //filter.Body->AddForce(clampedDir * filter.Character->MoveSpeed);
+            // 5) Set velocity directly for instant, responsive movement
+            filter.Body->Velocity = velocity;
         }
     }
 }
