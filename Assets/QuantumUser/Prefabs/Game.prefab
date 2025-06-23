@@ -509,10 +509,6 @@ MonoBehaviour:
             Value: 8
           Value:
             RawValue: 65536
-        - Type:
-            Value: 9
-          Value:
-            RawValue: 327680
     - Prefab:
         Id:
           Value: 1266653282462716527
@@ -529,9 +525,9 @@ MonoBehaviour:
             RawValue: 655360
       - Effects:
         - Type:
-            Value: 7
+            Value: 5
           Value:
-            RawValue: 655360
+            RawValue: 58982
       - Effects:
         - Type:
             Value: 0
@@ -542,10 +538,6 @@ MonoBehaviour:
             Value: 8
           Value:
             RawValue: 65536
-        - Type:
-            Value: 9
-          Value:
-            RawValue: 655360
     - Prefab:
         Id:
           Value: 1525995945446780013

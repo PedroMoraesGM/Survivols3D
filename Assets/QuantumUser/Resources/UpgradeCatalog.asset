@@ -15,49 +15,76 @@ MonoBehaviour:
   Entries:
   - Key: 0
     DisplayName: Magic Hand
-    Description: Calls a magic hand to drag enemies away
+    Description: Calls a magic hand to drag enemies away.
+    DescriptionPerUpgrade:
+    - The hand now homes in on its target and has +1 hit.
+    - The hand now has +2 hits.
+    - Fires +1 rapid grip in succession.
+    - Fires +3 rapid grips in succession.
     Label: Weapon
     Icon: {fileID: -126443362, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
     IconColor: {r: 0, g: 0.711498, b: 1, a: 1}
   - Key: 1
-    DisplayName: Bouncy Missile
+    DisplayName: Crystal Missile
     Description: Throws an artifact that bounces across enemies.
+    DescriptionPerUpgrade:
+    - Shard now strikes +1 before disappearing.
+    - Shard now strikes +2 before disappearing.
+    - Increases missile damage by +4.
+    - Fires +1 shard in quick succession.
     Label: Weapon
     Icon: {fileID: 1997661575, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
     IconColor: {r: 0.31764707, g: 0.91764706, b: 0.40392157, a: 1}
   - Key: 2
     DisplayName: Flipping Knife
     Description: Throws a flipping knife.
+    DescriptionPerUpgrade:
+    - Increases knife damage by +10.
+    - Fires knives 10 % faster.
+    - Increases knife damage by +15.
+    - Throws +1 knife each time you fire.
     Label: Upgrade
     Icon: {fileID: 1094901051, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
     IconColor: {r: 0.7660377, g: 0.7660377, b: 0.7660377, a: 1}
   - Key: 3
     DisplayName: Ice Roses
     Description: Plant a Ice Rose that deal damage and slow enemies.
+    DescriptionPerUpgrade:
+    - "Increases the rose\u2019s base radius by 100%."
+    - Increases rose damage by +3.
+    - Roses spawn 12% more often.
     Label: Weapon
     Icon: {fileID: -715076045, guid: 496bbe8cfd3c03d4bb40fe182e3b0957, type: 3}
     IconColor: {r: 0, g: 0.9490196, b: 1, a: 1}
   - Key: 4
     DisplayName: War Lighter
     Description: Burn nearby enemies.
+    DescriptionPerUpgrade:
+    - Increases burn damage by +3.
     Label: Weapon
     Icon: {fileID: -1917760231, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
     IconColor: {r: 1, g: 0.3499613, b: 0, a: 1}
   - Key: 5
     DisplayName: Ethereal Laundry Machine
     Description: Summons a ethereal machine that heals you and slows nearby entities
+    DescriptionPerUpgrade:
+    - Increases healing by +3 HP.
+    - Machines spawn 25% faster.
+    - Increases machine base radius by 50%.
     Label: Upgrade
     Icon: {fileID: -1424185632, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
     IconColor: {r: 0, g: 1, b: 0.76862746, a: 1}
   - Key: 6
     DisplayName: Accuracy Eye
     Description: Your physical attacks hit 1 more time
+    DescriptionPerUpgrade: []
     Label: Upgrade
     Icon: {fileID: -1048668326, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
     IconColor: {r: 0, g: 1, b: 0.7704737, a: 1}
   - Key: 6
     DisplayName: Milk
     Description: Increase your health by 10%
+    DescriptionPerUpgrade: []
     Label: Upgrade
     Icon: {fileID: -1153420782, guid: 3804966939a00e04089c0048837ecb1c, type: 3}
     IconColor: {r: 1, g: 0.96776116, b: 0.4584905, a: 1}

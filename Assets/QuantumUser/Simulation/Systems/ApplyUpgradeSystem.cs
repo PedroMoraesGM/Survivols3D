@@ -111,12 +111,6 @@ namespace Tomorrow.Quantum
                 QList<WeaponUpgradeEffects> effectsPerUpgrade = f.ResolveList(entry.EffectsPerExtraUpgrade);
                 int i = acquired.CountIndex - 1; // count starts at 1, so we subtract to access effect from start
 
-                if (i < 0 || i >= effectsPerUpgrade.Count) // If the index is out of bounds, we assume it finishes the effects
-                {
-                    i = 0; // No valid effect to apply reset count to 1
-                    acquired.CountIndex = 1; // Reset count to 1
-                }
-
                 QList<WeaponUpgradeEffect> effects = f.ResolveList(effectsPerUpgrade[i].Effects);
 
                 foreach (var effect in effects)
@@ -171,6 +165,10 @@ namespace Tomorrow.Quantum
                 // Increase the count index and total count of the upgrade
                 acquired.CountIndex++;
                 acquired.TotalCount++;
+
+                if (acquired.CountIndex < 1 || acquired.CountIndex > effectsPerUpgrade.Count) // If the index is out of bounds, we assume it finishes the effects
+                    acquired.CountIndex = 1; // Reset count to 1                
+
                 taken[entry.Id] = acquired;// update the count in the dictionary        
             }       
         }

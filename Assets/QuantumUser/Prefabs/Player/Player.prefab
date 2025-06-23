@@ -1150,7 +1150,7 @@ MonoBehaviour:
       Value: 0
     AddHitsToDestroy: 0
     BurstCount: 1
-    BurstShotDelay: 0
+    BurstShotDelay: 15
     BurstDispersion:
       RawValue: 0
     FireCooldown: 50

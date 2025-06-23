@@ -21,12 +21,20 @@ public class UpgradeCardItem : MonoBehaviour
     /// Call this to initialize the card with both the simulation data (entry)
     /// and the UI metadata (catalog entry), plus the callback to invoke on click.
     /// </summary>
-    public void Setup(int entry, UpgradeCatalog.Entry meta, Action<int> onSelected, int choiceOrder)
+    public void Setup(int entry, UpgradeCatalog.Entry meta, AcquiredUpgradeInfo upgradeInfo, Action<int> onSelected, int choiceOrder)
     {
         UpgradeId = entry;
         nameText.text = meta.DisplayName;
-        descText.text = meta.Description;
-        labelText.text = meta.Label;
+        if (upgradeInfo.TotalCount == 0)
+            descText.text = meta.Description;
+        else
+            descText.text = meta.DescriptionPerUpgrade[upgradeInfo.CountIndex - 1];
+
+        if (upgradeInfo.TotalCount == 0)
+            labelText.text = "<color=#FDD143>New !</color>";
+        else
+            labelText.text = $"Level {upgradeInfo.TotalCount + 1}";
+        
         iconImage.sprite = meta.Icon;
         choiceText.text = choiceOrder.ToString();
         if(meta.IconColor != Color.clear) iconImage.color = meta.IconColor;

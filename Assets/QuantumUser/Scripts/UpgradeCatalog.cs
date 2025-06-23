@@ -10,8 +10,10 @@ public class UpgradeCatalog : ScriptableObject
     {
         public int Key;          // must match UpgradeEntry.MetaKey
         public string DisplayName;
-        [TextArea]
+        
         public string Description;
+        [TextArea]
+        public string[] DescriptionPerUpgrade; // list of effects, e.g. "Damage +10%", "Speed +5%" 
         public string Label;
         public Sprite Icon;
         public Color IconColor;

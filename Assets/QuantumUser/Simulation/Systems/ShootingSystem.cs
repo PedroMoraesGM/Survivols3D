@@ -133,11 +133,13 @@ namespace Tomorrow.Quantum
                 projTf->Rotation = finalRot;
 
                 // 6) Initialize any projectile-specific components here…
-                var damageComp = f.Unsafe.GetPointer<DamageComponent>(proj);
-                damageComp->BaseDamage += damage->BaseDamage;
-                damageComp->DamageMultiplier *= damage->DamageMultiplier;
+                if (f.Unsafe.TryGetPointer<DamageComponent>(proj, out var damageComp))
+                {
+                    damageComp->BaseDamage += damage->BaseDamage;
+                    damageComp->DamageMultiplier *= damage->DamageMultiplier;
+                }
 
-                if(f.Unsafe.TryGetPointer<Projectile>(proj, out var projectileComp))
+                if (f.Unsafe.TryGetPointer<Projectile>(proj, out var projectileComp))
                     projectileComp->HitsToDestroy += weapon->AddHitsToDestroy;
 
                 if (f.Unsafe.TryGetPointer<HomingProjectileComponent>(proj, out var homingComp))

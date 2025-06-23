@@ -154,15 +154,17 @@ public class UpgradeUIController : MonoBehaviour
         for (int i = 0; i < pending.Count; i++)
         {
             var entryForThisCard = pending[i];
-
+            var acquiredUpgrades = f.ResolveDictionary(playerUpgrade.AcquiredUpgrades);
+            AcquiredUpgradeInfo upgradeInfo = acquiredUpgrades.ContainsKey(entryForThisCard) ? acquiredUpgrades[entryForThisCard] :
+                                        new AcquiredUpgradeInfo() { CountIndex = 0, TotalCount = 0 };
             var metaForThisCard = catalog.Get(entryForThisCard);
 
             var card = Instantiate(rewardCardPrefab, rewardsContent);
             if (metaForThisCard != null)
-            {
+            {                
                 card.Setup(entryForThisCard,
                        metaForThisCard,
-                       // here `id` is fixed per iteration
+                       upgradeInfo,
                        id => OnCardSelected(), i + 1);
             }
 
