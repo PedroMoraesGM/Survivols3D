@@ -62,6 +62,12 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.AcquiredUpgradeInfoPrototype Value;
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(System.Collections.Generic.KeyValuePair<CharacterClass, ClassEntries>))]
+  public unsafe class DictionaryEntry_CharacterClass_ClassEntries : Quantum.Prototypes.DictionaryEntry {
+    public Quantum.QEnum32<CharacterClass> Key;
+    public Quantum.Prototypes.ClassEntriesPrototype Value;
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.AcquiredUpgradeInfo))]
   public unsafe class AcquiredUpgradeInfoPrototype : StructPrototype {
     public MapEntityId UpgradeEntity;
@@ -112,6 +118,27 @@ namespace Quantum.Prototypes {
         result.MaxVerticalLook = this.MaxVerticalLook;
         result.MinVerticalLook = this.MinVerticalLook;
         result.MinHeightLimit = this.MinHeightLimit;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.ClassEntries))]
+  public unsafe partial class ClassEntriesPrototype : StructPrototype {
+    [FreeOnComponentRemoved()]
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.UpgradeEntryPrototype[] Entries = {};
+    partial void MaterializeUser(Frame frame, ref Quantum.ClassEntries result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.ClassEntries result, in PrototypeMaterializationContext context = default) {
+        if (this.Entries.Length == 0) {
+          result.Entries = default;
+        } else {
+          var list = frame.AllocateList(out result.Entries, this.Entries.Length);
+          for (int i = 0; i < this.Entries.Length; ++i) {
+            Quantum.UpgradeEntry tmp = default;
+            this.Entries[i].Materialize(frame, ref tmp, in context);
+            list.Add(tmp);
+          }
+        }
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -655,8 +682,9 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.UpgradeDataComponent))]
   public unsafe partial class UpgradeDataComponentPrototype : ComponentPrototype<Quantum.UpgradeDataComponent> {
     [FreeOnComponentRemoved()]
+    [DictionaryAttribute()]
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.UpgradeEntryPrototype[] Entries = {};
+    public DictionaryEntry_CharacterClass_ClassEntries[] EntriesPerClass = {};
     public Int32 ChoicesPerLevel;
     partial void MaterializeUser(Frame frame, ref Quantum.UpgradeDataComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -665,14 +693,16 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.UpgradeDataComponent result, in PrototypeMaterializationContext context = default) {
-        if (this.Entries.Length == 0) {
-          result.Entries = default;
+        if (this.EntriesPerClass.Length == 0) {
+          result.EntriesPerClass = default;
         } else {
-          var list = frame.AllocateList(out result.Entries, this.Entries.Length);
-          for (int i = 0; i < this.Entries.Length; ++i) {
-            Quantum.UpgradeEntry tmp = default;
-            this.Entries[i].Materialize(frame, ref tmp, in context);
-            list.Add(tmp);
+          var dict = frame.AllocateDictionary(out result.EntriesPerClass, this.EntriesPerClass.Length);
+          for (int i = 0; i < this.EntriesPerClass.Length; ++i) {
+            Quantum.CharacterClass tmpKey = default;
+            Quantum.ClassEntries tmpValue = default;
+            tmpKey = this.EntriesPerClass[i].Key;
+            this.EntriesPerClass[i].Value.Materialize(frame, ref tmpValue, in context);
+            PrototypeValidator.AddToDictionary(dict, tmpKey, tmpValue, in context);
           }
         }
         result.ChoicesPerLevel = this.ChoicesPerLevel;

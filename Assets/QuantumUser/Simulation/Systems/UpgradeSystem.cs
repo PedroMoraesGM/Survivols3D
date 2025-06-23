@@ -11,7 +11,8 @@ public unsafe class UpgradeSystem : SystemSignalsOnly, ISignalOnLevelUp
     void GenerateChoices(Frame f, EntityRef entity, ref PlayerUpgradeComponent* pu)
     {
         var data = f.GetSingleton<UpgradeDataComponent>();
-        var all = f.ResolveList(data.Entries);
+        var entries =  f.ResolveDictionary(data.EntriesPerClass)[f.Get<PlayerLink>(entity).Class].Entries;
+        Quantum.Collections.QList<UpgradeEntry> all = f.ResolveList(entries);
         var taken = f.ResolveDictionary(pu->AcquiredUpgrades);
         var pending = f.ResolveList(pu->PendingChoices);
 

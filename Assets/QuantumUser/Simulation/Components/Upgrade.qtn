@@ -34,9 +34,13 @@ struct UpgradeEntry {
   [FreeOnComponentRemoved] list<WeaponUpgradeEffects> EffectsPerExtraUpgrade;    
 }
 
+struct ClassEntries{
+  [FreeOnComponentRemoved] list<UpgradeEntry> Entries;
+}
+
 // Master list of all upgrades, editable in the Inspector
 singleton component UpgradeDataComponent {
-  [FreeOnComponentRemoved] list<UpgradeEntry> Entries;
+  [FreeOnComponentRemoved] dictionary<CharacterClass, ClassEntries> EntriesPerClass; // key: CharacterClass enum as int
   int                ChoicesPerLevel;   // e.g. 3 choices at each level up
 }
 

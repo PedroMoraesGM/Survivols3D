@@ -442,6 +442,651 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:
+    EntriesPerClass:
+    - Key:
+        Value: 0
+      Value:
+        Entries:
+        - Prefab:
+            Id:
+              Value: 1348710445196619827
+          Id: 0
+          MinLevel: 0
+          Weight: 10
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 4
+              Value:
+                RawValue: 0
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 131072
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 196608
+        - Prefab:
+            Id:
+              Value: 1412917834980047614
+          Id: 1
+          MinLevel: 0
+          Weight: 10
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 2
+              Value:
+                RawValue: 0
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 131072
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 262144
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 65536
+        - Prefab:
+            Id:
+              Value: 1266653282462716527
+          Id: 2
+          MinLevel: 0
+          Weight: 10
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 655360
+          - Effects:
+            - Type:
+                Value: 5
+              Value:
+                RawValue: 58982
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 983040
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 65536
+        - Prefab:
+            Id:
+              Value: 1525995945446780013
+          Id: 3
+          MinLevel: 0
+          Weight: 5
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 6
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 196608
+          - Effects:
+            - Type:
+                Value: 5
+              Value:
+                RawValue: 57672
+        - Prefab:
+            Id:
+              Value: 1447083690833105115
+          Id: 4
+          MinLevel: 0
+          Weight: 5
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 196608
+        - Prefab:
+            Id:
+              Value: 1511700823856340672
+          Id: 5
+          MinLevel: 5
+          Weight: 3
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: -196608
+          - Effects:
+            - Type:
+                Value: 5
+              Value:
+                RawValue: 49152
+          - Effects:
+            - Type:
+                Value: 6
+              Value:
+                RawValue: 32768
+    - Key:
+        Value: 1
+      Value:
+        Entries:
+        - Prefab:
+            Id:
+              Value: 1348710445196619827
+          Id: 0
+          MinLevel: 0
+          Weight: 10
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 4
+              Value:
+                RawValue: 0
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 131072
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 196608
+        - Prefab:
+            Id:
+              Value: 1412917834980047614
+          Id: 1
+          MinLevel: 0
+          Weight: 10
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 2
+              Value:
+                RawValue: 0
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 131072
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 262144
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 65536
+        - Prefab:
+            Id:
+              Value: 1266653282462716527
+          Id: 2
+          MinLevel: 0
+          Weight: 10
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 655360
+          - Effects:
+            - Type:
+                Value: 5
+              Value:
+                RawValue: 58982
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 983040
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 65536
+        - Prefab:
+            Id:
+              Value: 1525995945446780013
+          Id: 3
+          MinLevel: 0
+          Weight: 5
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 6
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 196608
+          - Effects:
+            - Type:
+                Value: 5
+              Value:
+                RawValue: 57672
+        - Prefab:
+            Id:
+              Value: 1447083690833105115
+          Id: 4
+          MinLevel: 0
+          Weight: 5
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 196608
+        - Prefab:
+            Id:
+              Value: 1511700823856340672
+          Id: 5
+          MinLevel: 5
+          Weight: 3
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: -196608
+          - Effects:
+            - Type:
+                Value: 5
+              Value:
+                RawValue: 49152
+          - Effects:
+            - Type:
+                Value: 6
+              Value:
+                RawValue: 32768
+    - Key:
+        Value: 2
+      Value:
+        Entries:
+        - Prefab:
+            Id:
+              Value: 1348710445196619827
+          Id: 0
+          MinLevel: 0
+          Weight: 10
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 4
+              Value:
+                RawValue: 0
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 131072
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 196608
+        - Prefab:
+            Id:
+              Value: 1412917834980047614
+          Id: 1
+          MinLevel: 0
+          Weight: 10
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 2
+              Value:
+                RawValue: 0
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 131072
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 262144
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 65536
+        - Prefab:
+            Id:
+              Value: 1266653282462716527
+          Id: 2
+          MinLevel: 0
+          Weight: 10
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 655360
+          - Effects:
+            - Type:
+                Value: 5
+              Value:
+                RawValue: 58982
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 983040
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 65536
+        - Prefab:
+            Id:
+              Value: 1525995945446780013
+          Id: 3
+          MinLevel: 0
+          Weight: 5
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 6
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 196608
+          - Effects:
+            - Type:
+                Value: 5
+              Value:
+                RawValue: 57672
+        - Prefab:
+            Id:
+              Value: 1447083690833105115
+          Id: 4
+          MinLevel: 0
+          Weight: 5
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 196608
+        - Prefab:
+            Id:
+              Value: 1511700823856340672
+          Id: 5
+          MinLevel: 5
+          Weight: 3
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: -196608
+          - Effects:
+            - Type:
+                Value: 5
+              Value:
+                RawValue: 49152
+          - Effects:
+            - Type:
+                Value: 6
+              Value:
+                RawValue: 32768
+    - Key:
+        Value: 3
+      Value:
+        Entries:
+        - Prefab:
+            Id:
+              Value: 1348710445196619827
+          Id: 0
+          MinLevel: 0
+          Weight: 10
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 4
+              Value:
+                RawValue: 0
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 131072
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 196608
+        - Prefab:
+            Id:
+              Value: 1412917834980047614
+          Id: 1
+          MinLevel: 0
+          Weight: 10
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 2
+              Value:
+                RawValue: 0
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 3
+              Value:
+                RawValue: 131072
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 262144
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 65536
+        - Prefab:
+            Id:
+              Value: 1266653282462716527
+          Id: 2
+          MinLevel: 0
+          Weight: 10
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 655360
+          - Effects:
+            - Type:
+                Value: 5
+              Value:
+                RawValue: 58982
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 983040
+          - Effects:
+            - Type:
+                Value: 8
+              Value:
+                RawValue: 65536
+        - Prefab:
+            Id:
+              Value: 1525995945446780013
+          Id: 3
+          MinLevel: 0
+          Weight: 5
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 6
+              Value:
+                RawValue: 65536
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 196608
+          - Effects:
+            - Type:
+                Value: 5
+              Value:
+                RawValue: 57672
+        - Prefab:
+            Id:
+              Value: 1447083690833105115
+          Id: 4
+          MinLevel: 0
+          Weight: 5
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: 196608
+        - Prefab:
+            Id:
+              Value: 1511700823856340672
+          Id: 5
+          MinLevel: 5
+          Weight: 3
+          CanBeRepeated:
+            Value: 1
+          EffectsPerExtraUpgrade:
+          - Effects:
+            - Type:
+                Value: 0
+              Value:
+                RawValue: -196608
+          - Effects:
+            - Type:
+                Value: 5
+              Value:
+                RawValue: 49152
+          - Effects:
+            - Type:
+                Value: 6
+              Value:
+                RawValue: 32768
     Entries:
     - Prefab:
         Id:

@@ -69,7 +69,8 @@ namespace Tomorrow.Quantum
 
             // Get the UpgradeEntry
             var data = f.GetSingleton<UpgradeDataComponent>();
-            var all = f.ResolveList(data.Entries);
+            var entries =  f.ResolveDictionary(data.EntriesPerClass)[f.Get<PlayerLink>(filter.Entity).Class].Entries;
+            var all = f.ResolveList(entries);
             UpgradeEntry chosenEntry = default;
 
             foreach (var item in all)

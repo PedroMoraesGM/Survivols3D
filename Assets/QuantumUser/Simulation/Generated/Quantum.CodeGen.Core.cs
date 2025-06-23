@@ -571,6 +571,34 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct ClassEntries {
+    public const Int32 SIZE = 4;
+    public const Int32 ALIGNMENT = 4;
+    [FieldOffset(0)]
+    [FreeOnComponentRemoved()]
+    public QListPtr<UpgradeEntry> Entries;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 15569;
+        hash = hash * 31 + Entries.GetHashCode();
+        return hash;
+      }
+    }
+    public void ClearPointers(FrameBase f, EntityRef entity) {
+      if (Entries != default) {
+        var list = f.ResolveList(this.Entries);
+        for (int i = 0; i < list.Count; ++i) {
+          list.GetPointer(i)->ClearPointers(f, entity);
+        }
+      }
+      if (Entries != default) f.FreeList(ref Entries);
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (ClassEntries*)ptr;
+        QList.Serialize(&p->Entries, serializer, Statics.SerializeUpgradeEntry);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct EnemyInfo {
     public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 8;
@@ -1675,25 +1703,26 @@ namespace Quantum {
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(4)]
     [FreeOnComponentRemoved()]
-    public QListPtr<UpgradeEntry> Entries;
+    public QDictionaryPtr<CharacterClass, ClassEntries> EntriesPerClass;
     [FieldOffset(0)]
     public Int32 ChoicesPerLevel;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 683;
-        hash = hash * 31 + Entries.GetHashCode();
+        hash = hash * 31 + EntriesPerClass.GetHashCode();
         hash = hash * 31 + ChoicesPerLevel.GetHashCode();
         return hash;
       }
     }
     public void ClearPointers(FrameBase f, EntityRef entity) {
-      if (Entries != default) {
-        var list = f.ResolveList(this.Entries);
-        for (int i = 0; i < list.Count; ++i) {
-          list.GetPointer(i)->ClearPointers(f, entity);
+      if (EntriesPerClass != default) {
+        var dict = f.ResolveDictionary(this.EntriesPerClass);
+        var enumerator = dict.GetEnumerator();
+        while (enumerator.MoveNext()) {
+          enumerator.ValuePtrUnsafe->ClearPointers(f, entity);
         }
       }
-      if (Entries != default) f.FreeList(ref Entries);
+      if (EntriesPerClass != default) f.FreeDictionary(ref EntriesPerClass);
     }
     public static void OnRemoved(FrameBase frame, EntityRef entity, void* ptr) {
       var p = (Quantum.UpgradeDataComponent*)ptr;
@@ -1702,7 +1731,7 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (UpgradeDataComponent*)ptr;
         serializer.Stream.Serialize(&p->ChoicesPerLevel);
-        QList.Serialize(&p->Entries, serializer, Statics.SerializeUpgradeEntry);
+        QDictionary.Serialize(&p->EntriesPerClass, serializer, Statics.SerializeCharacterClass, Statics.SerializeClassEntries);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -2032,6 +2061,7 @@ namespace Quantum {
     }
   }
   public unsafe partial class Statics {
+    public static FrameSerializer.Delegate SerializeUpgradeEntry;
     public static FrameSerializer.Delegate SerializeAssetRef;
     public static FrameSerializer.Delegate SerializeEnemyInfo;
     public static FrameSerializer.Delegate SerializeEnemySpawnEntry;
@@ -2040,11 +2070,13 @@ namespace Quantum {
     public static FrameSerializer.Delegate SerializePlayerInfo;
     public static FrameSerializer.Delegate SerializeInt32;
     public static FrameSerializer.Delegate SerializeAcquiredUpgradeInfo;
-    public static FrameSerializer.Delegate SerializeUpgradeEntry;
+    public static FrameSerializer.Delegate SerializeCharacterClass;
+    public static FrameSerializer.Delegate SerializeClassEntries;
     public static FrameSerializer.Delegate SerializeWeaponUpgradeEffects;
     public static FrameSerializer.Delegate SerializeWeaponUpgradeEffect;
     public static FrameSerializer.Delegate SerializeInput;
     static partial void InitStaticDelegatesGen() {
+      SerializeUpgradeEntry = Quantum.UpgradeEntry.Serialize;
       SerializeAssetRef = AssetRef.Serialize;
       SerializeEnemyInfo = Quantum.EnemyInfo.Serialize;
       SerializeEnemySpawnEntry = Quantum.EnemySpawnEntry.Serialize;
@@ -2053,7 +2085,8 @@ namespace Quantum {
       SerializePlayerInfo = Quantum.PlayerInfo.Serialize;
       SerializeInt32 = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
       SerializeAcquiredUpgradeInfo = Quantum.AcquiredUpgradeInfo.Serialize;
-      SerializeUpgradeEntry = Quantum.UpgradeEntry.Serialize;
+      SerializeCharacterClass = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
+      SerializeClassEntries = Quantum.ClassEntries.Serialize;
       SerializeWeaponUpgradeEffects = Quantum.WeaponUpgradeEffects.Serialize;
       SerializeWeaponUpgradeEffect = Quantum.WeaponUpgradeEffect.Serialize;
       SerializeInput = Quantum.Input.Serialize;
@@ -2076,6 +2109,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.CharacterClass), 4);
       typeRegistry.Register(typeof(CharacterController2D), CharacterController2D.SIZE);
       typeRegistry.Register(typeof(CharacterController3D), CharacterController3D.SIZE);
+      typeRegistry.Register(typeof(Quantum.ClassEntries), Quantum.ClassEntries.SIZE);
       typeRegistry.Register(typeof(ColorRGBA), ColorRGBA.SIZE);
       typeRegistry.Register(typeof(ComponentPrototypeRef), ComponentPrototypeRef.SIZE);
       typeRegistry.Register(typeof(ComponentTypeRef), ComponentTypeRef.SIZE);
