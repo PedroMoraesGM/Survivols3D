@@ -29,18 +29,18 @@ namespace Tomorrow.Quantum
 
             // Resolve the QTN lists
             var pending = f.ResolveList(pu.PendingChoices);
-            QDictionary<int, AcquiredUpgradeInfo> taken = f.ResolveDictionary(pu.AcquiredUpgrades);
+            QEnumDictionary<UpgradeId, AcquiredUpgradeInfo> taken = f.ResolveDictionary(pu.AcquiredUpgrades);
 
             // Player picks one
-            if (pu.ChosenUpgradeId == -1)
+            if (pu.ChosenUpgradeId == UpgradeId.None)
             {
                 int choosenIndex = -1;
 
                 if (input.ChoiceFirst)
                     choosenIndex = 0;
-                else if(input.ChoiceSecond)
+                else if (input.ChoiceSecond)
                     choosenIndex = 1;
-                else if(input.ChoiceThird)
+                else if (input.ChoiceThird)
                     choosenIndex = 2;
 
                 if (choosenIndex != -1)
@@ -69,7 +69,7 @@ namespace Tomorrow.Quantum
 
             // Get the UpgradeEntry
             var data = f.GetSingleton<UpgradeDataComponent>();
-            var entries =  f.ResolveDictionary(data.EntriesPerClass)[f.Get<PlayerLink>(filter.Entity).Class].Entries;
+            var entries = f.ResolveDictionary(data.EntriesPerClass)[f.Get<PlayerLink>(filter.Entity).Class].Entries;
             var all = f.ResolveList(entries);
             UpgradeEntry chosenEntry = default;
 
@@ -80,18 +80,28 @@ namespace Tomorrow.Quantum
                     chosenEntry = item;
                     break;
                 }
-            }            
+            }
 
             // Apply the upgrade (instantiate prefab, modify stats, etc.)
             ApplyUpgradeToPlayer(f, filter.Entity, chosenEntry, taken);
 
             // Clear pending and reset choice state
             pending.Clear();
-            pu.ChosenUpgradeId = -1;
+            pu.ChosenUpgradeId = UpgradeId.None;
             pu.WaitingForChoice = false;
+            
+            pending.Clear();
+            pu.ChosenUpgradeId = UpgradeId.None;
+            pu.WaitingForChoice = false;
+            pu.PendingLevelUpsChoices--;
+
+            if (pu.PendingLevelUpsChoices > 0)
+            {
+                f.Signals.OnRequestUpgradeChoices(filter.Entity);
+            }
         }
 
-        void ApplyUpgradeToPlayer(Frame f, EntityRef player, UpgradeEntry entry, QDictionary<int, AcquiredUpgradeInfo> taken)
+        void ApplyUpgradeToPlayer(Frame f, EntityRef player, UpgradeEntry entry, QEnumDictionary<UpgradeId, AcquiredUpgradeInfo> taken)
         {
             bool isRepeated = taken.ContainsKey(entry.Id);
 

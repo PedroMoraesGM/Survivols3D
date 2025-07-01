@@ -56,9 +56,9 @@ namespace Quantum.Prototypes {
     public FP Value;
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(System.Collections.Generic.KeyValuePair<Int32, AcquiredUpgradeInfo>))]
-  public unsafe class DictionaryEntry_Int32_AcquiredUpgradeInfo : Quantum.Prototypes.DictionaryEntry {
-    public Int32 Key;
+  [Quantum.Prototypes.Prototype(typeof(System.Collections.Generic.KeyValuePair<UpgradeId, AcquiredUpgradeInfo>))]
+  public unsafe class DictionaryEntry_UpgradeId_AcquiredUpgradeInfo : Quantum.Prototypes.DictionaryEntry {
+    public Quantum.QEnum32<UpgradeId> Key;
     public Quantum.Prototypes.AcquiredUpgradeInfoPrototype Value;
   }
   [System.SerializableAttribute()]
@@ -461,16 +461,18 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerUpgradeComponent))]
   public unsafe class PlayerUpgradeComponentPrototype : ComponentPrototype<Quantum.PlayerUpgradeComponent> {
+    [AllocateOnComponentAdded()]
     [FreeOnComponentRemoved()]
     [DictionaryAttribute()]
     [DynamicCollectionAttribute()]
-    public DictionaryEntry_Int32_AcquiredUpgradeInfo[] AcquiredUpgrades = {};
+    public DictionaryEntry_UpgradeId_AcquiredUpgradeInfo[] AcquiredUpgrades = {};
     public QBoolean WaitingForChoice;
     [AllocateOnComponentAdded()]
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
-    public Int32[] PendingChoices = {};
-    public Int32 ChosenUpgradeId;
+    public Quantum.QEnum32<UpgradeId>[] PendingChoices = {};
+    public Int32 PendingLevelUpsChoices;
+    public Quantum.QEnum32<UpgradeId> ChosenUpgradeId;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.PlayerUpgradeComponent component = default;
         Materialize((Frame)f, ref component, in context);
@@ -482,7 +484,7 @@ namespace Quantum.Prototypes {
         } else {
           var dict = frame.AllocateDictionary(out result.AcquiredUpgrades, this.AcquiredUpgrades.Length);
           for (int i = 0; i < this.AcquiredUpgrades.Length; ++i) {
-            Int32 tmpKey = default;
+            Quantum.UpgradeId tmpKey = default;
             Quantum.AcquiredUpgradeInfo tmpValue = default;
             tmpKey = this.AcquiredUpgrades[i].Key;
             this.AcquiredUpgrades[i].Value.Materialize(frame, ref tmpValue, in context);
@@ -495,11 +497,12 @@ namespace Quantum.Prototypes {
         } else {
           var list = frame.AllocateList(out result.PendingChoices, this.PendingChoices.Length);
           for (int i = 0; i < this.PendingChoices.Length; ++i) {
-            Int32 tmp = default;
+            Quantum.UpgradeId tmp = default;
             tmp = this.PendingChoices[i];
             list.Add(tmp);
           }
         }
+        result.PendingLevelUpsChoices = this.PendingLevelUpsChoices;
         result.ChosenUpgradeId = this.ChosenUpgradeId;
     }
   }
@@ -681,10 +684,6 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.UpgradeDataComponent))]
   public unsafe partial class UpgradeDataComponentPrototype : ComponentPrototype<Quantum.UpgradeDataComponent> {
-    [FreeOnComponentRemoved()]
-    [DictionaryAttribute()]
-    [DynamicCollectionAttribute()]
-    public DictionaryEntry_CharacterClass_ClassEntries[] EntriesPerClass = {};
     public Int32 ChoicesPerLevel;
     partial void MaterializeUser(Frame frame, ref Quantum.UpgradeDataComponent result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -693,18 +692,6 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.UpgradeDataComponent result, in PrototypeMaterializationContext context = default) {
-        if (this.EntriesPerClass.Length == 0) {
-          result.EntriesPerClass = default;
-        } else {
-          var dict = frame.AllocateDictionary(out result.EntriesPerClass, this.EntriesPerClass.Length);
-          for (int i = 0; i < this.EntriesPerClass.Length; ++i) {
-            Quantum.CharacterClass tmpKey = default;
-            Quantum.ClassEntries tmpValue = default;
-            tmpKey = this.EntriesPerClass[i].Key;
-            this.EntriesPerClass[i].Value.Materialize(frame, ref tmpValue, in context);
-            PrototypeValidator.AddToDictionary(dict, tmpKey, tmpValue, in context);
-          }
-        }
         result.ChoicesPerLevel = this.ChoicesPerLevel;
         MaterializeUser(frame, ref result, in context);
     }
@@ -713,7 +700,7 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.UpgradeEntry))]
   public unsafe partial class UpgradeEntryPrototype : StructPrototype {
     public AssetRef<EntityPrototype> Prefab;
-    public Int32 Id;
+    public Quantum.QEnum32<UpgradeId> Id;
     public Int32 MinLevel;
     public Int32 Weight;
     public QBoolean CanBeRepeated;

@@ -121,13 +121,14 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventOnChooseUpgrades OnChooseUpgrades(EntityRef Target) {
+      public EventOnChooseUpgrades OnChooseUpgrades(EntityRef Target, QListPtr<UpgradeId> PendingChoices) {
         var ev = _f.Context.AcquireEvent<EventOnChooseUpgrades>(EventOnChooseUpgrades.ID);
         ev.Target = Target;
+        ev.PendingChoices = PendingChoices;
         _f.AddEvent(ev);
         return ev;
       }
-      public EventOnHasChoosenUpgrades OnHasChoosenUpgrades(EntityRef Target, Int32 ChoosenId) {
+      public EventOnHasChoosenUpgrades OnHasChoosenUpgrades(EntityRef Target, UpgradeId ChoosenId) {
         var ev = _f.Context.AcquireEvent<EventOnHasChoosenUpgrades>(EventOnHasChoosenUpgrades.ID);
         ev.Target = Target;
         ev.ChoosenId = ChoosenId;
@@ -332,6 +333,7 @@ namespace Quantum {
   public unsafe partial class EventOnChooseUpgrades : EventBase {
     public new const Int32 ID = 8;
     public EntityRef Target;
+    public QListPtr<UpgradeId> PendingChoices;
     protected EventOnChooseUpgrades(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
@@ -350,6 +352,7 @@ namespace Quantum {
       unchecked {
         var hash = 71;
         hash = hash * 31 + Target.GetHashCode();
+        hash = hash * 31 + PendingChoices.GetHashCode();
         return hash;
       }
     }
@@ -357,7 +360,7 @@ namespace Quantum {
   public unsafe partial class EventOnHasChoosenUpgrades : EventBase {
     public new const Int32 ID = 9;
     public EntityRef Target;
-    public Int32 ChoosenId;
+    public UpgradeId ChoosenId;
     protected EventOnHasChoosenUpgrades(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }

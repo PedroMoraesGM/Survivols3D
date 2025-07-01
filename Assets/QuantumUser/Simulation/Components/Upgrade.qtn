@@ -11,6 +11,16 @@ enum WeaponUpgradeType {
   BurstShotDelayBonus
 }
 
+enum UpgradeId{
+  None = -1,
+  MagicHand,
+  CrystalMissile,
+  FlippingKnife,
+  IceRoses,
+  WarLighter,
+  EtherealLaundryMachine,    
+}
+
 [Serializable]
 struct WeaponUpgradeEffect {
   WeaponUpgradeType Type;
@@ -25,22 +35,24 @@ struct WeaponUpgradeEffects {
 enum UpgradeCategory { WeaponUnlock, WeaponUpgrade }
 
 // Describes one upgrade or new weapon option
+[Serializable]
 struct UpgradeEntry {
 	AssetRef<EntityPrototype>   Prefab;         // prefab for weapon or effect entity
-	int			Id;            // unique identifier for deduplication
+	UpgradeId			Id;            // unique identifier for deduplication
 	int         MinLevel;       // minimum player level to unlock
 	int        Weight;         // relative weight in random selection
 	bool		CanBeRepeated;	
   [FreeOnComponentRemoved] list<WeaponUpgradeEffects> EffectsPerExtraUpgrade;    
 }
 
+[Serializable]
 struct ClassEntries{
   [FreeOnComponentRemoved] list<UpgradeEntry> Entries;
 }
 
 // Master list of all upgrades, editable in the Inspector
 singleton component UpgradeDataComponent {
-  [FreeOnComponentRemoved] dictionary<CharacterClass, ClassEntries> EntriesPerClass; // key: CharacterClass enum as int
+  [ExcludeFromPrototype] [AllocateOnComponentAdded] [FreeOnComponentRemoved] dictionary<CharacterClass, ClassEntries> EntriesPerClass; // key: CharacterClass enum as int
   int                ChoicesPerLevel;   // e.g. 3 choices at each level up
 }
 
@@ -50,11 +62,12 @@ component OwnerData{
 
 // Per-player upgrade state
 component PlayerUpgradeComponent {
-  [FreeOnComponentRemoved] dictionary<int, AcquiredUpgradeInfo> AcquiredUpgrades;  // Ids of entries already taken, with count
+  [AllocateOnComponentAdded] [FreeOnComponentRemoved] dictionary<UpgradeId, AcquiredUpgradeInfo> AcquiredUpgrades;  // Ids of entries already taken, with count
   bool       WaitingForChoice;    // true between level-up and player pick
   [AllocateOnComponentAdded]
-  [FreeOnComponentRemoved] list<int> PendingChoices; // entries currently on offer
-  int		ChosenUpgradeId;
+  [FreeOnComponentRemoved] list<UpgradeId> PendingChoices; // entries currently on offer
+  int PendingLevelUpsChoices;
+  UpgradeId		ChosenUpgradeId;
 }
 
 struct AcquiredUpgradeInfo {
@@ -63,7 +76,8 @@ struct AcquiredUpgradeInfo {
     int TotalCount; // this one is used to track all counts
 }
 
-event OnChooseUpgrades{ EntityRef Target; }
+event OnChooseUpgrades{ EntityRef Target; list<UpgradeId> PendingChoices; }
 
-event OnHasChoosenUpgrades{ EntityRef Target; int ChoosenId; }
-signal OnHasChoosenUpgrades ( EntityRef target, int choosenId );
+signal OnRequestUpgradeChoices(EntityRef target);
+event OnHasChoosenUpgrades{ EntityRef Target; UpgradeId ChoosenId; }
+signal OnHasChoosenUpgrades ( EntityRef target, UpgradeId choosenId );

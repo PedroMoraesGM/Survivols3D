@@ -9,6 +9,7 @@ namespace Quantum
     {
         public AssetRef<EntityPrototype> PlayerPrototype;
         public FPVector2 GameSize;
+        public AssetRef<CharacterClassCatalog> CharacterClassCatalog;
         // indexed by CharacterClass
         public Color[] ClassColors;       
         public int PlayersCount;

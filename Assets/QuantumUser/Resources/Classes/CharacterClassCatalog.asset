@@ -1,0 +1,142 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5ed3ff0f509a25478a7f2b5e7dfbd92, type: 3}
+  m_Name: CharacterClassCatalog
+  m_EditorClassIdentifier: 
+  Identifier:
+    Path: QuantumUser/Resources/Classes/CharacterClassCatalog
+    Guid:
+      Value: 331588883187153579
+  Classes:
+  - {fileID: 11400000, guid: a68dc3a320dc02e48a0b83a157dedbe3, type: 2}
+  - {fileID: 11400000, guid: 1296abfce7933f1489d3dd72316ba9d7, type: 2}
+  - {fileID: 11400000, guid: 1625a3a498231f14889f47f22e45861f, type: 2}
+  - {fileID: 11400000, guid: 50b72cc9cff68a143b5a6a3ed6a8d8bb, type: 2}
+  AllUpgradeEntries:
+  - Prefab: {fileID: 3097001405596171208, guid: 1f19e3b82b1697f45bba49675d291a2c, type: 3}
+    Id: 0
+    MinLevel: 0
+    Weight: 10
+    CanBeRepeated: 1
+    EffectsPerExtraUpgrade:
+    - Effects:
+      - Type: 4
+        Value:
+          RawValue: 0
+      - Type: 3
+        Value:
+          RawValue: 65536
+    - Effects:
+      - Type: 3
+        Value:
+          RawValue: 131072
+    - Effects:
+      - Type: 8
+        Value:
+          RawValue: 65536
+    - Effects:
+      - Type: 8
+        Value:
+          RawValue: 196608
+  - Prefab: {fileID: 3097001405596171208, guid: 6c21ad9466815194eae3820c87be0e9d, type: 3}
+    Id: 1
+    MinLevel: 0
+    Weight: 10
+    CanBeRepeated: 1
+    EffectsPerExtraUpgrade:
+    - Effects:
+      - Type: 2
+        Value:
+          RawValue: 0
+      - Type: 3
+        Value:
+          RawValue: 65536
+    - Effects:
+      - Type: 3
+        Value:
+          RawValue: 131072
+    - Effects:
+      - Type: 0
+        Value:
+          RawValue: 262144
+    - Effects:
+      - Type: 8
+        Value:
+          RawValue: 65536
+  - Prefab: {fileID: 3097001405596171208, guid: eab89b5c12a36d64ebbef535690ab1fc, type: 3}
+    Id: 2
+    MinLevel: 0
+    Weight: 5
+    CanBeRepeated: 1
+    EffectsPerExtraUpgrade:
+    - Effects:
+      - Type: 0
+        Value:
+          RawValue: 655360
+    - Effects:
+      - Type: 5
+        Value:
+          RawValue: 58982
+    - Effects:
+      - Type: 0
+        Value:
+          RawValue: 983040
+    - Effects:
+      - Type: 8
+        Value:
+          RawValue: 65536
+  - Prefab: {fileID: 3097001405596171208, guid: f2e04123e0f96ef49a039b925f497587, type: 3}
+    Id: 3
+    MinLevel: 0
+    Weight: 10
+    CanBeRepeated: 1
+    EffectsPerExtraUpgrade:
+    - Effects:
+      - Type: 6
+        Value:
+          RawValue: 65536
+    - Effects:
+      - Type: 0
+        Value:
+          RawValue: 196608
+    - Effects:
+      - Type: 5
+        Value:
+          RawValue: 57672
+  - Prefab: {fileID: 3097001405596171208, guid: 2c9937969a9619d4dbcdf0401963f1ce, type: 3}
+    Id: 4
+    MinLevel: 0
+    Weight: 10
+    CanBeRepeated: 1
+    EffectsPerExtraUpgrade:
+    - Effects:
+      - Type: 0
+        Value:
+          RawValue: 196608
+  - Prefab: {fileID: 3097001405596171208, guid: fecb72c214cce2f4c9a3dac46ff050d4, type: 3}
+    Id: 5
+    MinLevel: 5
+    Weight: 3
+    CanBeRepeated: 1
+    EffectsPerExtraUpgrade:
+    - Effects:
+      - Type: 0
+        Value:
+          RawValue: -196608
+    - Effects:
+      - Type: 5
+        Value:
+          RawValue: 49152
+    - Effects:
+      - Type: 6
+        Value:
+          RawValue: 32768

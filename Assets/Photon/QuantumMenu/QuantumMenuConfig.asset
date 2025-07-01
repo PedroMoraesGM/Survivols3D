@@ -52,11 +52,9 @@ MonoBehaviour:
           RawValue: 1310720
         Y:
           RawValue: 655360
-      ClassProfileIcons:
-      - {fileID: 21300000, guid: 3b7e4b3f486987641be381bfdb366927, type: 3}
-      - {fileID: 21300000, guid: a745438596045f94f955a62ca523fb2b, type: 3}
-      - {fileID: 21300000, guid: f48cfc9312fae7b43b5ce83b0d4419bd, type: 3}
-      - {fileID: 21300000, guid: 8cfc21f51fe310f40a6ef57209a34392, type: 3}
+      CharacterClassCatalog:
+        Id:
+          Value: 331588883187153579
       ClassColors:
       - {r: 0.3888889, g: 0.7222222, b: 1, a: 1}
       - {r: 0.48299998, g: 0.48299998, b: 0.48299998, a: 1}

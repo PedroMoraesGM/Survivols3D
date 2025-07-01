@@ -67,6 +67,15 @@ namespace Quantum {
     WeaponUnlock,
     WeaponUpgrade,
   }
+  public enum UpgradeId : int {
+    None = -1,
+    MagicHand,
+    CrystalMissile,
+    FlippingKnife,
+    IceRoses,
+    WarLighter,
+    EtherealLaundryMachine,
+  }
   public enum WeaponUpgradeType : int {
     DamageBonus,
     AddDamageMultiplier,
@@ -571,6 +580,7 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  [Serializable()]
   public unsafe partial struct ClassEntries {
     public const Int32 SIZE = 4;
     public const Int32 ALIGNMENT = 4;
@@ -790,27 +800,28 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  [Serializable()]
   public unsafe partial struct UpgradeEntry {
     public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(24)]
     public AssetRef<EntityPrototype> Prefab;
-    [FieldOffset(0)]
-    public Int32 Id;
-    [FieldOffset(4)]
-    public Int32 MinLevel;
-    [FieldOffset(8)]
-    public Int32 Weight;
-    [FieldOffset(12)]
-    public QBoolean CanBeRepeated;
     [FieldOffset(16)]
+    public UpgradeId Id;
+    [FieldOffset(0)]
+    public Int32 MinLevel;
+    [FieldOffset(4)]
+    public Int32 Weight;
+    [FieldOffset(8)]
+    public QBoolean CanBeRepeated;
+    [FieldOffset(12)]
     [FreeOnComponentRemoved()]
     public QListPtr<WeaponUpgradeEffects> EffectsPerExtraUpgrade;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 8101;
         hash = hash * 31 + Prefab.GetHashCode();
-        hash = hash * 31 + Id.GetHashCode();
+        hash = hash * 31 + (Int32)Id;
         hash = hash * 31 + MinLevel.GetHashCode();
         hash = hash * 31 + Weight.GetHashCode();
         hash = hash * 31 + CanBeRepeated.GetHashCode();
@@ -829,11 +840,11 @@ namespace Quantum {
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (UpgradeEntry*)ptr;
-        serializer.Stream.Serialize(&p->Id);
         serializer.Stream.Serialize(&p->MinLevel);
         serializer.Stream.Serialize(&p->Weight);
         QBoolean.Serialize(&p->CanBeRepeated, serializer);
         QList.Serialize(&p->EffectsPerExtraUpgrade, serializer, Statics.SerializeWeaponUpgradeEffects);
+        serializer.Stream.Serialize((Int32*)&p->Id);
         AssetRef.Serialize(&p->Prefab, serializer);
     }
   }
@@ -1412,26 +1423,30 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerUpgradeComponent : Quantum.IComponent {
-    public const Int32 SIZE = 16;
+    public const Int32 SIZE = 20;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(8)]
+    [AllocateOnComponentAdded()]
     [FreeOnComponentRemoved()]
-    public QDictionaryPtr<Int32, AcquiredUpgradeInfo> AcquiredUpgrades;
+    public QDictionaryPtr<UpgradeId, AcquiredUpgradeInfo> AcquiredUpgrades;
     [FieldOffset(4)]
     public QBoolean WaitingForChoice;
     [FieldOffset(12)]
     [AllocateOnComponentAdded()]
     [FreeOnComponentRemoved()]
-    public QListPtr<Int32> PendingChoices;
+    public QListPtr<UpgradeId> PendingChoices;
     [FieldOffset(0)]
-    public Int32 ChosenUpgradeId;
+    public Int32 PendingLevelUpsChoices;
+    [FieldOffset(16)]
+    public UpgradeId ChosenUpgradeId;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 21481;
         hash = hash * 31 + AcquiredUpgrades.GetHashCode();
         hash = hash * 31 + WaitingForChoice.GetHashCode();
         hash = hash * 31 + PendingChoices.GetHashCode();
-        hash = hash * 31 + ChosenUpgradeId.GetHashCode();
+        hash = hash * 31 + PendingLevelUpsChoices.GetHashCode();
+        hash = hash * 31 + (Int32)ChosenUpgradeId;
         return hash;
       }
     }
@@ -1444,6 +1459,7 @@ namespace Quantum {
       p->ClearPointers((Frame)frame, entity);
     }
     public void AllocatePointers(FrameBase f, EntityRef entity) {
+      f.TryAllocateDictionary(ref AcquiredUpgrades);
       f.TryAllocateList(ref PendingChoices);
     }
     public static void OnAdded(FrameBase frame, EntityRef entity, void* ptr) {
@@ -1452,10 +1468,11 @@ namespace Quantum {
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerUpgradeComponent*)ptr;
-        serializer.Stream.Serialize(&p->ChosenUpgradeId);
+        serializer.Stream.Serialize(&p->PendingLevelUpsChoices);
         QBoolean.Serialize(&p->WaitingForChoice, serializer);
-        QDictionary.Serialize(&p->AcquiredUpgrades, serializer, Statics.SerializeInt32, Statics.SerializeAcquiredUpgradeInfo);
-        QList.Serialize(&p->PendingChoices, serializer, Statics.SerializeInt32);
+        QDictionary.Serialize(&p->AcquiredUpgrades, serializer, Statics.SerializeUpgradeId, Statics.SerializeAcquiredUpgradeInfo);
+        QList.Serialize(&p->PendingChoices, serializer, Statics.SerializeUpgradeId);
+        serializer.Stream.Serialize((Int32*)&p->ChosenUpgradeId);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -1702,6 +1719,8 @@ namespace Quantum {
     public const Int32 SIZE = 8;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(4)]
+    [ExcludeFromPrototype()]
+    [AllocateOnComponentAdded()]
     [FreeOnComponentRemoved()]
     public QDictionaryPtr<CharacterClass, ClassEntries> EntriesPerClass;
     [FieldOffset(0)]
@@ -1727,6 +1746,13 @@ namespace Quantum {
     public static void OnRemoved(FrameBase frame, EntityRef entity, void* ptr) {
       var p = (Quantum.UpgradeDataComponent*)ptr;
       p->ClearPointers((Frame)frame, entity);
+    }
+    public void AllocatePointers(FrameBase f, EntityRef entity) {
+      f.TryAllocateDictionary(ref EntriesPerClass);
+    }
+    public static void OnAdded(FrameBase frame, EntityRef entity, void* ptr) {
+      var p = (Quantum.UpgradeDataComponent*)ptr;
+      p->AllocatePointers((Frame)frame, entity);
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (UpgradeDataComponent*)ptr;
@@ -1820,8 +1846,11 @@ namespace Quantum {
   public unsafe partial interface ISignalOnDefeated : ISignal {
     void OnDefeated(Frame f, EntityRef target, EntityRef dealer);
   }
+  public unsafe partial interface ISignalOnRequestUpgradeChoices : ISignal {
+    void OnRequestUpgradeChoices(Frame f, EntityRef target);
+  }
   public unsafe partial interface ISignalOnHasChoosenUpgrades : ISignal {
-    void OnHasChoosenUpgrades(Frame f, EntityRef target, Int32 choosenId);
+    void OnHasChoosenUpgrades(Frame f, EntityRef target, UpgradeId choosenId);
   }
   public unsafe partial interface ISignalOnXpAdquired : ISignal {
     void OnXpAdquired(Frame f, EntityRef target, FP xpAmount);
@@ -1838,6 +1867,7 @@ namespace Quantum {
     private ISignalOnGameOver[] _ISignalOnGameOverSystems;
     private ISignalOnHit[] _ISignalOnHitSystems;
     private ISignalOnDefeated[] _ISignalOnDefeatedSystems;
+    private ISignalOnRequestUpgradeChoices[] _ISignalOnRequestUpgradeChoicesSystems;
     private ISignalOnHasChoosenUpgrades[] _ISignalOnHasChoosenUpgradesSystems;
     private ISignalOnXpAdquired[] _ISignalOnXpAdquiredSystems;
     private ISignalOnLevelUp[] _ISignalOnLevelUpSystems;
@@ -1858,6 +1888,7 @@ namespace Quantum {
       _ISignalOnGameOverSystems = BuildSignalsArray<ISignalOnGameOver>();
       _ISignalOnHitSystems = BuildSignalsArray<ISignalOnHit>();
       _ISignalOnDefeatedSystems = BuildSignalsArray<ISignalOnDefeated>();
+      _ISignalOnRequestUpgradeChoicesSystems = BuildSignalsArray<ISignalOnRequestUpgradeChoices>();
       _ISignalOnHasChoosenUpgradesSystems = BuildSignalsArray<ISignalOnHasChoosenUpgrades>();
       _ISignalOnXpAdquiredSystems = BuildSignalsArray<ISignalOnXpAdquired>();
       _ISignalOnLevelUpSystems = BuildSignalsArray<ISignalOnLevelUp>();
@@ -2031,7 +2062,16 @@ namespace Quantum {
           }
         }
       }
-      public void OnHasChoosenUpgrades(EntityRef target, Int32 choosenId) {
+      public void OnRequestUpgradeChoices(EntityRef target) {
+        var array = _f._ISignalOnRequestUpgradeChoicesSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.OnRequestUpgradeChoices(_f, target);
+          }
+        }
+      }
+      public void OnHasChoosenUpgrades(EntityRef target, UpgradeId choosenId) {
         var array = _f._ISignalOnHasChoosenUpgradesSystems;
         for (Int32 i = 0; i < array.Length; ++i) {
           var s = array[i];
@@ -2068,7 +2108,7 @@ namespace Quantum {
     public static FrameSerializer.Delegate SerializeEntityRef;
     public static FrameSerializer.Delegate SerializeFP;
     public static FrameSerializer.Delegate SerializePlayerInfo;
-    public static FrameSerializer.Delegate SerializeInt32;
+    public static FrameSerializer.Delegate SerializeUpgradeId;
     public static FrameSerializer.Delegate SerializeAcquiredUpgradeInfo;
     public static FrameSerializer.Delegate SerializeCharacterClass;
     public static FrameSerializer.Delegate SerializeClassEntries;
@@ -2083,7 +2123,7 @@ namespace Quantum {
       SerializeEntityRef = EntityRef.Serialize;
       SerializeFP = FP.Serialize;
       SerializePlayerInfo = Quantum.PlayerInfo.Serialize;
-      SerializeInt32 = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
+      SerializeUpgradeId = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
       SerializeAcquiredUpgradeInfo = Quantum.AcquiredUpgradeInfo.Serialize;
       SerializeCharacterClass = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
       SerializeClassEntries = Quantum.ClassEntries.Serialize;
@@ -2206,6 +2246,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.UpgradeCategory), 4);
       typeRegistry.Register(typeof(Quantum.UpgradeDataComponent), Quantum.UpgradeDataComponent.SIZE);
       typeRegistry.Register(typeof(Quantum.UpgradeEntry), Quantum.UpgradeEntry.SIZE);
+      typeRegistry.Register(typeof(Quantum.UpgradeId), 4);
       typeRegistry.Register(typeof(View), View.SIZE);
       typeRegistry.Register(typeof(Quantum.Wall), Quantum.Wall.SIZE);
       typeRegistry.Register(typeof(Quantum.WeaponUpgradeEffect), Quantum.WeaponUpgradeEffect.SIZE);
@@ -2240,7 +2281,7 @@ namespace Quantum {
         .Add<Quantum.SlowAreaComponent>(Quantum.SlowAreaComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.SpawnerComponent>(Quantum.SpawnerComponent.Serialize, null, null, ComponentFlags.Singleton)
         .Add<Quantum.StatusEffectComponent>(Quantum.StatusEffectComponent.Serialize, null, null, ComponentFlags.None)
-        .Add<Quantum.UpgradeDataComponent>(Quantum.UpgradeDataComponent.Serialize, null, Quantum.UpgradeDataComponent.OnRemoved, ComponentFlags.Singleton)
+        .Add<Quantum.UpgradeDataComponent>(Quantum.UpgradeDataComponent.Serialize, Quantum.UpgradeDataComponent.OnAdded, Quantum.UpgradeDataComponent.OnRemoved, ComponentFlags.Singleton)
         .Add<Quantum.Wall>(Quantum.Wall.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.XPComponent>(Quantum.XPComponent.Serialize, null, null, ComponentFlags.None)
         .Add<Quantum.XPPickup>(Quantum.XPPickup.Serialize, null, null, ComponentFlags.None)
@@ -2255,6 +2296,7 @@ namespace Quantum {
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.InputButtons>();
       FramePrinter.EnsurePrimitiveNotStripped<QueryOptions>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.UpgradeCategory>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.UpgradeId>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.WeaponUpgradeType>();
     }
   }

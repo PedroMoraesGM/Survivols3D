@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using Quantum;
 
 [CreateAssetMenu(fileName = "UpgradeCatalog", menuName = "Scriptable Objects/UpgradeCatalog")]
 public class UpgradeCatalog : ScriptableObject
@@ -8,7 +9,7 @@ public class UpgradeCatalog : ScriptableObject
     [Serializable]
     public class Entry
     {
-        public int Key;          // must match UpgradeEntry.MetaKey
+        public UpgradeId Key;          // must match UpgradeEntry.MetaKey
         public string DisplayName;
         
         public string Description;
@@ -21,15 +22,15 @@ public class UpgradeCatalog : ScriptableObject
 
     public List<Entry> Entries;
 
-    Dictionary<int, Entry> _map;
+    Dictionary<UpgradeId, Entry> _map;
 
     public void InitializeMap()
     {
-        _map = new Dictionary<int, Entry>();
+        _map = new Dictionary<UpgradeId, Entry>();
         foreach (var e in Entries) _map[e.Key] = e;
     }
 
-    public Entry Get(int key)
+    public Entry Get(UpgradeId key)
     {
         if (_map == null)
             InitializeMap();

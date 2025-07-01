@@ -15,13 +15,13 @@ public class UpgradeCardItem : MonoBehaviour
     [SerializeField] private TMP_Text choiceText;
     [SerializeField] private Button selectButton;
 
-    public int UpgradeId;
+    public UpgradeId UpgradeId;
 
     /// <summary>
     /// Call this to initialize the card with both the simulation data (entry)
     /// and the UI metadata (catalog entry), plus the callback to invoke on click.
     /// </summary>
-    public void Setup(int entry, UpgradeCatalog.Entry meta, AcquiredUpgradeInfo upgradeInfo, Action<int> onSelected, int choiceOrder)
+    public void Setup(UpgradeId entry, UpgradeCatalog.Entry meta, AcquiredUpgradeInfo upgradeInfo, Action<UpgradeId> onSelected, int choiceOrder)
     {
         UpgradeId = entry;
         nameText.text = meta.DisplayName;

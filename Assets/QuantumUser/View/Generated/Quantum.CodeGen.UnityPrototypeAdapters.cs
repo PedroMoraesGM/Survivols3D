@@ -154,33 +154,36 @@ namespace Quantum.Prototypes.Unity {
   }
   [System.SerializableAttribute()]
   public unsafe partial class PlayerUpgradeComponentPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.PlayerUpgradeComponentPrototype> {
+    [AllocateOnComponentAdded()]
     [FreeOnComponentRemoved()]
     [DictionaryAttribute()]
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.Unity.DictionaryEntry_Int32_AcquiredUpgradeInfo[] AcquiredUpgrades = {};
+    public Quantum.Prototypes.Unity.DictionaryEntry_UpgradeId_AcquiredUpgradeInfo[] AcquiredUpgrades = {};
     public QBoolean WaitingForChoice;
     [AllocateOnComponentAdded()]
     [FreeOnComponentRemoved()]
     [DynamicCollectionAttribute()]
-    public Int32[] PendingChoices = {};
-    public Int32 ChosenUpgradeId;
+    public Quantum.QEnum32<UpgradeId>[] PendingChoices = {};
+    public Int32 PendingLevelUpsChoices;
+    public Quantum.QEnum32<UpgradeId> ChosenUpgradeId;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerUpgradeComponentPrototype prototype);
     public override Quantum.Prototypes.PlayerUpgradeComponentPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.PlayerUpgradeComponentPrototype();
       converter.Convert(this.AcquiredUpgrades, out result.AcquiredUpgrades);
       converter.Convert(this.WaitingForChoice, out result.WaitingForChoice);
       converter.Convert(this.PendingChoices, out result.PendingChoices);
+      converter.Convert(this.PendingLevelUpsChoices, out result.PendingLevelUpsChoices);
       converter.Convert(this.ChosenUpgradeId, out result.ChosenUpgradeId);
       ConvertUser(converter, ref result);
       return result;
     }
   }
   [System.SerializableAttribute()]
-  public unsafe partial class DictionaryEntry_Int32_AcquiredUpgradeInfo : Quantum.Prototypes.DictionaryEntry, Quantum.IQuantumPrototypeConvertible<Quantum.Prototypes.DictionaryEntry_Int32_AcquiredUpgradeInfo> {
-    public Int32 Key;
+  public unsafe partial class DictionaryEntry_UpgradeId_AcquiredUpgradeInfo : Quantum.Prototypes.DictionaryEntry, Quantum.IQuantumPrototypeConvertible<Quantum.Prototypes.DictionaryEntry_UpgradeId_AcquiredUpgradeInfo> {
+    public Quantum.QEnum32<UpgradeId> Key;
     public Quantum.Prototypes.Unity.AcquiredUpgradeInfoPrototype Value;
-    public Quantum.Prototypes.DictionaryEntry_Int32_AcquiredUpgradeInfo Convert(Quantum.QuantumEntityPrototypeConverter converter) {
-      var result = new Quantum.Prototypes.DictionaryEntry_Int32_AcquiredUpgradeInfo();
+    public Quantum.Prototypes.DictionaryEntry_UpgradeId_AcquiredUpgradeInfo Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.DictionaryEntry_UpgradeId_AcquiredUpgradeInfo();
       converter.Convert(Key, out result.Key);
       converter.Convert(Value, out result.Value);
       return result;

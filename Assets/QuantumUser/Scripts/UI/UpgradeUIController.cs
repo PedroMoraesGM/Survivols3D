@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using Quantum.Collections;
 using UnityEngine.UI;
+using System.Collections;
 
 public class UpgradeUIController : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class UpgradeUIController : MonoBehaviour
 
     private void Awake()
     {
-        QuantumEvent.Subscribe(this, (EventOnChooseUpgrades e) => OnRewardsDisplay(e));
+        QuantumEvent.Subscribe(this, (EventOnChooseUpgrades e) => StartCoroutine(OnRewardsDisplay(e)));
         QuantumEvent.Subscribe(this, (EventOnHasChoosenUpgrades e) => OnHasChoosenUpgrades(e));
         QuantumEvent.Subscribe(this, (EventOnDefeated e) => OnPlayerDefeated(e));
     }
@@ -34,9 +35,11 @@ public class UpgradeUIController : MonoBehaviour
 
     void Update()
     {
+        if(QuantumRunner.Default == null || QuantumRunner.Default.Game == null)
+            return;
+
         // 1. Get the local player's upgrade component
         var game = QuantumRunner.Default.Game;
-        if (game == null) return;
         var frame = game.Frames.Verified;
 
         if(frame == null) return;
@@ -69,7 +72,7 @@ public class UpgradeUIController : MonoBehaviour
         // 3. For each acquired upgrade, create a slot
         foreach (var kvp in frame.ResolveDictionary(playerUpgrade.AcquiredUpgrades))
         {
-            int upgradeId = kvp.Key;
+            UpgradeId upgradeId = kvp.Key;
             var upgradeInfo = kvp.Value;
 
             // Get upgrade color from catalog
@@ -126,11 +129,14 @@ public class UpgradeUIController : MonoBehaviour
           .OnComplete(() => rewardsFrame.gameObject.SetActive(false));
     }
 
-    private void OnRewardsDisplay(EventOnChooseUpgrades e)
+    private IEnumerator OnRewardsDisplay(EventOnChooseUpgrades e)
     {
+        if(rewardsFrame.gameObject.activeSelf)
+            yield return new WaitForSeconds(1); // Wait a bit if already showing to avoid flicker
+
         var f = e.Game.Frames.Verified;
-        if (!f.TryGet(e.Target, out PlayerLink playerLink)) return;
-        if (!e.Game.PlayerIsLocal(playerLink.Player)) return;
+        if (!f.TryGet(e.Target, out PlayerLink playerLink)) yield break;
+        if (!e.Game.PlayerIsLocal(playerLink.Player)) yield break;
 
         // Show the panel
         rewardsFrame.gameObject.SetActive(true);
@@ -138,10 +144,10 @@ public class UpgradeUIController : MonoBehaviour
         rewardsFrame.DOFade(1, 0.35f);
 
         // Get the upgrade component
-        if (!f.TryGet(e.Target, out PlayerUpgradeComponent playerUpgrade)) return;
+        if (!f.TryGet(e.Target, out PlayerUpgradeComponent playerUpgrade)) yield break;
 
         // Resolve the pending choices list
-        var pending = f.ResolveList(playerUpgrade.PendingChoices);
+        var pending = f.ResolveList(e.PendingChoices);
 
 
         // Clear out any old cards
@@ -170,6 +176,7 @@ public class UpgradeUIController : MonoBehaviour
 
             // Animate in�
             card.transform.localScale = Vector3.zero;
+            card.transform.DOKill();
             card.transform
                 .DOScale(1, 0.3f)
                 .SetEase(Ease.OutBack)

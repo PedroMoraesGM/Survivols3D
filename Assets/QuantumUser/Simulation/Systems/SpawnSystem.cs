@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Scripting;
 using Quantum;
 using Photon.Deterministic;
+using System.Runtime.Serialization.Formatters;
 
 namespace Tomorrow.Quantum
 {
@@ -49,15 +50,59 @@ namespace Tomorrow.Quantum
         {
             var playerEntity = Spawn(f, index);
 
-            var health = f.Unsafe.GetPointer<HealthComponent>(playerEntity);
-            health->CurrentHealth = health->MaxHealth;
+            // Get the selected class for this player
+            var selectedClass = f.GetPlayerData(player).SelectedClass;
 
+            // Get the CharacterClassInfo from the catalog
+            var classCatalog = f.FindAsset(f.RuntimeConfig.CharacterClassCatalog);                
+            var classInfo = classCatalog.Classes.Find(c => c.Class == selectedClass);
+
+            // Set base stats
+            if (f.Unsafe.TryGetPointer<HealthComponent>(playerEntity, out var health))
+            {
+                health->MaxHealth = classInfo.BaseMaxHealth;
+                health->CurrentHealth = classInfo.BaseMaxHealth;
+            }
+            if (f.Unsafe.TryGetPointer<MoveComponent>(playerEntity, out var move))
+            {
+                move->BaseSpeed = classInfo.BaseSpeed;
+            }
+            if (f.Unsafe.TryGetPointer<DamageComponent>(playerEntity, out var damage))
+            {
+                damage->DamageMultiplier = classInfo.BaseDamageMultiplier;
+            }
+
+            // Add PlayerLink
             var playerLink = new PlayerLink()
             {
                 Player = player,
-                Class = f.GetPlayerData(player).SelectedClass   // class value is assigned at player customproperties,
+                Class = selectedClass
             };
             f.Add(playerEntity, playerLink);
+
+            // Spawn initial weapon if set
+            if (classInfo.InitialWeapon != UpgradeId.None)
+            {
+                // create a weapon entity based on the initial weapon ID
+                var upgradeEntry = classCatalog.AllUpgradeEntries.Find(e => e.Id == classInfo.InitialWeapon);
+                if (upgradeEntry != null && upgradeEntry.Prefab)
+                {
+                    // Create the weapon entity from the prefab
+                    var weaponEntity = f.Create((AssetRef<EntityPrototype>) upgradeEntry.Prefab);
+                    f.Set(weaponEntity, new OwnerData() { OwnerEntity = playerEntity });
+
+                    // Add to acquired upgrades
+                    if (f.Unsafe.TryGetPointer<PlayerUpgradeComponent>(playerEntity, out var upgrades))
+                    {
+                        var acquired = f.ResolveDictionary(upgrades->AcquiredUpgrades);
+                        acquired.Add(classInfo.InitialWeapon, new AcquiredUpgradeInfo() {
+                            UpgradeEntity = weaponEntity,
+                            CountIndex = 1,
+                            TotalCount = 1
+                        });
+                    }
+                }
+            }
         }
 
         EntityRef Spawn(Frame f, int index)
